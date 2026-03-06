@@ -362,3 +362,12 @@ sejout.addEventListener("mouseout", function(event) {
     console.log("unhover");
     total.style.display = "none";
 });
+
+const confirmOrder = document.getElementsByName("confirmOrder")[0]; // Attention au [0] !
+topp = document.getElementById("top");
+
+confirmOrder.addEventListener("click", () => {
+    data = new FormData(topp); // me permt de plsu simplement récup les données --> obtient un tableau pas exploitable directement
+    utilisateur_data = Object.fromEntries(data.entries()); //retranscit en un tableau
+    console.log(utilisateur_data);
+});
