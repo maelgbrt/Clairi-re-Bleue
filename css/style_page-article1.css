@@ -8,24 +8,23 @@
 body {
     font-family: Arial, sans-serif;
     color: #333;
-    position: relative;
     min-height: 100vh;
     overflow-x: hidden;
 }
 
-/* FOND FLOU GLOBAL */
+/* FOND FLOU FIXE — reste en place pendant le scroll */
 body::before {
     content: "";
-    position: fixed;
+    position: fixed;        /* ← fixe, ne bouge jamais */
     top: -5%;
     left: -5%;
     width: 110vw;
     height: 110vh;
-    background-image: url('../images/fond.png'); /* Vérifie ce nom d'image */
+    background-image: url('../images/fond.png');
     background-size: cover;
     background-position: center;
     filter: blur(8px);
-    z-index: -1;
+    z-index: -1;            /* ← derrière tout */
 }
 
 /* NAVIGATION */
@@ -34,6 +33,8 @@ body::before {
     max-width: 1200px;
     margin: 0 auto;
     padding: 20px;
+    position: relative;     /* ← pas de transform ni filter ici */
+    z-index: 10;
 }
 
 nav {
@@ -78,9 +79,9 @@ nav ul li a:hover {
     cursor: pointer;
 }
 
-/* PARTAGE (Réseaux latéraux) */
+/* PARTAGE — directement enfant de body, fixed fonctionne */
 #partage {
-    position: fixed;
+    position: fixed;        /* ← reste à droite pendant le scroll */
     right: 20px;
     top: 50%;
     transform: translateY(-50%);
@@ -100,181 +101,28 @@ nav ul li a:hover {
     transform: scale(1.1);
 }
 
-/* --- PAGE ACCUEIL (INDEX) --- */
-#titre {
-    text-align: center;
-    margin: 50px 0;
-}
-
-#titre img {
-    max-width: 400px;
-}
-
-.second_container {
-    background: rgba(255, 255, 255, 0.8);
-    padding: 40px 20px;
-    text-align: center;
-    margin-bottom: 40px;
-}
-
-.second_container h2 {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 3rem;
-    margin-bottom: 30px;
-}
-
-.biblio {
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-    flex-wrap: wrap;
-}
-
-.img_biblio {
-    width: 200px;
-    background: white;
-    padding: 10px;
-    border-radius: 10px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-}
-
-.img_biblio img {
-    width: 100%;
-    border-radius: 5px;
-}
-
-.img_biblio p {
-    margin-top: 10px;
-    font-weight: bold;
-    font-size: 0.9rem;
-}
-
-.paragraphe {
-    background: rgba(255, 255, 255, 0.95);
-    padding: 40px 20px;
-    max-width: 1200px;
-    margin: 0 auto;
-    border-radius: 10px;
-}
-
-.paragraphe h1 {
-    text-align: center;
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 3.5rem;
-    margin-bottom: 40px;
-}
-
-#formules {
-    display: flex;
-    justify-content: center;
-    gap: 30px;
-    flex-wrap: wrap;
-    margin-bottom: 50px;
-}
-
-.formule {
-    background: white;
-    padding: 30px;
-    border-radius: 10px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-    text-align: center;
-    width: 300px;
-    position: relative;
-    border: 1px solid #eee;
-}
-
-.formule h3 {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 2rem;
-    margin-bottom: 15px;
-}
-
-.formule .prix {
-    font-size: 2.5rem;
-    font-family: 'Bebas Neue', sans-serif;
-    color: #2ecc71;
-    margin-bottom: 20px;
-}
-
-.formule_list {
-    list-style: none;
-    margin-bottom: 30px;
-}
-
-.formule_list li {
-    margin: 10px 0;
-}
-
-.formule a {
-    display: block;
-    background: #333;
-    color: white;
-    text-decoration: none;
-    padding: 15px;
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 1.2rem;
-    border-radius: 5px;
-    transition: background 0.3s;
-}
-
-.formule a:hover {
-    background: #2ecc71;
-}
-
-#recommander {
-    position: absolute;
-    top: -15px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: #e74c3c;
-    color: white;
-    padding: 5px 20px;
-    border-radius: 20px;
-    font-weight: bold;
-    font-size: 0.9rem;
-    text-transform: uppercase;
-}
-
-.third_container {
-    text-align: center;
-    line-height: 1.8;
-    padding: 0 20px;
-    font-size: 1.1rem;
-}
-
-.third_container img {
-    width: 40px;
-    margin: 30px 0;
-}
-
-.intermediaire {
-    height: 50px;
-}
-
-/* --- PAGE ARTICLE / ORGANISATION --- */
+/* EN-TÊTE ARTICLE */
 .article-header {
     position: relative;
     height: 60vh;
-    background-image: url('../images/camping1.png'); /* Vérifie ce nom d'image */
+    background-image: url('../images/camping1.png');
     background-size: cover;
     background-position: center;
-    background-attachment: fixed;
+    background-attachment: fixed;   /* ← effet parallaxe sur l'image header */
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     text-align: center;
     color: white;
-    margin-bottom: 40px;
+    margin-bottom: 0;
+    z-index: 1;
 }
 
 .article-header::before {
     content: "";
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+    inset: 0;
     background: rgba(0, 0, 0, 0.5);
     z-index: 1;
 }
@@ -290,38 +138,43 @@ nav ul li a:hover {
     font-family: 'Bebas Neue', sans-serif;
     font-size: 5rem;
     letter-spacing: 2px;
-    -webkit-text-stroke: 0; 
     text-shadow: 2px 2px 8px rgba(0,0,0,0.6);
     padding: 0 20px;
 }
 
 .article-header .meta {
-    font-family: Arial, sans-serif;
     font-size: 1.2rem;
     margin-top: 15px;
     color: #f1f1f1;
 }
 
+.intermediaire {
+    height: 50px;
+}
+
+/* ARTICLE — défile par-dessus le fond fixe */
 .article-container {
     display: flex;
     max-width: 1200px;
     margin: 0 auto 60px;
     padding: 30px;
     gap: 40px;
-    background: rgba(255, 255, 255, 0.95); /* Encadré blanc pour lisibilité du texte sur fond flou */
+    background: rgba(255, 255, 255, 0.95);
     border-radius: 10px;
     box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    position: relative;     /* ← crée un contexte d'empilement propre */
+    z-index: 1;             /* ← au-dessus du body::before */
 }
 
 .article-content {
     flex: 3;
-    font-family: Arial, sans-serif;
     line-height: 1.8;
     color: #444;
     font-size: 1.05rem;
 }
 
-.article-content h2, .article-content h3 {
+.article-content h2,
+.article-content h3 {
     font-family: 'Bebas Neue', sans-serif;
     color: #222;
     letter-spacing: 1px;
@@ -342,12 +195,11 @@ nav ul li a:hover {
 blockquote {
     border-left: 5px solid #2ecc71;
     margin: 30px 0;
-    padding-left: 20px;
+    padding: 20px;
     font-style: italic;
     font-size: 1.3rem;
     color: #555;
     background: #f9fdfa;
-    padding: 20px;
     border-radius: 0 5px 5px 0;
 }
 
@@ -367,7 +219,7 @@ blockquote {
     margin: 50px auto;
 }
 
-/* --- SIDEBAR --- */
+/* SIDEBAR */
 .sidebar {
     flex: 1;
     background: #f9f9f9;
@@ -399,9 +251,8 @@ blockquote {
 .sidebar-list a {
     text-decoration: none;
     color: #555;
-    font-family: Arial, sans-serif;
-    transition: color 0.3s;
     font-weight: bold;
+    transition: color 0.3s;
 }
 
 .sidebar-list a:hover {
@@ -446,10 +297,8 @@ footer {
     color: white;
     text-align: center;
     padding: 25px;
-    font-family: Arial, sans-serif;
     position: relative;
     z-index: 10;
-    margin-top: auto;
 }
 
 /* RESPONSIVE */
@@ -458,7 +307,7 @@ footer {
         flex-direction: column;
         gap: 15px;
     }
-    
+
     nav ul {
         flex-wrap: wrap;
         justify-content: center;
@@ -472,17 +321,12 @@ footer {
     .article-header h1 {
         font-size: 3rem;
     }
-    
+
     #partage {
         position: static;
         flex-direction: row;
         justify-content: center;
         transform: none;
         margin: 20px 0;
-    }
-    
-    #formules {
-        flex-direction: column;
-        align-items: center;
     }
 }
