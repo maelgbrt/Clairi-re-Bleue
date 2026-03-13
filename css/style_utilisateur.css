@@ -39,6 +39,7 @@ body {
     color: white;
     font-size: 2em;
     z-index: 4;
+    display: none;
 }
 
 #right-item{

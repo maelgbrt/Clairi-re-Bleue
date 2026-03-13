@@ -1,47 +1,51 @@
-function recup_donnee(data) {
+function api(data) {
     return axios.post('../php/api.php', data)
-        .then(response => response.data)
+        .then(response => {
+            DonnesPack = response.data; 
+            return response.data; 
+        })
         .catch(error => {
             console.error("Erreur API :", error);
-            return null;
+            throw error; 
         });
 }
 
-const data_Maj = { action: "recuperation_donnee" };
-let currentDonnees = null;
+
+
+const data_recup = { action: "recuperation_donnee" };
+let DonnesPack= null;
+
+
+
+async function Affichage_Principal() {
+    response = await api(data_recup);
+    console.log(response);
+    donnees = response.currentDonnees;
+    console.log(donnees);
+    if (response) {
+            affichage_donnees(donnees);
+            // window.location.href = "../html/connexion.html"; // Maintenant on peut rediriger
+
+    }
+}
 
 // On lance la fonction
 Affichage_Principal();
 
-async function Affichage_Principal() {
-    const donnees = await MAJ_donnee(); 
-    if (donnees) {
-        if(donnees.status == "logged_in"){
-        affichage_donnees(donnees.infos);
-        }else{
-            window.location.href = "../html/connexion.html"; // Maintenant on peut rediriger
-        }
-    }
-}
-
-async function MAJ_donnee() {
-    const infos = await recup_donnee(data_Maj);
-    currentDonnees = infos.infos;
-    return infos; 
-}
 
 
 function affichage_donnees(donnees) {
 
     if ('payeur' in donnees) {
         affichage_donnees_famille(donnees);
-    } else if ('admin' in donnees) {
-        user = donnees['admin'];
-    } else if ('equipe' in donnees) {
-        // user = donnees['membres'];
-        // console.log("vas")
-        // console.log(user);
     }
+    // } else if ('admin' in donnees) {
+    //     user = donnees['admin'];
+    // } else if ('equipe' in donnees) {
+    //     // user = donnees['membres'];
+    //     // console.log("vas")
+    //     // console.log(user);
+    // }
 }
 
 
@@ -86,6 +90,7 @@ function affiche_planning(donnees) {
         planning.appendChild(activiteDiv);
     });
 
+    //quand on clique sur une activité
     right_content = document.getElementById("bas");
     center = document.getElementsByClassName("center");
     reservation = document.getElementsByClassName("reservation-item");
@@ -97,6 +102,77 @@ function affiche_planning(donnees) {
     }
 
 }
+
+
+
+function affiche_reservation(donnees, index) {
+    const reservation = donnees.reservations[index];
+    const right_content = document.getElementById("bas");
+    console.log(reservation);
+
+    right_content.innerHTML = `
+        <h2>${reservation.nom}</h2>
+        <p>Prix : ${reservation.prix}€</p>
+        <p>Capacité restante : ${reservation.cap_act}</p>
+    `;
+    if (reservation.status == "1" || reservation.status == "2") {
+        right_content.innerHTML += `<button onclick="gerer_action('desinscription', ${index})">Se désinscrire</button>`;
+    } else {
+        right_content.innerHTML += `<button onclick="gerer_action('inscription', ${index})">S'inscrire</button>`;
+    }
+}
+
+
+
+async function gerer_action(type,index) {
+    let donnesCurrent = DonnesPack.currentDonnees;
+    let donnees_activites = donnesCurrent.reservations[index];
+    console.log(donnesCurrent);
+    console.log(donnees_activites);
+    let data = { action: type + "_activite" };
+
+    if (type === 'inscription') {
+        // await formulaire_payer();
+        data.id_activite = donnees_activites.id;
+        data.id_famille = donnees.id_famille;
+        data.nb_membre = 5;
+        data.cap_act = donnees_activites.cap_act;
+        data.status_res = 1;
+
+    } else {
+
+        data.id_reservation = donnees_activites.id_reservation_activite;
+        data.nb_membre = 5;
+        data.id_activite = donnees_activites.id;
+
+    }
+
+    console.log("Mise a jour des activités");
+    console.log(data);
+
+    const package = await await api(data);
+    affiche_planning(package.currentDonnees);
+    affiche_reservation(package.currentDonnees,index);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 function affiche_membres(donnees) {
     sousMembre = document.getElementById("membres");
@@ -117,10 +193,6 @@ function affiche_membres(donnees) {
     }
     blocMembret = create("div", null, sousMembre, "+", "membre-item");
     blocMembret.classList.add("last");
-
-
-
-
 
 
     plus = document.querySelector(".last");
@@ -155,12 +227,10 @@ function affiche_membres(donnees) {
 }
 
 
-function nouveau_membre(data){
-    recup_donnee(data).then(donnees => {
-        console.log("donnes renvoye par api");
-        console.log(donnees);
-        MAJ_interface();
-    })
+async function nouveau_membre(data){
+    response = await api(data);
+    affiche_membres(response.currentDonnees);
+
 }
 
 function create(balise, id_donnee = null, parent = null, contenu = '', nomClasse = null) {
@@ -182,221 +252,169 @@ function create(balise, id_donnee = null, parent = null, contenu = '', nomClasse
 
 
 
-home_menu = document.getElementById("home-menu");
+// home_menu = document.getElementById("home-menu");
 
-left = document.getElementsByClassName("left")[0];
-
-
-home_menu.addEventListener("click", menu_left); // Pas de () ici2
-
-function menu_left() {
-    left.classList.toggle("affiche");
-}
+// left = document.getElementsByClassName("left")[0];
 
 
-let btnDeconnexion = document.getElementById("deconnexion");
+// home_menu.addEventListener("click", menu_left); // Pas de () ici2
 
-btnDeconnexion.addEventListener("click", function (e) {
-    e.preventDefault();
-
-    let data = { action: "deconnexion" };
-
-    recup_donnee(data).then(donnees => {
-        if (donnees) {
-            window.location.href = "../html/connexion.html"; // Maintenant on peut rediriger
-        }
-    });
-});
+// function menu_left() {
+//     left.classList.toggle("affiche");
+// }
 
 
-function affiche_reservation(donnees, index) {
-    const reservation = donnees.reservations[index];
-    const right_content = document.getElementById("bas");
+// let btnDeconnexion = document.getElementById("deconnexion");
 
-    right_content.innerHTML = `
-        <h2>${reservation.nom}</h2>
-        <p>Prix : ${reservation.prix}€</p>
-        <p>Capacité restante : ${reservation.cap_act}</p>
-    `;
-    if (reservation.status == "1" || reservation.status == "2") {
-        right_content.innerHTML += `<button onclick="gerer_action('desinscription', ${index})">Se désinscrire</button>`;
-    } else {
-        right_content.innerHTML += `<button onclick="gerer_action('inscription', ${index})">S'inscrire</button>`;
-    }
-}
+// btnDeconnexion.addEventListener("click", function (e) {
+//     e.preventDefault();
 
+//     let data = { action: "deconnexion" };
 
-async function gerer_action(type, index) {
-    const res = currentDonnees.reservations[index];
-    let data = { action: type + "_activite" };
-
-    if (type === 'inscription') {
-        await formulaire_payer();
-        data.id_activite = res.id;
-        data.id_famille = currentDonnees.id_famille;
-        data.nb_membre = 5;
-        data.cap_act = res.cap_act;
-        data.status_res = 1;
-    } else {
-        data.id_reservation = res.id_reservation_activite;
-        data.nb_membre = 5;
-        data.id_activite = res.id;
-        console.log("desinscription");
-        console.log(data);
-    }
-
-    MAJ_activite_reservation(data, index);
-}
-
-async function MAJ_activite_reservation(data, index) {
-    const resultatAction = await recup_donnee(data);
-
-    if (resultatAction && resultatAction.status === "success") {
-        console.log("Action réussie, mise à jour des données...");
-        await MAJ_donnee(); 
-
-        console.log("Le current après le await :");
-        console.log(currentDonnees);
-
-         affiche_planning(currentDonnees);
-         affiche_reservation(currentDonnees, index);
-    }
-}
+//     recup_donnee(data).then(donnees => {
+//         if (donnees) {
+//             window.location.href = "../html/connexion.html"; // Maintenant on peut rediriger
+//         }
+//     });
+// });
 
 
 
 
 
-document.addEventListener('DOMContentLoaded', function () {
-    var calendarEl = document.getElementById('calendar');
-    var calendar = new FullCalendar.Calendar(calendarEl, {
-        initialView: 'dayGridMonth'
-    });
-    calendar.render();
-});
+
+
+
+// document.addEventListener('DOMContentLoaded', function () {
+//     var calendarEl = document.getElementById('calendar');
+//     var calendar = new FullCalendar.Calendar(calendarEl, {
+//         initialView: 'dayGridMonth'
+//     });
+//     calendar.render();
+// });
 
 
 
 
-sejout = document.getElementById("sejour");
-total = document.getElementById("total");
+// sejout = document.getElementById("sejour");
+// total = document.getElementById("total");
 
-sejout.addEventListener("mouseover", function (event) {
-    total.style.display = "flex";
-});
+// sejout.addEventListener("mouseover", function (event) {
+//     total.style.display = "flex";
+// });
 
-sejout.addEventListener("mouseout", function (event) {
-    total.style.display = "none";
-});
+// sejout.addEventListener("mouseout", function (event) {
+//     total.style.display = "none";
+// });
 
 
-function formulaire_payer() {
-    return new Promise((resolve, reject) => {
-        payement = document.getElementById("payement"); // Assure-toi que cet ID existe
-        const topp = document.getElementById("top");
+// function formulaire_payer() {
+//     return new Promise((resolve, reject) => {
+//         payement = document.getElementById("payement"); // Assure-toi que cet ID existe
+//         const topp = document.getElementById("top");
         
-        // surplus.style.display = "flex";
-        // payement.innerHTML = "";
-        surplus = document.getElementById("surplus");
-        surplus.style.display = "flex";
+//         // surplus.style.display = "flex";
+//         // payement.innerHTML = "";
+//         surplus = document.getElementById("surplus");
+//         surplus.style.display = "flex";
 
 
 
-        confirmOrder = document.getElementsByName("confirmOrder")[0];
-        previousStep = document.getElementsByName("previousStep")[0];
+//         confirmOrder = document.getElementsByName("confirmOrder")[0];
+//         previousStep = document.getElementsByName("previousStep")[0];
 
-        console.log(confirmOrder);
+//         console.log(confirmOrder);
 
-       confirmOrder.addEventListener("click", () => {
-            const formData = new FormData(topp);
-            const utilisateur_data = Object.fromEntries(formData.entries());
+//        confirmOrder.addEventListener("click", () => {
+//             const formData = new FormData(topp);
+//             const utilisateur_data = Object.fromEntries(formData.entries());
 
-            payement.style.alignItems = "center";
-            payement.style.justifyContent = "center";
-            payement.innerHTML = "<h2>Payement Effectué</h2>"; // Message temporaire
+//             payement.style.alignItems = "center";
+//             payement.style.justifyContent = "center";
+//             payement.innerHTML = "<h2>Payement Effectué</h2>"; // Message temporaire
 
-            setTimeout(() => {
-                surplus.style.display = "none";
-                resolve(); // On résout après le message
-                payement.innerHTML = `<div id="payement">
-            <img src="" alt="">
-            <div id="right">
-                <form id="top">
-                    <h1>Détail du Payement</h1>
-                    <div class="line">
-                        <div class="line-cote">
-                            <label for="">Nom de la Carte</label>
-                            <input type="text" name="nom_carte">
-                        </div>
+//             setTimeout(() => {
+//                 surplus.style.display = "none";
+//                 resolve(); // On résout après le message
+//                 payement.innerHTML = `<div id="payement">
+//             <img src="" alt="">
+//             <div id="right">
+//                 <form id="top">
+//                     <h1>Détail du Payement</h1>
+//                     <div class="line">
+//                         <div class="line-cote">
+//                             <label for="">Nom de la Carte</label>
+//                             <input type="text" name="nom_carte">
+//                         </div>
 
-                        <div class="line-cote">
-                            <label for="">Numéro de Carte</label>
-                            <input name="num_carte" type="text">
-                        </div>
-                    </div>
+//                         <div class="line-cote">
+//                             <label for="">Numéro de Carte</label>
+//                             <input name="num_carte" type="text">
+//                         </div>
+//                     </div>
 
-                    <div>
-                    <label for="date d'expiration">Date d'expiration de la carte</label>
-                    <div class="line">
-                    <div class="line-cote">
-                    <select name="mois" id="">
-                        <option value="" selected disabled>--Veuillez choisir une option--</option>
-                        <option>Janvier</option>
-                        <option>Fevriee</option>
-                        <option>Mars</option>
-                        <option>Avril</option>
-                        <option>Mai</option>
-                        <option>Juin</option>
-                        <option>Juillet</option>
-                        <option>Août</option>
-                        <option>Septembre</option>
-                        <option>Octobre</option>
-                        <option>Novembre</option>
-                        <option>Decembre</option>
-                    </select>
-                    </div>
-                     <div class="line-cote">
-                    <select name="annee" id="">
-                        <option value="" selected disabled>--Veuillez choisir une option--</option>
-                        <option>2015</option>
-                        <option>2016</option>
-                        <option>2017</option>
-                        <option>2018</option>
-                        <option>2019</option>
-                        <option>2020</option>
-                        <option>2021</option>
-                        <option>2022</option>
-                        <option>2023</option>
-                        <option>2024</option>
-                        <option>2026</option>
-                        <option>2027</option>
-                        <option>2028</option>
-                        <option>2029</option>
-                        <option>2030</option>
-                    </select>
-                    </div>
-                    </div>
-                    </div>
+//                     <div>
+//                     <label for="date d'expiration">Date d'expiration de la carte</label>
+//                     <div class="line">
+//                     <div class="line-cote">
+//                     <select name="mois" id="">
+//                         <option value="" selected disabled>--Veuillez choisir une option--</option>
+//                         <option>Janvier</option>
+//                         <option>Fevriee</option>
+//                         <option>Mars</option>
+//                         <option>Avril</option>
+//                         <option>Mai</option>
+//                         <option>Juin</option>
+//                         <option>Juillet</option>
+//                         <option>Août</option>
+//                         <option>Septembre</option>
+//                         <option>Octobre</option>
+//                         <option>Novembre</option>
+//                         <option>Decembre</option>
+//                     </select>
+//                     </div>
+//                      <div class="line-cote">
+//                     <select name="annee" id="">
+//                         <option value="" selected disabled>--Veuillez choisir une option--</option>
+//                         <option>2015</option>
+//                         <option>2016</option>
+//                         <option>2017</option>
+//                         <option>2018</option>
+//                         <option>2019</option>
+//                         <option>2020</option>
+//                         <option>2021</option>
+//                         <option>2022</option>
+//                         <option>2023</option>
+//                         <option>2024</option>
+//                         <option>2026</option>
+//                         <option>2027</option>
+//                         <option>2028</option>
+//                         <option>2029</option>
+//                         <option>2030</option>
+//                     </select>
+//                     </div>
+//                     </div>
+//                     </div>
 
-                    <div class="line">
-                    <label for="cvv">CVV</label>
-                    <input name="cvv" type="number">
-                    </div>
+//                     <div class="line">
+//                     <label for="cvv">CVV</label>
+//                     <input name="cvv" type="number">
+//                     </div>
 
-                </form>
-                <div id="bottom">
-                    <button name="previousStep">Previous Step</button>
-                    <button name="confirmOrder">Confirm Order →</button>
-                </div>
-            </div>
-        </div>`;
-            }, 2000);
+//                 </form>
+//                 <div id="bottom">
+//                     <button name="previousStep">Previous Step</button>
+//                     <button name="confirmOrder">Confirm Order →</button>
+//                 </div>
+//             </div>
+//         </div>`;
+//             }, 2000);
             
-        })
+//         })
 
-        previousStep.addEventListener("click", () => {
-            surplus.style.display = "none";
-            reject("Paiement annulé");
-        }, { once: true });
-    });
-}
+//         previousStep.addEventListener("click", () => {
+//             surplus.style.display = "none";
+//             reject("Paiement annulé");
+//         }, { once: true });
+//     });
+// }
