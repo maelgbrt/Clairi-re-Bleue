@@ -33,9 +33,9 @@ h1 {
   font-family: "Bebas Neue", sans-serif;
   text-align: center;
   margin: 20px 0px;
-  color: white; /* Fusionné */
-  font-size: 5em; /* Fusionné */
-  letter-spacing: 4px; /* Fusionné */
+  color: white;
+  font-size: 5em;
+  letter-spacing: 4px;
   -webkit-text-stroke: 1px black;
 }
 
@@ -150,8 +150,9 @@ nav li a {
 }
 
 .third_container img {
-  width: 7%;
-  height: auto;
+  width: 40px; 
+  height: 40px;
+  object-fit: contain;
 }
 
 .intermediaire {
@@ -370,7 +371,6 @@ nav li a {
   margin: 10px;
 }
 
-/* Modificateur Formule 2 */
 .formule:nth-child(2) {
   flex: 2 1 0%;
   background-color: red;
@@ -406,13 +406,14 @@ nav li a {
 #icons {
   flex: 1;
   display: flex;
-  height: 65%;
+  align-items: center;
   justify-content: space-around;
 }
 
 #icons img {
-  width: auto;
-  height: 100%;
+  width: 35px;
+  height: 35px;
+  object-fit: contain;
   cursor: pointer;
 }
 
@@ -439,8 +440,9 @@ nav li a {
 }
 
 .icon_partage {
-  width: 50px;
-  height: 50px;
+  width: 35px;
+  height: 35px;
+  object-fit: contain;
   cursor: pointer;
 }
 
