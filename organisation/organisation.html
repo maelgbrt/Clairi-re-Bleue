@@ -9,6 +9,20 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
 </head>
+  <button class="burger" aria-label="Menu" aria-expanded="false">
+     <span></span><span></span><span></span>
+   </button>
+
+   <script>
+     const burger = document.querySelector('.burger');
+     const navUl = document.querySelector('nav ul');
+     burger.addEventListener('click', () => {
+       const isOpen = navUl.classList.toggle('open');
+       burger.classList.toggle('open');
+       burger.setAttribute('aria-expanded', isOpen);
+     });
+   </script>
+
 <body>
 
 <!-- ICÔNES RÉSEAUX SOCIAUX : EN DEHORS DU .container pour que position:fixed fonctionne -->
