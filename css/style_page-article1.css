@@ -1,0 +1,332 @@
+/* RESET & BASE */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    color: #333;
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+/* FOND FLOU FIXE — reste en place pendant le scroll */
+body::before {
+    content: "";
+    position: fixed;        /* ← fixe, ne bouge jamais */
+    top: -5%;
+    left: -5%;
+    width: 110vw;
+    height: 110vh;
+    background-image: url('../images/fond.png');
+    background-size: cover;
+    background-position: center;
+    filter: blur(8px);
+    z-index: -1;            /* ← derrière tout */
+}
+
+/* NAVIGATION */
+.container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    position: relative;     /* ← pas de transform ni filter ici */
+    z-index: 10;
+}
+
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.95);
+    padding: 15px 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+#logo img {
+    height: 50px;
+}
+
+nav ul {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+}
+
+nav ul li a {
+    text-decoration: none;
+    color: #333;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.2rem;
+    transition: color 0.3s;
+}
+
+nav ul li a:hover {
+    color: #2ecc71;
+}
+
+#icons {
+    display: flex;
+    gap: 15px;
+}
+
+.icon {
+    height: 25px;
+    cursor: pointer;
+}
+
+/* PARTAGE — directement enfant de body, fixed fonctionne */
+#partage {
+    position: fixed;        /* ← reste à droite pendant le scroll */
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    z-index: 100;
+}
+
+.icon_partage {
+    height: 35px;
+    transition: transform 0.3s;
+    cursor: pointer;
+}
+
+.icon_partage:hover {
+    transform: scale(1.1);
+}
+
+/* EN-TÊTE ARTICLE */
+.article-header {
+    position: relative;
+    height: 60vh;
+    background-image: url('../images/camping1.png');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;   /* ← effet parallaxe sur l'image header */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    color: white;
+    margin-bottom: 0;
+    z-index: 1;
+}
+
+.article-header::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1;
+}
+
+.article-header h1,
+.article-header .meta {
+    position: relative;
+    z-index: 2;
+    margin: 0;
+}
+
+.article-header h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 5rem;
+    letter-spacing: 2px;
+    text-shadow: 2px 2px 8px rgba(0,0,0,0.6);
+    padding: 0 20px;
+}
+
+.article-header .meta {
+    font-size: 1.2rem;
+    margin-top: 15px;
+    color: #f1f1f1;
+}
+
+.intermediaire {
+    height: 50px;
+}
+
+/* ARTICLE — défile par-dessus le fond fixe */
+.article-container {
+    display: flex;
+    max-width: 1200px;
+    margin: 0 auto 60px;
+    padding: 30px;
+    gap: 40px;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    position: relative;     /* ← crée un contexte d'empilement propre */
+    z-index: 1;             /* ← au-dessus du body::before */
+}
+
+.article-content {
+    flex: 3;
+    line-height: 1.8;
+    color: #444;
+    font-size: 1.05rem;
+}
+
+.article-content h2,
+.article-content h3 {
+    font-family: 'Bebas Neue', sans-serif;
+    color: #222;
+    letter-spacing: 1px;
+    margin-top: 40px;
+    margin-bottom: 15px;
+}
+
+.article-content h2 { font-size: 2.5rem; }
+.article-content h3 { font-size: 2rem; }
+
+.img-principale {
+    width: 100%;
+    height: auto;
+    border-radius: 5px;
+    margin-bottom: 25px;
+}
+
+blockquote {
+    border-left: 5px solid #2ecc71;
+    margin: 30px 0;
+    padding: 20px;
+    font-style: italic;
+    font-size: 1.3rem;
+    color: #555;
+    background: #f9fdfa;
+    border-radius: 0 5px 5px 0;
+}
+
+.article-list {
+    margin-left: 20px;
+    list-style-type: square;
+    margin-bottom: 20px;
+}
+
+.article-list li {
+    margin-bottom: 10px;
+}
+
+.separator-icon {
+    display: block;
+    width: 40px;
+    margin: 50px auto;
+}
+
+/* SIDEBAR */
+.sidebar {
+    flex: 1;
+    background: #f9f9f9;
+    padding: 25px;
+    border-radius: 5px;
+    height: fit-content;
+    border: 1px solid #eaeaea;
+}
+
+.sidebar h3 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2rem;
+    border-bottom: 2px solid #333;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+
+.sidebar-list {
+    list-style: none;
+    padding: 0;
+}
+
+.sidebar-list li {
+    margin-bottom: 15px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+}
+
+.sidebar-list a {
+    text-decoration: none;
+    color: #555;
+    font-weight: bold;
+    transition: color 0.3s;
+}
+
+.sidebar-list a:hover {
+    color: #2ecc71;
+}
+
+.cta-sidebar {
+    margin-top: 40px;
+    text-align: center;
+    background: #fff;
+    padding: 20px;
+    border: 1px solid #eee;
+    border-radius: 5px;
+}
+
+.cta-sidebar p {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+}
+
+.btn-reserve {
+    display: block;
+    background: #333;
+    color: #fff;
+    text-decoration: none;
+    padding: 12px;
+    text-align: center;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.2rem;
+    border-radius: 3px;
+    transition: background 0.3s;
+}
+
+.btn-reserve:hover {
+    background: #2ecc71;
+}
+
+/* FOOTER */
+footer {
+    background: #222;
+    color: white;
+    text-align: center;
+    padding: 25px;
+    position: relative;
+    z-index: 10;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+    nav {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    nav ul {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .article-container {
+        flex-direction: column;
+        padding: 20px;
+    }
+
+    .article-header h1 {
+        font-size: 3rem;
+    }
+
+    #partage {
+        position: static;
+        flex-direction: row;
+        justify-content: center;
+        transform: none;
+        margin: 20px 0;
+    }
+}
