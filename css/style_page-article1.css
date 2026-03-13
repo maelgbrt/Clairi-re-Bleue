@@ -1,4 +1,19 @@
 /* =========================================
+   0. VARIABLES CSS (POUR GESTION PRO)
+   ========================================= */
+:root {
+  --color-primary: #ff0000;
+  --color-primary-dark: #cc0000;
+  --color-bg-dark: #000000;
+  --color-text-light: #ffffff;
+  --color-text-dark: #333333;
+  --color-footer: #bee9e8;
+  --font-main: "Bebas Neue", sans-serif;
+  --font-secondary: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+  --transition-speed: 0.3s ease;
+}
+
+/* =========================================
    1. RESET ET GLOBALS
    ========================================= */
 * {
@@ -7,39 +22,28 @@
   box-sizing: border-box;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   width: 100%;
-  font-size: large;
-  /* Le fond est fixé ici pour toute la page */
+  font-size: 16px;
+  font-family: Arial, Helvetica, sans-serif; /* Fallback lisible */
   background-image: url('../images/fond.png');
   background-size: cover;
   background-attachment: fixed;
   background-position: center;
-  /* SUPPRESSION du display:flex qui bloquait le scroll */
+  color: var(--color-text-light);
+  /* Suppression du word-spacing: 20% qui détruisait la lisibilité */
 }
 
-/* =========================================
-   2. TYPOGRAPHIE
-   ========================================= */
-.bebas-neue-regular {
-  font-family: "Bebas Neue", sans-serif;
-  font-weight: 400;
-  font-style: normal;
-}
-
-h1 {
-  font-family: "Bebas Neue", sans-serif;
-  text-align: center;
-  margin: 20px 0px;
-  color: white;
-  font-size: 5em;
-  letter-spacing: 4px;
-  -webkit-text-stroke: 1px black;
+h1, h2, h3, a {
+  font-family: var(--font-main);
 }
 
 a {
   text-decoration: none;
-  font-family: "Bebas Neue", sans-serif;
 }
 
 li {
@@ -47,56 +51,72 @@ li {
 }
 
 /* =========================================
+   2. TYPOGRAPHIE
+   ========================================= */
+h1 {
+  text-align: center;
+  margin: 20px 0;
+  font-size: 5rem;
+  letter-spacing: 4px;
+  color: var(--color-text-light);
+  -webkit-text-stroke: 1px black;
+}
+
+/* =========================================
    3. NAVIGATION ET HEADER
    ========================================= */
 nav {
-  z-index: 4;
-  padding: 10px;
+  z-index: 10;
+  padding: 15px 5%;
   width: 100%;
-  color: white;
-  position: absolute;
+  position: fixed; /* Fixed pour un effet navbar pro au scroll */
   display: flex;
   align-items: center;
   justify-content: space-between;
-  top: 0px;
-  background: transparent;
+  top: 0;
+  background: rgba(0, 0, 0, 0.4);
   backdrop-filter: blur(10px);
   height: 12vh;
-  gap: 30px;
+  min-height: 80px;
+  transition: background var(--transition-speed);
 }
 
 nav ul {
   display: flex;
-  width: 80%;
-  height: 100%;
-  justify-content: space-between;
+  width: 100%;
+  justify-content: center;
+  gap: 40px; /* Utilisation de gap plutôt que de bidouiller flex */
   align-items: center;
   flex: 5;
 }
 
 nav li a {
-  color: white;
+  color: var(--color-text-light);
+  font-size: 1.5rem;
+  transition: color var(--transition-speed);
+}
+
+nav li a:hover {
+  color: var(--color-primary);
 }
 
 #logo {
-  flex: 5;
+  flex: 1;
   display: flex;
   align-items: center;
-  height: 65%;
-  padding-left: 3%;
 }
 
 #logo img {
-  height: 100%;
-  width: 100px;
+  height: 60px; /* Taille fixe raisonnable */
+  width: auto;
+  object-fit: contain;
 }
 
 /* =========================================
    4. CONTAINERS ET SECTIONS
    ========================================= */
 .container {
-  backdrop-filter: blur(20px);
-  /* Utilisation de min-height pour éviter que ça coupe */
+  backdrop-filter: blur(5px);
   min-height: 100vh;
   width: 100%;
   display: flex;
@@ -110,41 +130,39 @@ nav li a {
   min-height: 100vh;
   width: 100%;
   display: flex;
-  background-color: black;
+  background-color: var(--color-bg-dark);
   flex-direction: column;
+  padding: 5% 0;
 }
 
 .second_container h2 {
-  font-size: 3em;
-  font-family: "Bebas Neue", sans-serif;
-  color: white;
+  font-size: 4rem;
   display: flex;
   align-items: center;
-  margin: auto;
-  flex: 1;
-}
-
-.third_container {
-  min-height: 100vh; /* Remplacé 200vh par min-height */
-  width: 100%;
-  display: flex;
-  background-color: black;
-  justify-content: space-between;
-  align-items: center;
-  flex-direction: column;
-  padding: 10vh 5%; /* Réduction du padding excessif */
-}
-
-.third_container p {
-  font-size: 2em;
-  font-family: "Bebas Neue", sans-serif;
-  color: white;
-  width: 60%;
-  text-align: center;
+  justify-content: center;
   margin-bottom: 30px;
 }
 
-/* Tailles fixes pour ne pas exploser la mise en page */
+.third_container {
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  background-color: var(--color-bg-dark);
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  padding: 10vh 5%;
+  gap: 40px;
+}
+
+.third_container p {
+  font-size: 2rem;
+  width: 80%;
+  max-width: 800px;
+  text-align: center;
+  line-height: 1.4;
+}
+
 .third_container img {
   width: 50px; 
   height: 50px;
@@ -158,22 +176,21 @@ nav li a {
   background-image: url('images/mirantin2.png');
   background-position: center;
   background-size: cover;
-  background-attachment: fixed; /* Fixe aussi cette image */
+  background-attachment: fixed;
   justify-content: center;
   align-items: center;
 }
 
 .intermediaire:nth-child(1) {
-  rotate: 180deg;
+  transform: rotate(180deg); /* Transform pro plutôt que rotate brut */
 }
 
 /* =========================================
    5. BLOCS SPECIFIQUES
    ========================================= */
 #logo_pos {
-  flex: 4;
   width: 100%;
-  height: 100%;
+  height: 50vh;
   background-image: url('images/fond.png');
   background-size: cover;
   background-repeat: no-repeat;
@@ -184,47 +201,27 @@ nav li a {
   display: flex;
   flex-direction: column;
   align-items: center;
+  gap: 20px;
 }
 
 #titre img {
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
   width: 50%;
+  max-width: 400px;
   height: auto;
 }
 
 #titre h1 {
-  color: black;
-  width: 40%;
-  letter-spacing: 20px;
+  color: var(--color-bg-dark);
+  letter-spacing: 15px;
   -webkit-text-stroke: 0;
 }
 
 #titre h2 {
-  font-family: "Bebas Neue", sans-serif;
-  font-size: 3em;
-  color: black;
-  margin-bottom: 20px;
+  font-size: 3rem;
+  color: var(--color-bg-dark);
   background-color: blue;
-  width: 40%;
-}
-
-#text {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  padding: 20px;
-}
-
-#text h2 {
-  font-size: 3em;
-  font-family: "Bebas Neue", sans-serif;
-  margin-bottom: 20px;
-}
-
-#text p {
-  flex: 1;
+  padding: 10px 30px;
+  text-align: center;
 }
 
 /* =========================================
@@ -232,215 +229,232 @@ nav li a {
    ========================================= */
 .biblio {
   width: 100%;
-  flex: 3;
-  gap: 4%;
   display: flex;
-  padding: 2%;
+  gap: 20px;
+  padding: 2% 5%;
+  justify-content: center;
+  flex-wrap: wrap; /* Pour éviter que ça s'écrase */
 }
 
 .img_biblio {
   flex: 1;
-  height: 100%;
-  width: 50px;
+  min-width: 150px; /* Largeur minimum */
+  height: 300px;
   cursor: pointer;
   overflow: hidden;
-  color: white;
   position: relative;
   display: flex;
   clip-path: polygon(0 0, 80% 0%, 100% 20%, 100% 80%, 100% 100%, 20% 100%, 0% 80%, 0% 20%);
-  font-family: 'Bebas Neue', sans-serif;
 }
 
 .img_biblio img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.5s ease;
+  transition: transform 0.6s ease;
 }
 
 .img_biblio p {
   opacity: 0;
   visibility: hidden;
   position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background-color: rgba(0, 0, 0, 0.577);
-  width: 100%;
-  height: 100%;
+  inset: 0; /* Remplace top/left/transform */
+  background-color: rgba(0, 0, 0, 0.7);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
-  transition: opacity 0.5s ease, visibility 0.5s;
-  font-size: 2em;
+  font-size: 2.5rem;
+  transition: opacity 0.4s ease, visibility 0.4s;
+}
+
+.img_biblio:hover img {
+  transform: scale(1.1); /* Effet de zoom pro */
 }
 
 .img_biblio:hover p {
   opacity: 1;
   visibility: visible;
-  transition: opacity 0.5s ease, visibility 0s;
+  transition-delay: 0s;
 }
 
 .paragraphe {
   min-height: 100vh;
   width: 100%;
-  padding: 50px 0;
+  padding: 50px 5%;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
 }
 
 .paragraphe img {
   width: 100%;
-  height: auto; /* Ajusté pour éviter la déformation */
+  max-width: 800px;
+  height: auto;
+  margin: 0 auto;
+  border-radius: 10px; /* Touche moderne */
 }
 
 .paragraphe p {
-  font-size: 1.5em;
-  padding: 20px;
-}
-
-#text4paragraphes {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  font-size: 1.2em;
+  font-size: 1.5rem;
+  line-height: 1.6;
+  max-width: 1000px;
+  margin: 0 auto;
 }
 
 /* =========================================
-   7. FORMULES
+   7. FORMULES (PRIX/OFFRES)
    ========================================= */
 #formules {
   min-height: 80vh;
   width: 100%;
   display: flex;
-  align-items: center;
+  align-items: stretch; /* Hauteur égale */
   justify-content: center;
-  flex-wrap: wrap; /* Ajout pour que ça ne casse pas sur petit écran */
-  padding: 20px;
+  gap: 40px;
+  padding: 50px 5%;
+  flex-wrap: wrap;
 }
 
 .formule {
-  flex: 1 1 300px; /* Ajout d'une base de taille */
-  margin: 20px;
-  padding: 50px;
-  background-color: white;
+  flex: 1 1 300px;
+  max-width: 400px;
+  padding: 40px 30px;
+  background-color: var(--color-text-light);
+  color: var(--color-text-dark);
   display: flex;
   flex-direction: column;
-  box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.489);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
   align-items: center;
-  justify-content: space-between;
-  border-radius: 30px;
+  border-radius: 20px;
   position: relative;
+  transition: transform var(--transition-speed);
+}
+
+.formule:hover {
+  transform: translateY(-10px); /* Élévation au survol */
 }
 
 .formule h3 {
-  font-family: "Bebas Neue", sans-serif;
-  font-size: 2.5em;
+  font-size: 2.5rem;
+  margin-bottom: 15px;
 }
 
 .formule p {
-  font-size: 1.2em;
+  font-size: 1rem;
   text-align: center;
-}
-
-.formule a {
-  background-color: red;
-  border-radius: 15px;
-  padding: 15px 30px;
-  border: none;
-  color: white;
-  font-size: 1.2em;
-  transition: background-color 0.3s ease;
-  margin-top: 20px;
-}
-
-.formule a:hover {
-  background-color: darkred;
-  cursor: pointer;
+  color: #666;
+  margin-bottom: 20px;
 }
 
 .formule_list {
-  font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+  font-family: var(--font-secondary);
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin: 20px 0;
+  gap: 15px;
+  margin-bottom: 30px;
+  flex-grow: 1; /* Pousse le bouton vers le bas */
 }
 
 .formule_list li {
-  margin: 10px;
-  font-size: 1.2em;
+  font-size: 1.2rem;
 }
 
+.formule a {
+  background-color: var(--color-primary);
+  border-radius: 10px;
+  padding: 15px 40px;
+  color: var(--color-text-light);
+  font-size: 1.5rem;
+  transition: background-color var(--transition-speed), transform 0.2s;
+  width: 100%;
+  text-align: center;
+}
+
+.formule a:hover {
+  background-color: var(--color-primary-dark);
+  transform: scale(1.05);
+}
+
+/* Modificateur Formule Centrale (Mise en avant) */
 .formule:nth-child(2) {
-  flex: 1.5 1 350px;
-  background-color: red;
-  color: white;
-  transform: scale(1.05); /* Met en valeur l'offre centrale */
+  background-color: var(--color-primary);
+  color: var(--color-text-light);
+  transform: scale(1.05);
+  border: 2px solid var(--color-primary-dark);
+  z-index: 2;
+}
+
+.formule:nth-child(2):hover {
+  transform: scale(1.05) translateY(-10px);
+}
+
+.formule:nth-child(2) p {
+  color: #ffe6e6;
 }
 
 .formule:nth-child(2) a {
-  background-color: white;
-  color: red;
-  transition: 1s;
+  background-color: var(--color-text-light);
+  color: var(--color-primary);
 }
 
 .formule:nth-child(2) a:hover {
-  background-color: darkred;
-  color: white;
+  background-color: #f0f0f0;
 }
 
 #recommander {
   position: absolute;
   top: -20px;
-  font-size: 1em;
-  z-index: 3;
-  background-color: white;
-  color: red;
-  padding: 10px 40px;
-  font-family: 'Bebas Neue', sans-serif;
-  border: 2px solid red;
-  border-radius: 10px;
+  font-size: 1.2rem;
+  background-color: var(--color-text-light);
+  color: var(--color-primary);
+  padding: 5px 30px;
+  border-radius: 20px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+  border: 2px solid var(--color-primary);
 }
 
 /* =========================================
    8. ICONES ET PARTAGE
    ========================================= */
 #icons {
-  flex: 1;
   display: flex;
   align-items: center;
-  justify-content: space-around;
+  gap: 20px;
 }
 
 #icons img {
-  width: 35px;
-  height: 35px;
+  width: 30px;
+  height: 30px;
   object-fit: contain;
   cursor: pointer;
+  transition: transform var(--transition-speed);
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5)); /* Pour visibilité sur fond variable */
 }
 
-.icon {
-  transition: transform 0.3s ease;
-}
-
-.icon:hover {
+#icons img:hover {
   transform: scale(1.2);
 }
 
 #partage {
-  align-self: flex-end;
   position: absolute;
-  bottom: 40px;
-  right: 50px;
+  bottom: 30px;
+  right: 5%;
   display: flex;
-  gap: 15px; /* Remplacé le grid lourd par un flex avec gap */
+  gap: 15px;
+  z-index: 5;
 }
 
 .icon_partage {
-  width: 35px;
-  height: 35px;
+  width: 40px;
+  height: 40px;
   object-fit: contain;
   cursor: pointer;
+  transition: transform var(--transition-speed);
+}
+
+.icon_partage:hover {
+  transform: scale(1.15) translateY(-5px);
 }
 
 /* =========================================
@@ -448,8 +462,48 @@ nav li a {
    ========================================= */
 footer {
   text-align: center;
-  padding: 20px 0px;
-  background-color: #BEE9E8;
-  color: #333333;
+  padding: 30px 5%;
+  background-color: var(--color-footer);
+  color: var(--color-text-dark);
   width: 100%;
+  font-weight: bold;
+}
+
+/* =========================================
+   10. RESPONSIVE (MOBILES & TABLETTES)
+   ========================================= */
+@media (max-width: 900px) {
+  nav {
+    flex-direction: column;
+    padding: 15px;
+    height: auto;
+    position: absolute; /* Retire le fixed sur mobile pour pas manger l'écran */
+  }
+  
+  nav ul {
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 15px;
+  }
+  
+  #icons {
+    margin-top: 15px;
+  }
+  
+  h1 {
+    font-size: 3.5rem;
+  }
+  
+  #titre h2 {
+    font-size: 2rem;
+    width: 80%;
+  }
+  
+  .formule:nth-child(2) {
+    transform: scale(1); /* Annule l'agrandissement sur mobile */
+  }
+  
+  .formule:nth-child(2):hover {
+    transform: translateY(-5px);
+  }
 }
