@@ -124,6 +124,16 @@ function recup_familles($conn){
 }
 
 
+function recup_fifo_emplacements($conn){
+    $sql = "SELECT * FROM emplacements WHERE status = 1 ORDER BY date_creation";
+    $stmt = mysqli_prepare($conn, $sql);
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt);
+    return mysqli_fetch_all($res, MYSQLI_ASSOC) ?: [];
+
+}
+
+
 //les variables communes à plusieurs actions
 $prenom = isset($data['prenom']) ? $data['prenom'] : '';
 $nom = isset($data['nom']) ? $data['nom'] : '';
@@ -155,6 +165,7 @@ function get_full_data($conn) {
         $infos['session'] = "admin";
         $infos['activites'] = recup_activites($conn);
         $infos['file_attente_activite'] = recup_reservation_order($conn);
+        $infos['file_attente_reservations'] = recup_fifo_emplacements($conn);
 
     }
     else{
