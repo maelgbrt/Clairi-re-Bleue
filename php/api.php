@@ -112,9 +112,12 @@ function get_full_data($conn) {
         $infos['reservations'] = recup_activite_with_status($id_famille, $conn);
         $infos['session'] = "famille";
         $infos['payeur'] = recup_utilisateur_byId_payeur($infos['id_payeur'], $conn);}
+    else{
+        $infos = "NoSession";
+
+    }
     return $infos;
 }
-
 //on hache mot de passe pr securité
 
 
@@ -178,107 +181,110 @@ if ($action === 'recuperation_donnee') {
         }
     }
 }
-// } elseif ($action === 'connexion_famille') {
+ elseif ($action === 'connexion_famille') {
 
-//     $stmt = mysqli_prepare($conn, "SELECT * FROM familles WHERE mail = ?");
-//     mysqli_stmt_bind_param($stmt, 's', $mail);
-//     mysqli_stmt_execute($stmt);
-//     $res = mysqli_stmt_get_result($stmt);
+    $stmt = mysqli_prepare($conn, "SELECT * FROM familles WHERE mail = ?");
+    mysqli_stmt_bind_param($stmt, 's', $mail);
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt);
 
-//     if ($res && mysqli_num_rows($res) > 0) {
-//         $famille = mysqli_fetch_assoc($res);
+    if ($res && mysqli_num_rows($res) > 0) {
+        $famille = mysqli_fetch_assoc($res);
 
-//         if (password_verify($password, $famille['password'])) {
-//             $status = "success";
-//             $_SESSION['famille'] = $famille['id_famille'];
-//             $infos = "Connexion famille réussie";
-//         } else {
-//             $status = "failed";
-//             $infos = "Mot de passe incorrect";
-//         }
-//     } else {
-//         $stmt_m = mysqli_prepare($conn, "SELECT * FROM membres WHERE mail = ?");
-//         mysqli_stmt_bind_param($stmt_m, 's', $mail);
-//         mysqli_stmt_execute($stmt_m);
-//         $res_membre = mysqli_stmt_get_result($stmt_m);
+        if (password_verify($password, $famille['password'])) {
+            $status = "success";
+            $_SESSION['famille'] = $famille['id_famille'];
+            $infos = "Connexion famille réussie";
+        } else {
+            $status = "failed";
+            $infos = "Mot de passe incorrect";
+        }
+    } else {
+        $stmt_m = mysqli_prepare($conn, "SELECT * FROM membres WHERE mail = ?");
+        mysqli_stmt_bind_param($stmt_m, 's', $mail);
+        mysqli_stmt_execute($stmt_m);
+        $res_membre = mysqli_stmt_get_result($stmt_m);
 
-//         if ($res_membre && mysqli_num_rows($res_membre) > 0) {
-//             $membre = mysqli_fetch_assoc($res_membre);
+        if ($res_membre && mysqli_num_rows($res_membre) > 0) {
+            $membre = mysqli_fetch_assoc($res_membre);
 
-//             // Vérification mot de passe pour le membre
-//             if (password_verify($password, $membre['password'])) {
-//                 $status = "success";
-//                 $infos = [
-//                     "user" => $membre,
-//                     "session" => "membre"
-//                 ];
-//                 $_SESSION['membre'] = $infos;
-//             } else {
-//                 $status = "failed";
-//                 $infos = "Mot de passe incorrect";
-//             }
-//         } else {
-//             $status = "failed";
-//             $infos = "Utilisateur introuvable";
-//         }
-//     }
-// } elseif ($action === 'inscription_famille&payeur') {
+            // Vérification mot de passe pour le membre
+            if (password_verify($password, $membre['password'])) {
+                $status = "success";
+                $infos = [
+                    "user" => $membre,
+                    "session" => "membre"
+                ];
+                $_SESSION['membre'] = $infos;
+            } else {
+                $status = "failed";
+                $infos = "Mot de passe incorrect";
+            }
+        } else {
+            $status = "failed";
+            $infos = "Utilisateur introuvable";
+        }
+    }
+} 
+elseif ($action === 'inscription_famille&payeur'){
 
-//     // 1. Vérification existence mail
-//     $requete = mysqli_prepare($conn, "SELECT id_famille FROM familles WHERE mail = ?");
-//     mysqli_stmt_bind_param($requete, 's', $mail);
-//     mysqli_stmt_execute($requete);
-//     $res_verif = mysqli_stmt_get_result($requete);
+    // 1. Vérification existence mail
+    $requete = mysqli_prepare($conn, "SELECT id_famille FROM familles WHERE mail = ?");
+    mysqli_stmt_bind_param($requete, 's', $mail);
+    mysqli_stmt_execute($requete);
+    $res_verif = mysqli_stmt_get_result($requete);
 
-//     if ($res_verif && mysqli_num_rows($res_verif) > 0) {
-//         $status = "failed";
-//         $infos = "Adresse email déjà utilisée";
-//     } else {
+    if ($res_verif && mysqli_num_rows($res_verif) > 0) {
+        $status = "failed";
+        $infos = "Adresse email déjà utilisée";
+    } else {
 
-//         // 2. Création de l'utilisateur payeur
-//         $sql_payeur = "INSERT INTO utilisateurs (nom, prenom, date_naissance) VALUES (?, ?, ?)";
-//         $req_p = mysqli_prepare($conn, $sql_payeur);
-//         mysqli_stmt_bind_param($req_p, 'sss', $nom, $prenom, $date_naissance);
+        // 2. Création de l'utilisateur payeur
+        $sql_payeur = "INSERT INTO utilisateurs (nom, prenom, date_naissance) VALUES (?, ?, ?)";
+        $req_p = mysqli_prepare($conn, $sql_payeur);
+        mysqli_stmt_bind_param($req_p, 'sss', $nom, $prenom, $date_naissance);
 
-//         if (mysqli_stmt_execute($req_p)) {
-//             $nouvel_user_id = mysqli_insert_id($conn);
+        if (mysqli_stmt_execute($req_p)) {
+            $nouvel_user_id = mysqli_insert_id($conn);
 
-//             // 3. Hachage du mot de passe
-//             $password_hache = password_hash($password, PASSWORD_DEFAULT);
+            // 3. Hachage du mot de passe
+            $password_hache = password_hash($password, PASSWORD_DEFAULT);
 
-//             // 4. Création de la famille
-//             $sql_f = "INSERT INTO familles (mail, password, adresse, telephone, code_postal, id_payeur, ville) VALUES (?, ?, ?, ?, ?, ?, ?)";
-//             $req_f = mysqli_prepare($conn, $sql_f);
-//             // Types : sssssis (6 strings, 1 int, 1 string) -> Attention, il y a 7 paramètres !
-//             mysqli_stmt_bind_param($req_f, 'sssssis', $mail, $password_hache, $adresse, $telephone, $code_postal, $nouvel_user_id, $ville);
+            // 4. Création de la famille
+            $sql_f = "INSERT INTO familles (mail, password, adresse, telephone, code_postal, id_payeur, ville) VALUES (?, ?, ?, ?, ?, ?, ?)";
+            $req_f = mysqli_prepare($conn, $sql_f);
+            // Types : sssssis (6 strings, 1 int, 1 string) -> Attention, il y a 7 paramètres !
+            mysqli_stmt_bind_param($req_f, 'sssssis', $mail, $password_hache, $adresse, $telephone, $code_postal, $nouvel_user_id, $ville);
 
-//             if (mysqli_stmt_execute($req_f)) {
-//                 $nouvel_famille_id = mysqli_insert_id($conn);
+            if (mysqli_stmt_execute($req_f)) {
+                $nouvel_famille_id = mysqli_insert_id($conn);
 
-//                 // 5. Mise à jour de l'utilisateur avec son id_famille
-//                 $sql_upd = "UPDATE utilisateurs SET id_famille = ? WHERE id = ?";
-//                 $req_u = mysqli_prepare($conn, $sql_upd);
-//                 mysqli_stmt_bind_param($req_u, 'ii', $nouvel_famille_id, $nouvel_user_id);
+                // 5. Mise à jour de l'utilisateur avec son id_famille
+                $sql_upd = "UPDATE utilisateurs SET id_famille = ? WHERE id = ?";
+                $req_u = mysqli_prepare($conn, $sql_upd);
+                mysqli_stmt_bind_param($req_u, 'ii', $nouvel_famille_id, $nouvel_user_id);
 
-//                 if (mysqli_stmt_execute($req_u)) {
-//                     $status = "success";
-//                     $infos = "Inscription réussie !";
-//                     // On stocke l'ID famille en session pour connecter l'utilisateur direct
-//                     $_SESSION['famille'] = $nouvel_famille_id;
-//                 } else {
-//                     $status = 'failed';
-//                     $infos = "Erreur lors de la liaison famille/utilisateur";
-//                 }
-//             } else {
-//                 $status = 'failed';
-//                 $infos = "Impossible de créer la famille";
-//             }
-//         } else {
-//             $status = 'failed';
-//             $infos = "Impossible de créer l'utilisateur payeur";
-//         }
-//     }
- elseif ($action == "inscription_user_by_idFamille") {
+                if (mysqli_stmt_execute($req_u)) {
+                    $status = "success";
+                    $infos = "Inscription réussie !";
+                    // On stocke l'ID famille en session pour connecter l'utilisateur direct
+                    $_SESSION['famille'] = $nouvel_famille_id;
+                } else {
+                    $status = 'failed';
+                    $infos = "Erreur lors de la liaison famille/utilisateur";
+                }
+            } else {
+                $status = 'failed';
+                $infos = "Impossible de créer la famille";
+            }
+        } else {
+            $status = 'failed';
+            $infos = "Impossible de créer l'utilisateur payeur";
+        }
+    }
+    
+}
+elseif ($action == "inscription_user_by_idFamille") {
     $stmt = mysqli_prepare($conn, "INSERT INTO utilisateurs (nom, prenom, date_naissance, id_famille) VALUES (?, ?, ?, ?)");
 
     mysqli_stmt_bind_param($stmt, 'sssi', $nom, $prenom, $date_naissance, $id_f);
@@ -293,23 +299,25 @@ if ($action === 'recuperation_donnee') {
 
  }
 
-// 
 
-//  elseif ($action === "deconnexion") {
-//     $_SESSION = array();
 
-//     session_destroy();
+ elseif ($action === "deconnexion") {
+    $_SESSION = array();
 
-//     $status = "success";
-//     $infos = "Déconnexion réussie";
-// }
+    session_destroy();
+
+    $status = "success";
+    $infos = "Déconnexion réussie";
+}
 
 //RETOUR --------------FIN DE PROGRAMME-------------------
+
+
 $reponse = [
     "status" => $status,
     "msg" => $msg,
     "action" => $action,
-    "currentDonnees" => get_full_data($conn)
+    "currentDonnees" =>  get_full_data($conn)
 ];
 
 

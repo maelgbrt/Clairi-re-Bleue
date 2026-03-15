@@ -1,16 +1,18 @@
 function api(data) {
     return axios.post('../php/api.php', data)
         .then(response => {
-            DonnesPack = response.data; 
-            return response.data; 
-        })
+            console.log(response.data);
+            if(response.data.currentDonnees === "NoSession"){
+                 window.location.href = "../html/connexion.html"; // Maintenant on peut rediriger
+            }else{
+                DonnesPack = response.data; 
+                return response.data;}}
+        )
         .catch(error => {
             console.error("Erreur API :", error);
             throw error; 
         });
 }
-
-
 
 const data_recup = { action: "recuperation_donnee" };
 let DonnesPack= null;
@@ -24,8 +26,6 @@ async function Affichage_Principal() {
     console.log(donnees);
     if (response) {
             affichage_donnees(donnees);
-            // window.location.href = "../html/connexion.html"; // Maintenant on peut rediriger
-
     }
 }
 
@@ -35,17 +35,9 @@ Affichage_Principal();
 
 
 function affichage_donnees(donnees) {
-
     if ('payeur' in donnees) {
         affichage_donnees_famille(donnees);
     }
-    // } else if ('admin' in donnees) {
-    //     user = donnees['admin'];
-    // } else if ('equipe' in donnees) {
-    //     // user = donnees['membres'];
-    //     // console.log("vas")
-    //     // console.log(user);
-    // }
 }
 
 
@@ -71,6 +63,7 @@ function affiche_payeur(donnees){
 }
 
 function affiche_planning(donnees) {
+    chargerEvenementsDansCalendrier(donnees.reservations);
     planning = document.getElementById("planning");
     planning.innerHTML = "";
     planning.innerHTML = "activités à venir";
@@ -252,169 +245,210 @@ function create(balise, id_donnee = null, parent = null, contenu = '', nomClasse
 
 
 
-// home_menu = document.getElementById("home-menu");
+home_menu = document.getElementById("home-menu");
 
-// left = document.getElementsByClassName("left")[0];
-
-
-// home_menu.addEventListener("click", menu_left); // Pas de () ici2
-
-// function menu_left() {
-//     left.classList.toggle("affiche");
-// }
+left = document.getElementsByClassName("left")[0];
 
 
-// let btnDeconnexion = document.getElementById("deconnexion");
+home_menu.addEventListener("click", menu_left); // Pas de () ici2
 
-// btnDeconnexion.addEventListener("click", function (e) {
-//     e.preventDefault();
-
-//     let data = { action: "deconnexion" };
-
-//     recup_donnee(data).then(donnees => {
-//         if (donnees) {
-//             window.location.href = "../html/connexion.html"; // Maintenant on peut rediriger
-//         }
-//     });
-// });
+function menu_left() {
+    left.classList.toggle("affiche");
+}
 
 
+let btnDeconnexion = document.getElementById("deconnexion");
+
+btnDeconnexion.addEventListener("click", function (e) {
+    e.preventDefault();
+
+    let data = { action: "deconnexion" };
 
 
-
-
-
-
-// document.addEventListener('DOMContentLoaded', function () {
-//     var calendarEl = document.getElementById('calendar');
-//     var calendar = new FullCalendar.Calendar(calendarEl, {
-//         initialView: 'dayGridMonth'
-//     });
-//     calendar.render();
-// });
+    api(data).then(donnees => {
+        console.log(donnees);
+    })
+    // recup_donnee(data).then(donnees => {
+    //     if (donnees) {
+    //         window.location.href = "../html/connexion.html"; // Maintenant on peut rediriger
+    //     }
+    // });
+});
 
 
 
+// 1. Déclare la variable en dehors pour qu'elle soit accessible partout
+let calendar; 
 
-// sejout = document.getElementById("sejour");
-// total = document.getElementById("total");
+function chargerEvenementsDansCalendrier(reservations) {
+    if (!calendar) return; // Sécurité si le calendrier n'est pas encore prêt
 
-// sejout.addEventListener("mouseover", function (event) {
-//     total.style.display = "flex";
-// });
+    // On vide les anciens événements
+    calendar.removeAllEvents();
 
-// sejout.addEventListener("mouseout", function (event) {
-//     total.style.display = "none";
-// });
+    reservations.forEach(res => {
+        console.log(res);
+        // // On transforme "2026-03-13 14:00:00" en "2026-03-13T14:00:00"
+        const dateISO = res.date_d.replace(' ', 'T');
+        console.log(dateISO);
+
+        // On ajoute l'événement avec l'heure
+        calendar.addEvent({
+            id: res.id, 
+            title: res.nom,
+            start: dateISO,
+            allDay: false, // OBLIGATOIRE pour voir l'heure
+            extendedProps: {
+                status: res.status
+            }
+        });
+    });
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+    var calendarEl = document.getElementById('calendar');
+    
+    // 2. On assigne le calendrier à la variable globale
+    calendar = new FullCalendar.Calendar(calendarEl, {
+        initialView: 'dayGridMonth',
+        locale: 'fr',
+        events: [
+            {
+                title: 'Réunion importante',
+                start: '2026-03-13T14:30:00',
+                allDay: false
+            }
+        ],
+        eventTimeFormat: { 
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: false
+        }
+    });
+    
+    calendar.render();
+});
 
 
-// function formulaire_payer() {
-//     return new Promise((resolve, reject) => {
-//         payement = document.getElementById("payement"); // Assure-toi que cet ID existe
-//         const topp = document.getElementById("top");
+sejout = document.getElementById("sejour");
+total = document.getElementById("total");
+
+sejout.addEventListener("mouseover", function (event) {
+    total.style.display = "flex";
+});
+
+sejout.addEventListener("mouseout", function (event) {
+    total.style.display = "none";
+});
+
+
+function formulaire_payer() {
+    return new Promise((resolve, reject) => {
+        payement = document.getElementById("payement"); // Assure-toi que cet ID existe
+        const topp = document.getElementById("top");
         
-//         // surplus.style.display = "flex";
-//         // payement.innerHTML = "";
-//         surplus = document.getElementById("surplus");
-//         surplus.style.display = "flex";
+        // surplus.style.display = "flex";
+        // payement.innerHTML = "";
+        surplus = document.getElementById("surplus");
+        surplus.style.display = "flex";
 
 
 
-//         confirmOrder = document.getElementsByName("confirmOrder")[0];
-//         previousStep = document.getElementsByName("previousStep")[0];
+        confirmOrder = document.getElementsByName("confirmOrder")[0];
+        previousStep = document.getElementsByName("previousStep")[0];
 
-//         console.log(confirmOrder);
+        console.log(confirmOrder);
 
-//        confirmOrder.addEventListener("click", () => {
-//             const formData = new FormData(topp);
-//             const utilisateur_data = Object.fromEntries(formData.entries());
+       confirmOrder.addEventListener("click", () => {
+            const formData = new FormData(topp);
+            const utilisateur_data = Object.fromEntries(formData.entries());
 
-//             payement.style.alignItems = "center";
-//             payement.style.justifyContent = "center";
-//             payement.innerHTML = "<h2>Payement Effectué</h2>"; // Message temporaire
+            payement.style.alignItems = "center";
+            payement.style.justifyContent = "center";
+            payement.innerHTML = "<h2>Payement Effectué</h2>"; // Message temporaire
 
-//             setTimeout(() => {
-//                 surplus.style.display = "none";
-//                 resolve(); // On résout après le message
-//                 payement.innerHTML = `<div id="payement">
-//             <img src="" alt="">
-//             <div id="right">
-//                 <form id="top">
-//                     <h1>Détail du Payement</h1>
-//                     <div class="line">
-//                         <div class="line-cote">
-//                             <label for="">Nom de la Carte</label>
-//                             <input type="text" name="nom_carte">
-//                         </div>
+            setTimeout(() => {
+                surplus.style.display = "none";
+                resolve(); // On résout après le message
+                payement.innerHTML = `<div id="payement">
+            <img src="" alt="">
+            <div id="right">
+                <form id="top">
+                    <h1>Détail du Payement</h1>
+                    <div class="line">
+                        <div class="line-cote">
+                            <label for="">Nom de la Carte</label>
+                            <input type="text" name="nom_carte">
+                        </div>
 
-//                         <div class="line-cote">
-//                             <label for="">Numéro de Carte</label>
-//                             <input name="num_carte" type="text">
-//                         </div>
-//                     </div>
+                        <div class="line-cote">
+                            <label for="">Numéro de Carte</label>
+                            <input name="num_carte" type="text">
+                        </div>
+                    </div>
 
-//                     <div>
-//                     <label for="date d'expiration">Date d'expiration de la carte</label>
-//                     <div class="line">
-//                     <div class="line-cote">
-//                     <select name="mois" id="">
-//                         <option value="" selected disabled>--Veuillez choisir une option--</option>
-//                         <option>Janvier</option>
-//                         <option>Fevriee</option>
-//                         <option>Mars</option>
-//                         <option>Avril</option>
-//                         <option>Mai</option>
-//                         <option>Juin</option>
-//                         <option>Juillet</option>
-//                         <option>Août</option>
-//                         <option>Septembre</option>
-//                         <option>Octobre</option>
-//                         <option>Novembre</option>
-//                         <option>Decembre</option>
-//                     </select>
-//                     </div>
-//                      <div class="line-cote">
-//                     <select name="annee" id="">
-//                         <option value="" selected disabled>--Veuillez choisir une option--</option>
-//                         <option>2015</option>
-//                         <option>2016</option>
-//                         <option>2017</option>
-//                         <option>2018</option>
-//                         <option>2019</option>
-//                         <option>2020</option>
-//                         <option>2021</option>
-//                         <option>2022</option>
-//                         <option>2023</option>
-//                         <option>2024</option>
-//                         <option>2026</option>
-//                         <option>2027</option>
-//                         <option>2028</option>
-//                         <option>2029</option>
-//                         <option>2030</option>
-//                     </select>
-//                     </div>
-//                     </div>
-//                     </div>
+                    <div>
+                    <label for="date d'expiration">Date d'expiration de la carte</label>
+                    <div class="line">
+                    <div class="line-cote">
+                    <select name="mois" id="">
+                        <option value="" selected disabled>--Veuillez choisir une option--</option>
+                        <option>Janvier</option>
+                        <option>Fevriee</option>
+                        <option>Mars</option>
+                        <option>Avril</option>
+                        <option>Mai</option>
+                        <option>Juin</option>
+                        <option>Juillet</option>
+                        <option>Août</option>
+                        <option>Septembre</option>
+                        <option>Octobre</option>
+                        <option>Novembre</option>
+                        <option>Decembre</option>
+                    </select>
+                    </div>
+                     <div class="line-cote">
+                    <select name="annee" id="">
+                        <option value="" selected disabled>--Veuillez choisir une option--</option>
+                        <option>2015</option>
+                        <option>2016</option>
+                        <option>2017</option>
+                        <option>2018</option>
+                        <option>2019</option>
+                        <option>2020</option>
+                        <option>2021</option>
+                        <option>2022</option>
+                        <option>2023</option>
+                        <option>2024</option>
+                        <option>2026</option>
+                        <option>2027</option>
+                        <option>2028</option>
+                        <option>2029</option>
+                        <option>2030</option>
+                    </select>
+                    </div>
+                    </div>
+                    </div>
 
-//                     <div class="line">
-//                     <label for="cvv">CVV</label>
-//                     <input name="cvv" type="number">
-//                     </div>
+                    <div class="line">
+                    <label for="cvv">CVV</label>
+                    <input name="cvv" type="number">
+                    </div>
 
-//                 </form>
-//                 <div id="bottom">
-//                     <button name="previousStep">Previous Step</button>
-//                     <button name="confirmOrder">Confirm Order →</button>
-//                 </div>
-//             </div>
-//         </div>`;
-//             }, 2000);
+                </form>
+                <div id="bottom">
+                    <button name="previousStep">Previous Step</button>
+                    <button name="confirmOrder">Confirm Order →</button>
+                </div>
+            </div>
+        </div>`;
+            }, 2000);
             
-//         })
+        })
 
-//         previousStep.addEventListener("click", () => {
-//             surplus.style.display = "none";
-//             reject("Paiement annulé");
-//         }, { once: true });
-//     });
-// }
+        previousStep.addEventListener("click", () => {
+            surplus.style.display = "none";
+            reject("Paiement annulé");
+        }, { once: true });
+    });
+}
