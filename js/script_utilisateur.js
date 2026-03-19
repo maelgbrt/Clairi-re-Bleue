@@ -2,11 +2,19 @@ function api(data) {
     return axios.post('../php/api.php', data)
         .then(response => {
             console.log(response.data);
-            if(response.data.currentDonnees === "NoSession"){
-                 window.location.href = "../html/connexion.html"; // Maintenant on peut rediriger
-            }else{
+            if(response.data.currentDonnees.session === "famille"){
                 DonnesPack = response.data; 
-                return response.data;}}
+                return response.data;}
+            else if(response.data.currentDonnees.session == "admin"){
+                window.location.href = "../html/admin.html"; // Maintenant on peut rediriger
+            }else if(response.data.currentDonnees.session == "moderator"){
+                window.location.href = "../html/admin.html"; // Maintenant on peut rediriger
+            }else if(response.data.currentDonnees.session == "scrib"){
+                window.location.href = "../html/admin.html"; // Maintenant on peut rediriger
+            }else{
+                window.location.href = "../html/connexion.html"; // Maintenant on peut rediriger
+
+            }}
         )
         .catch(error => {
             console.error("Erreur API :", error);
@@ -108,34 +116,44 @@ function affiche_reservation(donnees, index) {
         <p>Prix : ${reservation.prix}€</p>
         <p>Capacité restante : ${reservation.cap_act}</p>
     `;
+
+
     if (reservation.status == "1" || reservation.status == "2") {
         right_content.innerHTML += `<button onclick="gerer_action('desinscription', ${index})">Se désinscrire</button>`;
     } else {
-        right_content.innerHTML += `<button onclick="gerer_action('inscription', ${index})">S'inscrire</button>`;
+        right_content.innerHTML += `
+        <input type="number" name="number" id="number">
+        <button onclick="gerer_action('inscription', ${index})">S'inscrire</button>`;
     }
 }
 
 
-
 async function gerer_action(type,index) {
+
+  
+
     let donnesCurrent = DonnesPack.currentDonnees;
     let donnees_activites = donnesCurrent.reservations[index];
     console.log(donnesCurrent);
     console.log(donnees_activites);
-    let data = { action: type + "_activite" };
+    let data = { action: type + "_activite"
+     };
 
     if (type === 'inscription') {
-        // await formulaire_payer();
+          let number = document.querySelector("#number");
+    nbPerson= number.value;
         data.id_activite = donnees_activites.id;
         data.id_famille = donnees.id_famille;
-        data.nb_membre = 5;
+        data.nb_membre = nbPerson;
         data.cap_act = donnees_activites.cap_act;
-        data.status_res = 1;
+        data.nbPerson = nbPerson;
+
+        console.log(nbPerson);
 
     } else {
 
         data.id_reservation = donnees_activites.id_reservation_activite;
-        data.nb_membre = 5;
+        // data.nb_membre = 5;
         data.id_activite = donnees_activites.id;
 
     }
@@ -341,6 +359,14 @@ sejout.addEventListener("mouseout", function (event) {
     total.style.display = "none";
 });
 
+sejout.addEventListener("click", () =>
+{
+let box = document.querySelector(".center");
+let right = document.querySelector(".right");
+
+box.style.transform = "translateY(-100vh)";
+right.style.transform = "translateY(-100vh)";})
+
 
 function formulaire_payer() {
     return new Promise((resolve, reject) => {
@@ -452,3 +478,7 @@ function formulaire_payer() {
         }, { once: true });
     });
 }
+
+
+fifo = document.querySelector("#fifo");
+

@@ -1,4 +1,6 @@
 <?php
+session_start();
+
 // --- CONFIGURATION ---
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
@@ -6,7 +8,6 @@ error_reporting(E_ALL);
 
 // --- INCLUDES & SESSION ---
 include("../db/db_connect.php");
-session_start();
 
 // --- RÉCUPÉRATION DES DONNÉES ---
 $json_recu = file_get_contents("php://input");
@@ -83,27 +84,28 @@ ORDER BY activites.id";
 }
 
 
-function recup_activites($conn){
+function recup_activites($conn)
+{
     $sql = "SELECT * FROM activites";
     $stmt = mysqli_prepare($conn, $sql);
     mysqli_stmt_execute($stmt);
 
     $res = mysqli_stmt_get_result($stmt);
-    
+
     return mysqli_fetch_all($res, MYSQLI_ASSOC);
 }
 
-function recup_reservation_order($conn){
+function recup_reservation_order($conn)
+{
     $sql = "SELECT * FROM reservation_activites ORDER BY id_reservation_activite";
     $stmt = mysqli_prepare($conn, $sql);
     mysqli_stmt_execute($stmt);
     $res = mysqli_stmt_get_result($stmt);
     return mysqli_fetch_all($res, MYSQLI_ASSOC) ?: [];
-
-
 }
 
-function recup_familles($conn){
+function recup_familles($conn)
+{
     $sql = "SELECT * FROM familles";
     $stmt = mysqli_prepare($conn, $sql);
     mysqli_stmt_execute($stmt);
@@ -111,26 +113,26 @@ function recup_familles($conn){
 
     $ts_familles = [];
 
-    while($ligne = mysqli_fetch_assoc($res)){
+    while ($ligne = mysqli_fetch_assoc($res)) {
         $famille = $ligne;
         $id_payeur = $ligne['id_payeur'];
         $id_f = $ligne['id_famille'];
         $famille['payeur'] = recup_utilisateur_byId_payeur($id_payeur, $conn);
         $famille['reservation'] = recup_activite_with_status($id_f, $conn);
-        $ts_familles[] = $famille; 
+        $ts_familles[] = $famille;
     }
-    
+
     return $ts_familles; // Retourne maintenant TOUTE la liste
 }
 
 
-function recup_fifo_emplacements($conn){
-    $sql = "SELECT * FROM emplacements WHERE status = 1 ORDER BY date_creation";
+function recup_fifo_emplacements($conn)
+{
+    $sql = "SELECT * FROM reservation_emplacement WHERE status IN (-1,1, 2) ORDER BY id_res_empl";
     $stmt = mysqli_prepare($conn, $sql);
     mysqli_stmt_execute($stmt);
     $res = mysqli_stmt_get_result($stmt);
     return mysqli_fetch_all($res, MYSQLI_ASSOC) ?: [];
-
 }
 
 
@@ -144,31 +146,41 @@ $code_postal = isset($data['code_postal']) ? $data['code_postal'] : '';
 $telephone = isset($data['telephone']) ? $data['telephone'] : '';
 $ville = isset($data['ville']) ? $data['ville'] : '';
 $date_naissance = isset($data['date_naissance']) ? $data['date_naissance'] : '12-12-2000';
+$date_debut = isset($data['date_debut']) ? $data['date_debut'] : '01-01-0000';
+$date_fin = isset($data['date_fin']) ? $data['date_fin'] : '01-01-0000';
 $id_activite = isset($data['id_activite']) ? $data['id_activite'] : '';
 $nb_membre = isset($data['nb_membre']) ? $data['nb_membre'] : '';
 $password = isset($data['password']) ? $data['password'] : '';
 $id_reservation = isset($data['id_reservation']) ? $data['id_reservation'] : '';
 $cap_act = isset($data['cap_act']) ? $data['cap_act'] : '0';
 $status_res = isset($data['status_res']) ? $data['status_res'] : '0';
+$clee = isset($data['clee']) ? $data['clee'] : '0';
+$typeAction = isset($data['typeAction']) ? $data['typeAction'] : '';
 
 
-function get_full_data($conn) {
+
+
+function get_full_data($conn)
+{
     if (isset($_SESSION['famille'])) {
         $id_famille = $_SESSION['famille'];
         $infos = recup_famille_byId($id_famille, $conn);
         $infos['membres'] = membres_famille_byId($id_famille, $conn);
         $infos['reservations'] = recup_activite_with_status($id_famille, $conn);
         $infos['session'] = "famille";
-        $infos['payeur'] = recup_utilisateur_byId_payeur($infos['id_payeur'], $conn);}
-    elseif (isset($_SESSION['admin'])) {
+        $infos['payeur'] = recup_utilisateur_byId_payeur($infos['id_payeur'], $conn);
+    } elseif (isset($_SESSION['admin'])) {
         $infos['les_familles'] = recup_familles($conn);
+
         $infos['session'] = "admin";
         $infos['activites'] = recup_activites($conn);
         $infos['file_attente_activite'] = recup_reservation_order($conn);
         $infos['file_attente_reservations'] = recup_fifo_emplacements($conn);
-
-    }
-    else{
+    } elseif (isset($_SESSION['moderator'])) {
+        $infos = "moderator";
+    } elseif (isset($_SESSION['scrib'])) {
+        $infos  = "scrib";
+    } else {
         $infos = "NoSession";
     }
     return $infos;
@@ -183,41 +195,50 @@ if ($action === 'session') {
 
     $msg = "Données récupérées avec succès";
     $status = "success";
-    $_SESSION['admin'] = "";
+}elseif ($action == "desinscription_activite") {
+    // 1. On récupère les infos avant la suppression
+    $query = "SELECT id_activite, nb_membre FROM reservation_activites WHERE id_reservation_activite = ?";
+    $stmtSel = mysqli_prepare($conn, $query);
+    mysqli_stmt_bind_param($stmtSel, 'i', $id_reservation);
+    mysqli_stmt_execute($stmtSel);
+    $result = mysqli_stmt_get_result($stmtSel);
+    $infos = mysqli_fetch_assoc($result);
 
-}
+    if ($infos) {
+        // 2. On supprime la réservation
+        $stmtDel = mysqli_prepare($conn, "DELETE FROM reservation_activites WHERE id_reservation_activite = ?");
+        mysqli_stmt_bind_param($stmtDel, 'i', $id_reservation);
 
- elseif ($action == "desinscription_activite") {
-    $stmt = mysqli_prepare($conn, "DELETE FROM reservation_activites WHERE id_reservation_activite = ?");
-    mysqli_stmt_bind_param($stmt, 'i', $id_reservation);
+        if (mysqli_stmt_execute($stmtDel)) {
+            // 3. On remet à jour la capacité de l'activité
+            // Note : On utilise les données stockées dans $infos
+            $stmtUpd = mysqli_prepare($conn, "UPDATE activites SET cap_act = cap_act + ? WHERE id= ?");
+            mysqli_stmt_bind_param($stmtUpd, 'ii', $infos['nb_membre'], $infos['id_activite']);
 
-    if (mysqli_stmt_execute($stmt)) {
-        $status = "success";
-        $msg = "Activité désinscrite";
-
-        $stmt = mysqli_prepare($conn, "UPDATE activites SET cap_act = cap_act + ? WHERE id = ?");
-        mysqli_stmt_bind_param($stmt, 'ii', $nb_membre, $id_activite);
-
-        if (mysqli_stmt_execute($stmt)) {
-            $status = "success";
-            $msg = "Activité désinscrite + activité maj";
+            if (mysqli_stmt_execute($stmtUpd)) {
+                $status = "success";
+                $msg = "Désinscription réussie et places libérées.";
+            } else {
+                $status = "partial_success"; // La suppression a marché, pas l'update
+                $msg = "Désinscrit, mais erreur lors de la mise à jour des places.";
+            }
         } else {
             $status = "failed";
-            $msg = "l'activité na pas pu se mettre à jour";
+            $msg = "Erreur lors de la suppression de la réservation.";
         }
-
     } else {
         $status = "failed";
-        $msg = "Erreur lors de la désinscription";
+        $msg = "Réservation introuvable.";
     }
+
 } elseif ($action == "inscription_activite") {
 
     if ($nb_membre > $cap_act) {
-        $status = "failed";
-        $msg = "Trop de gens";
+        $stmt = mysqli_prepare($conn, "INSERT INTO reservation_activites (id_famille,id_activite,nb_membre,status) VALUES (?,?,?,1)");
     } else {
-        $stmt = mysqli_prepare($conn, "INSERT INTO reservation_activites (id_famille,id_activite,nb_membre,status) VALUES (?,?,?,?)");
-        mysqli_stmt_bind_param($stmt, 'iiii', $id_f, $id_activite, $nb_membre, $status_res);
+        $stmt = mysqli_prepare($conn, "INSERT INTO reservation_activites (id_famille,id_activite,nb_membre,status) VALUES (?,?,?,2)");
+    }
+        mysqli_stmt_bind_param($stmt, 'iii', $id_f, $id_activite, $nb_membre);
         if (mysqli_stmt_execute($stmt)) {
             $status = "success";
             $msg = "Activité réservée";
@@ -236,8 +257,7 @@ if ($action === 'session') {
             $msg = "Activité réservée";
         }
     }
-}
- elseif ($action === 'connexion_famille') {
+elseif ($action === 'connexion_famille') {
 
     $stmt = mysqli_prepare($conn, "SELECT * FROM familles WHERE mail = ?");
     mysqli_stmt_bind_param($stmt, 's', $mail);
@@ -250,13 +270,13 @@ if ($action === 'session') {
         if (password_verify($password, $famille['password'])) {
             $status = "success";
             $_SESSION['famille'] = $famille['id_famille'];
-            $infos = "Connexion famille réussie";
+            $msg = "Connexion famille réussie";
         } else {
             $status = "failed";
-            $infos = "Mot de passe incorrect";
+            $msg = "Mot de passe incorrect";
         }
     } else {
-        $stmt_m = mysqli_prepare($conn, "SELECT * FROM membres WHERE mail = ?");
+        $stmt_m = mysqli_prepare($conn, "SELECT * FROM equipe_membre WHERE mail = ?");
         mysqli_stmt_bind_param($stmt_m, 's', $mail);
         mysqli_stmt_execute($stmt_m);
         $res_membre = mysqli_stmt_get_result($stmt_m);
@@ -264,25 +284,25 @@ if ($action === 'session') {
         if ($res_membre && mysqli_num_rows($res_membre) > 0) {
             $membre = mysqli_fetch_assoc($res_membre);
 
-            // Vérification mot de passe pour le membre
-            if (password_verify($password, $membre['password'])) {
-                $status = "success";
-                $infos = [
-                    "user" => $membre,
-                    "session" => "membre"
-                ];
-                $_SESSION['membre'] = $infos;
+            // if (password_verify($password, $membre['password'])) {
+            $status = "success";
+            if ($membre['role'] == 1) {
+                $_SESSION['admin'] = $membre;
+            } elseif ($membre['role'] == 2) {
+                $_SESSION['moderator'] = $membre;
             } else {
-                $status = "failed";
-                $infos = "Mot de passe incorrect";
+                $_SESSION['scrib'] = $membre;
             }
+            // } else {
+            //     $status = "failed";
+            //     $msg = "Mot de passe incorrect";
+            // }
         } else {
             $status = "failed";
-            $infos = "Utilisateur introuvable";
+            $msg = "Utilisateur introuvable";
         }
     }
-} 
-elseif ($action === 'inscription_famille&payeur'){
+} elseif ($action === 'inscription_famille&payeur') {
 
     // 1. Vérification existence mail
     $requete = mysqli_prepare($conn, "SELECT id_famille FROM familles WHERE mail = ?");
@@ -292,7 +312,7 @@ elseif ($action === 'inscription_famille&payeur'){
 
     if ($res_verif && mysqli_num_rows($res_verif) > 0) {
         $status = "failed";
-        $infos = "Adresse email déjà utilisée";
+        $msg = "Adresse email déjà utilisée";
     } else {
 
         // 2. Création de l'utilisateur payeur
@@ -322,41 +342,85 @@ elseif ($action === 'inscription_famille&payeur'){
 
                 if (mysqli_stmt_execute($req_u)) {
                     $status = "success";
-                    $infos = "Inscription réussie !";
+                    $msg = "Inscription réussie !";
                     // On stocke l'ID famille en session pour connecter l'utilisateur direct
                     $_SESSION['famille'] = $nouvel_famille_id;
                 } else {
                     $status = 'failed';
-                    $infos = "Erreur lors de la liaison famille/utilisateur";
+                    $msg = "Erreur lors de la liaison famille/utilisateur";
                 }
             } else {
                 $status = 'failed';
-                $infos = "Impossible de créer la famille";
+                $msg = "Impossible de créer la famille";
             }
         } else {
             $status = 'failed';
-            $infos = "Impossible de créer l'utilisateur payeur";
+            $msg = "Impossible de créer l'utilisateur payeur";
         }
     }
-    
-}
-elseif ($action == "inscription_user_by_idFamille") {
+} elseif ($action == "inscription_user_by_idFamille") {
     $stmt = mysqli_prepare($conn, "INSERT INTO utilisateurs (nom, prenom, date_naissance, id_famille) VALUES (?, ?, ?, ?)");
 
     mysqli_stmt_bind_param($stmt, 'sssi', $nom, $prenom, $date_naissance, $id_f);
 
     if (mysqli_stmt_execute($stmt)) {
         $status = "success";
-        $infos = "Utilisateur ajouté";
+        $msg = "Utilisateur ajouté";
     } else {
         $status = "failed";
-        $infos = "Erreur lors de la création";
+        $msg = "Erreur lors de la création";
+    }
+} elseif ($action === "accepter") {
+    $sql = "";
+
+    if ($typeAction == "ReservationActivite") {
+        $sql = "UPDATE reservation_activites SET status = 2 WHERE id_activite = ?";
+    } elseif ($typeAction == "ReservationEmplacement") {
+        $sql = "UPDATE reservation_emplacement SET status = 2 WHERE num_emplacement = ?";
+    } else {
+        $msg = "Action non reconnue : " . $typeAction;
     }
 
- }
+    if ($sql != "") {
+        $stmt = mysqli_prepare($conn, $sql);
 
+        if ($stmt) {
+            mysqli_stmt_bind_param($stmt, 'i', $clee);
 
- elseif ($action === "deconnexion") {
+            if (mysqli_stmt_execute($stmt)) {
+                $status = "success";
+                $msg = "Mise à jour réussie (status = 2)";
+            } else {
+                $msg = "Erreur lors de l'exécution : " . mysqli_error($conn);
+            }
+            mysqli_stmt_close($stmt);
+        } else {
+            $msg = "Erreur de préparation : " . mysqli_error($conn);
+        }
+    }
+} elseif ($action === "refuser") {
+    $sql = "UPDATE reservation_emplacement SET status = -1 WHERE num_emplacement = ?";
+    $stmt = mysqli_prepare($conn, $sql);
+    mysqli_stmt_bind_param($stmt, 'i', $num_emplacement);
+
+    if (mysqli_stmt_execute($stmt)) {
+        $status = "success";
+        $msg = "refus ok";
+    } else {
+        $status = "failed";
+        $msg = "erreur refus";
+    }
+} elseif ($action == "reservation_emplacement") {
+    $stmt = mysqli_prepare($conn, "INSERT INTO reservation_emplacement (id_famille,numero_emplacement,date_debut,date_fin,status) VALUES (?,?,?,?,1)");
+    mysqli_stmt_bind_param($stmt, 'iiss', $id_f, $num_emplacement, $date_debut, $date_fin);
+    if (mysqli_stmt_execute($stmt)) {
+        $status = "success";
+        $msg = "Activité réservée";
+    } else {
+        $status = "success";
+        $msg = "Activité réservée";
+    }
+} elseif ($action === "deconnexion") {
     $_SESSION = array();
 
     session_destroy();

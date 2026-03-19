@@ -160,7 +160,21 @@ function api(data) {
 
 
 
-
+// function api(data) {
+//     console.log("Données envoyées :", data);
+//     data['id_famille'] = 51;
+//     axios.post('./api/login', data)        
+//     .then(response => {
+//             console.log("Réponse reçue :", response.data); 
+//             donnees = response.data;
+//             if (donnees.status = "success"){
+//                 window.location.href = "../html/utilisateur.html";
+//             }
+//         })
+//         .catch(error => {
+//             console.error("Erreur critique :", error);
+//         });
+// }
 
 
 
