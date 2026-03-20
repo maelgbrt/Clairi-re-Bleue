@@ -73,7 +73,7 @@ function affiche_planning(donnees) {
     planning = document.getElementById("planning");
     planning.innerHTML = "";
     planning.innerHTML = "activités à venir";
-    donnees.reservations.forEach(reservation => {
+    donnees.reservations.forEach((reservation, index) => {
         const activiteDiv = document.createElement("div");
         activiteDiv.classList.add("reservation-item");
         dateSQL = reservation.date_d;
@@ -108,11 +108,23 @@ function affiche_reservation(donnees, index) {
     const reservation = donnees.reservations[index];
     const right_content = document.getElementById("bas");
 
+    const resa = donnees.reservations.filter(res => res.status === 1)
+        .map((res, index) => ({...res, pos: index}))
+        .find(res => reservation.id_reservation_activite === res.id_reservation_activite)
+    console.log(resa)
+
     right_content.innerHTML = `
         <h2>${reservation.nom}</h2>
         <p>Prix : ${reservation.prix}€</p>
-        <p>Capacité restante : ${reservation.cap_act}</p>
     `;
+
+
+
+        // if(reservation.cap_act < 0){
+        // right_content.innerHTML += `<p>Liste Attente pour : ${reservation.cap_act * -1} personnes</p>`;
+        // }else{
+        // right_content.innerHTML += `<p>Capacité restante : ${reservation.cap_act}</p>`;
+        // }
 
 
     if (reservation.status == "1" || reservation.status == "2") {
