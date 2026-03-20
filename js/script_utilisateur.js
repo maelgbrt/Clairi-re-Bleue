@@ -29,9 +29,7 @@ let DonnesPack= null;
 
 async function Affichage_Principal() {
     response = await api(data_recup);
-    console.log(response);
     donnees = response.currentDonnees;
-    console.log(donnees);
     if (response) {
             affichage_donnees(donnees);
     }
@@ -109,7 +107,6 @@ function affiche_planning(donnees) {
 function affiche_reservation(donnees, index) {
     const reservation = donnees.reservations[index];
     const right_content = document.getElementById("bas");
-    console.log(reservation);
 
     right_content.innerHTML = `
         <h2>${reservation.nom}</h2>
@@ -134,8 +131,6 @@ async function gerer_action(type,index) {
 
     let donnesCurrent = DonnesPack.currentDonnees;
     let donnees_activites = donnesCurrent.reservations[index];
-    console.log(donnesCurrent);
-    console.log(donnees_activites);
     let data = { action: type + "_activite"
      };
 
@@ -148,7 +143,6 @@ async function gerer_action(type,index) {
         data.cap_act = donnees_activites.cap_act;
         data.nbPerson = nbPerson;
 
-        console.log(nbPerson);
 
     } else {
 
@@ -157,9 +151,6 @@ async function gerer_action(type,index) {
         data.id_activite = donnees_activites.id;
 
     }
-
-    console.log("Mise a jour des activités");
-    console.log(data);
 
     const package = await await api(data);
     affiche_planning(package.currentDonnees);
@@ -228,8 +219,7 @@ function affiche_membres(donnees) {
                 "action": "inscription_user_by_idFamille",
                 "id_famille": donnees['id_famille']
             }
-            console.log("nouveau membre de la famile");
-            console.log(data);
+
             nouveau_membre(data);
         }
 
@@ -305,10 +295,8 @@ function chargerEvenementsDansCalendrier(reservations) {
     calendar.removeAllEvents();
 
     reservations.forEach(res => {
-        console.log(res);
         // // On transforme "2026-03-13 14:00:00" en "2026-03-13T14:00:00"
         const dateISO = res.date_d.replace(' ', 'T');
-        console.log(dateISO);
 
         // On ajoute l'événement avec l'heure
         calendar.addEvent({
@@ -383,7 +371,6 @@ function formulaire_payer() {
         confirmOrder = document.getElementsByName("confirmOrder")[0];
         previousStep = document.getElementsByName("previousStep")[0];
 
-        console.log(confirmOrder);
 
        confirmOrder.addEventListener("click", () => {
             const formData = new FormData(topp);

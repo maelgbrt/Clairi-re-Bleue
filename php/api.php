@@ -195,9 +195,18 @@ if ($action === 'session') {
 
     $msg = "Données récupérées avec succès";
     $status = "success";
-}elseif ($action == "desinscription_activite") {
-    // 1. On récupère les infos avant la suppression
-    $query = "SELECT id_activite, nb_membre FROM reservation_activites WHERE id_reservation_activite = ?";
+}
+
+
+elseif ($action == "desinscription_activite") {
+
+//  data.id_reservation = donnees_activites.id_reservation_activite;
+//         data.id_activite = donnees_activites.id;
+
+$query = "SELECT * FROM reservation_activites r
+    JOIN activites a ON r.id_activite = a.id
+    WHERE id_reservation_activite = ?";
+    
     $stmtSel = mysqli_prepare($conn, $query);
     mysqli_stmt_bind_param($stmtSel, 'i', $id_reservation);
     mysqli_stmt_execute($stmtSel);
@@ -205,31 +214,110 @@ if ($action === 'session') {
     $infos = mysqli_fetch_assoc($result);
 
     if ($infos) {
-        // 2. On supprime la réservation
-        $stmtDel = mysqli_prepare($conn, "DELETE FROM reservation_activites WHERE id_reservation_activite = ?");
+        $sql_del = "DELETE FROM reservation_activites WHERE id_reservation_activite = ?";
+        $stmtDel = mysqli_prepare($conn, $sql_del);
         mysqli_stmt_bind_param($stmtDel, 'i', $id_reservation);
 
-        if (mysqli_stmt_execute($stmtDel)) {
-            // 3. On remet à jour la capacité de l'activité
-            // Note : On utilise les données stockées dans $infos
-            $stmtUpd = mysqli_prepare($conn, "UPDATE activites SET cap_act = cap_act + ? WHERE id= ?");
-            mysqli_stmt_bind_param($stmtUpd, 'ii', $infos['nb_membre'], $infos['id_activite']);
 
-            if (mysqli_stmt_execute($stmtUpd)) {
-                $status = "success";
-                $msg = "Désinscription réussie et places libérées.";
-            } else {
-                $status = "partial_success"; // La suppression a marché, pas l'update
-                $msg = "Désinscrit, mais erreur lors de la mise à jour des places.";
-            }
-        } else {
-            $status = "failed";
-            $msg = "Erreur lors de la suppression de la réservation.";
+        //MAJ de la cap de lactivité
+        $cap_act = $infos['cap_act'] + $infos['nb_membre'];;
+        
+        
+        $sql_select = "SELECT id_reservation_activite, nb_membre 
+                     FROM reservation_activites 
+                     WHERE status = 1 AND id_activite = $id_activite
+                     ORDER BY id_reservation_activite ASC LIMIT 1" ;
+
+        $sql_fifo = mysqli_prepare($conn, $sql_select);
+        mysqli_stmt_execute($sql_fifo);
+        $result_fifo = mysqli_stmt_get_result($sql_fifo);
+        $res_fifo = mysqli_fetch_assoc($result_fifo);
+        $id_res_act = $res_fifo['id_reservation_activite'];
+
+        //mettre celui en attente en confirmé
+        $sql_upt = "UPDATE reservation_activites set status = 2 WHERE id_reservation_activite =  $id_res_act";
+
+        // $res_maj = mysqli_prepare($conn, $sql_upt);
+
+        // mysqli_stmt_execute($res_maj);
+        // $infomaj= mysqli_stmt_get_result($res_maj);
+        // $gaga =  mysqli_fetch_assoc($infomaj);
+        // $res = $gaga;
+        
         }
-    } else {
-        $status = "failed";
-        $msg = "Réservation introuvable.";
-    }
+    
+        
+
+    //     $requete = mysqli_prepare($conn, $sql);
+    //     mysqli_stmt_execute($requete);
+    //     $result_set = mysqli_stmt_get_result($requete);
+
+    //     if ($row = mysqli_fetch_assoc($result_set)) {
+    //         $nb_membre_pr_ajout = $row['nb_membre'];
+    //         $res_id = $row['id_reservation_activite'];
+
+    //         if($cap_act > $nb_membre_pr_ajout){
+    //             $sql_insert = "UPDATE reservation_activites SET status = 2 WHERE id_reservation_activite = $res_id";
+    //             $requete_update = mysqli_prepare($conn, $sql_insert);
+    //             mysqli_stmt_execute($requete_update);
+    //         }
+
+    //     }
+    
+
+
+
+    // }
+
+
+        // if (mysqli_stmt_execute($stmtDel)) {
+        //     // 3. On remet à jour la capacité de l'activité
+        //     // Note : On utilise les données stockées dans $infos
+        //     $stmtUpd = mysqli_prepare($conn, "UPDATE activites SET cap_act = cap_act + ? WHERE id= ?");
+        //     mysqli_stmt_bind_param($stmtUpd, 'ii', $infos['nb_membre'], $infos['id_activite']);
+
+        //     if (mysqli_stmt_execute($stmtUpd)) {
+        //         $status = "success";
+        //         $msg = "Désinscription réussie et places libérées.";
+
+// $sql = "SELECT * FROM reservation_activites WHERE status = 1 ORDER BY id_reservation_activite";
+
+// $requete = mysqli_prepare($conn, $sql);
+// mysqli_stmt_execute($requete);
+
+// // 2. Get the result set
+// $result_set = mysqli_stmt_get_result($requete);
+
+// // 3. Fetch the actual row of data
+// if ($row = mysqli_fetch_assoc($result_set)) {
+//     // Now you can access the column 'nb_membre'
+//     $le_dernier = $row['nb_membre'];
+//     $msg = $le_dernier;
+    
+
+// } else {
+//     $msg = "No reservations found.";
+// }
+
+
+ 
+
+
+
+
+
+            // } else {
+            //     $status = "partial_success"; // La suppression a marché, pas l'update
+            //     $msg = "Désinscrit, mais erreur lors de la mise à jour des places.";
+            // }
+        // } else {
+        //     $status = "failed";
+        //     $msg = "Erreur lors de la suppression de la réservation.";
+        // }
+    // } else {
+    //     $status = "failed";
+    //     $msg = "Réservation introuvable.";
+    // }
 
 } elseif ($action == "inscription_activite") {
 
