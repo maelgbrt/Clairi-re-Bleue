@@ -1,15 +1,12 @@
 services:
     monapache3:
-        image: monapache3
+        image: maelgbrt/monapache3
         ports:
             - "${PORT_SITE}:80"
-        volumes:
-            - .:/var/www/html
         environment:
             - DB_NAME=${DB_NAME}
             - DB_USER=${DB_USER}
             - DB_PASSWORD=${DB_PASSWORD}
-
     mariadb:
         image: mariadb
         environment:
