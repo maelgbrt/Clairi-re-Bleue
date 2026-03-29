@@ -41,3 +41,4 @@ function recup_session(data){
         })
     }
 
+recup_session(data);
