@@ -239,6 +239,11 @@ if(btnVoir) {
                         <label>Date de départ :</label>
                         <input type="text" class="champ-date" id="date-fin-${idTente}">
                     </div>
+
+                    <div class="champ">
+                        <label>Nomnbre de personnes :</label>
+                        <input type="number" class="nb-pers" id="nb-pers-${idTente}" min=1 max=5>
+                    </div>
                 </div>
             `;
         });
@@ -270,20 +275,21 @@ if(btnReserver) {
             let listeReservations = mesSelections.map(idPlace => {
                 const dateDebutTente = document.getElementById(`date-debut-${idPlace}`).value;
                 const dateFinTente = document.getElementById(`date-fin-${idPlace}`).value;
-                if (dateDebutTente === "" || dateFinTente === "" || dateFinTente <= dateDebutTente) {
+                const nb_pers = document.getElementById(`nb-pers-${idPlace}`).value;
+                if (dateDebutTente === "" || dateFinTente === "" || dateFinTente <= dateDebutTente || nb_pers ==="") {
                     erreur = true;
                 }
 
                 return {
                     "id_emplacement": idPlace,
-                    "nb_membre": 2, 
+                    "nb_membre": nb_pers, 
                     "date_d": dateDebutTente,
                     "date_f": dateFinTente
                 };
             });
 
             if (erreur === true) {
-                alert("Vérifiez vos dates : tous les champs doivent être remplis et la date de départ doit être APRÈS la date d'arrivée.");
+                alert("Merci de remplir tous les champs. La date de départ doit être APRÈS la date d'arrivée.");
                 return; 
             }
 
