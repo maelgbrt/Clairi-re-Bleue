@@ -1,0 +1,260 @@
+<?php
+
+function getActivites($conn)
+{
+    $sql = "SELECT * FROM `activites`";
+    $requete = mysqli_prepare($conn, $sql);
+    mysqli_stmt_execute($requete);
+    $res = mysqli_stmt_get_result($requete);
+    return mysqli_fetch_all($res, MYSQLI_ASSOC) ?: [];
+}
+
+function getActiviteById($conn, $id)
+{
+    $sql = "SELECT * FROM `activites` WHERE id= ?";
+    $requete = mysqli_prepare($conn, $sql);
+    mysqli_stmt_bind_param($requete, "i", $id);
+    mysqli_stmt_execute($requete);
+    $res = mysqli_stmt_get_result($requete);
+    return mysqli_fetch_assoc($res) ?: null;
+}
+
+function getReservationsActivite($conn)
+{
+    $sql = "SELECT * FROM `reservation_activites`";
+    $requete = mysqli_prepare($conn, $sql);
+    mysqli_stmt_execute($requete);
+    $res = mysqli_stmt_get_result($requete);
+    return mysqli_fetch_assoc($res) ?: null;
+}
+
+
+function getReservationsActivitebyId($conn, $id)
+{
+    $sql = "SELECT * FROM `reservation_activites` WHERE id_reservation_activite= ?";
+    $requete = mysqli_prepare($conn, $sql);
+    mysqli_stmt_bind_param($requete, "i", $id);
+    mysqli_stmt_execute($requete);
+    $res = mysqli_stmt_get_result($requete);
+    return mysqli_fetch_assoc($res) ?: null;
+}
+
+function putReservationActivite($conn, $data) {
+    $id_famille = $data["id_famille"];
+    $id_activite = $data["id_activite"];
+    $nb_membre = $data["nb_membre"];
+
+    $sql = "INSERT INTO reservation_activites (id_famille, id_activite, nb_membre) VALUES (?, ?, ?)";
+    $requete = mysqli_prepare($conn, $sql);
+    mysqli_stmt_bind_param($requete, "iii", $id_famille, $id_activite, $nb_membre);
+    
+    if (mysqli_stmt_execute($requete)) {
+        // Si l'insertion marche, on déduit automatiquement les places
+        return UpdateCapActivite($conn, $data,"-");
+    }
+    return false;
+}
+
+function GetCapaciteActivite($conn,$id_activite){
+    $sql = "SELECT cap_act FROM activites WHERE id = ?";
+    $requete = mysqli_prepare($conn,$sql);
+    mysqli_stmt_bind_param($requete,'i',$id_activite);
+    mysqli_stmt_execute($requete);
+    return mysqli_stmt_get_result($requete);
+}
+
+function UpdateCapActivite($conn, $data, $signe) {
+    $nb_membre = $data['nb_membre'];
+    $id_activite = $data['id_activite'];
+    
+    // Sécurité : on force le signe à être + ou -
+    $operateur = ($signe === '+') ? '+' : '-';
+
+    $sql = "UPDATE activites SET cap_act = cap_act $operateur ? WHERE id = ?";
+    $requete = mysqli_prepare($conn, $sql);
+    mysqli_stmt_bind_param($requete, 'ii', $nb_membre, $id_activite);
+    return mysqli_stmt_execute($requete);
+}
+
+function deleteActivite($conn, $id)
+{
+    try {
+        $sql1 = "DELETE FROM reservation_activites WHERE id_activite = ?";
+        $stmt1 = mysqli_prepare($conn, $sql1);
+        mysqli_stmt_bind_param($stmt1, "i", $id);
+        mysqli_stmt_execute($stmt1);
+
+        $sql2 = "DELETE FROM activites WHERE id = ?";
+        $stmt2 = mysqli_prepare($conn, $sql2);
+        mysqli_stmt_bind_param($stmt2, "i", $id);
+
+        return mysqli_stmt_execute($stmt2);
+    } catch (mysqli_sql_exception $e) {
+        return false;
+    }
+}
+
+function addActivite($conn, $data)
+{
+    $nom = $data['nom'] ?? '';
+    $date_f = $data['date_f'] ?? '';
+    $date_d = $data['date_d'] ?? '';
+    $cap_act = $data['cap_act'] ?? '';
+    $prix = $data['cap_act'] ?? '';
+
+    if (empty($nom) || $cap_act <= 0) {
+        return false;
+    }
+
+    $sql = "INSERT INTO activites (nom, date_f, date_d, cap_act, prix) VALUES (?, ?, ?, ?, ?)";
+    $stmt = mysqli_prepare($conn, $sql);
+    mysqli_stmt_bind_param($stmt, "sssii", $nom, $date_f, $date_d, $cap_act, $prix);
+
+    return mysqli_stmt_execute($stmt);
+}
+
+function deleteReservation($conn, $id_famille) {
+    $sql = "DELETE FROM reservation_activites WHERE id_famille = ?";
+    $requete = mysqli_prepare($conn, $sql);
+    mysqli_stmt_bind_param($requete, 'i', $id_famille);
+    mysqli_stmt_execute($requete);
+    return mysqli_stmt_affected_rows($requete) > 0;
+}
+function getActivitesFifo($conn)
+{
+    $sql = "SELECT 
+    fifo.id_famille, 
+    fifo.date_inscription,
+    fifo.id_attente,
+    fifo.nb_membre,
+
+    a.nom AS nom_activite,
+    a.prix,
+    a.cap_act,
+    a.id as id_activite,
+    u.id AS id_payeur,
+    u.nom AS nom_payeur,
+    u.prenom AS prenom_payeur
+FROM `file_attente_activites` AS fifo
+LEFT JOIN familles AS f ON fifo.id_famille = f.id_famille
+LEFT JOIN utilisateurs AS u ON f.id_payeur = u.id
+LEFT JOIN activites AS a ON fifo.id_activite = a.id
+ORDER BY fifo.date_inscription ASC;";
+    $requete = mysqli_prepare($conn, $sql);
+    mysqli_stmt_execute($requete);
+    $res = mysqli_stmt_get_result($requete);
+    return mysqli_fetch_all($res, MYSQLI_ASSOC) ?: [];
+}
+
+
+function deleteFromFifo($conn, $id) {
+    $sql = "DELETE FROM file_attente_activites WHERE id_attente = ?"; 
+    $stmt = mysqli_prepare($conn, $sql);
+    mysqli_stmt_bind_param($stmt, "i", $id);
+    mysqli_stmt_execute($stmt);
+    return mysqli_stmt_affected_rows($stmt) > 0;
+}
+
+
+function AcceptFifo($conn, $data) {
+    $id_attente = $data['id_attente'];
+    
+    if (deleteFromFifo($conn, $id_attente)) {
+        if (putReservationActivite($conn, $data)) {
+            $msg = "success";
+        } else {
+            $msg = "Erreur lors de la création de la réservation ou de la mise à jour des places";
+        }
+    } else {
+        $msg = "Impossible de supprimer l'élément de la file d'attente";
+    }
+    
+    return $msg;
+}
+
+
+function getParticipantsById($conn,$id){
+$sql = "SELECT 
+    rs.id_activite,
+    rs.nb_membre,
+    rs.id_famille, 
+    u.nom AS nom_payeur,
+
+    u.prenom AS prenom_payeur
+FROM reservation_activites rs
+JOIN familles f ON f.id_famille = rs.id_famille
+JOIN utilisateurs u ON u.id = f.id_payeur
+WHERE rs.id_activite = ?";
+ $requete = mysqli_prepare($conn, $sql);
+    mysqli_stmt_bind_param($requete, "i", $id);
+    mysqli_stmt_execute($requete);
+    $res = mysqli_stmt_get_result($requete);
+    return mysqli_fetch_all($res, MYSQLI_ASSOC) ?: [];
+}
+
+function PutFamilyFiFo($conn, $data)
+{
+    $id_famille       = $data['id_famille'];
+    $id_activite      = $data['id_activite'];
+    $nb_membre        = $data['nb_membre'];
+    $date_inscription = date('Y-m-d H:i:s');
+
+    $sql     = "INSERT INTO file_attente_activites (id_famille, id_activite, nb_membre, date_inscription)
+                VALUES (?, ?, ?, ?)";
+    $requete = mysqli_prepare($conn, $sql);
+    mysqli_stmt_bind_param($requete, "iiis", $id_famille, $id_activite, $nb_membre, $date_inscription);
+    return mysqli_stmt_execute($requete);
+}
+
+
+
+
+
+function PutEmplacementFiFo($conn, $data)
+{
+    $id_famille      = $data['id_famille'];
+    $num_emplacement = $data['num_emplacement'];
+    $date_debut      = date('Y-m-d H:i:s');
+    $date_fin        = null;
+
+    $sql     = "INSERT INTO reservation_emplacement (id_famille, num_emplacement, date_debut, date_fin)
+                VALUES (?, ?, ?, ?)";
+    $requete = mysqli_prepare($conn, $sql);
+    mysqli_stmt_bind_param($requete, "iiss", $id_famille, $num_emplacement, $date_debut, $date_fin);
+    return mysqli_stmt_execute($requete);
+}
+
+
+
+
+function updateFamily($conn, $data)
+{
+    $mail        = $data['mail'];
+    $adresse     = $data['adresse'];
+    $telephone   = $data['telephone'];
+    $code_postal = $data['code_postal'] ?? null;
+    $id_payeur   = $data['id_payeur'] ?? $data['payeur_id'];
+    $ville       = $data['ville'];
+    $id_famille  = $data['id_famille'];
+
+    $sql = "UPDATE familles SET 
+                mail        = ?,
+                adresse     = ?,
+                telephone   = ?,
+                code_postal = ?,
+                id_payeur   = ?,
+                ville       = ?"
+                . (!empty($data['password']) ? ", password = ?" : "") . "
+            WHERE id_famille = ?";
+
+    $requete = mysqli_prepare($conn, $sql);
+
+    if (!empty($data['password'])) {
+        $password = password_hash($data['password'], PASSWORD_BCRYPT);
+        mysqli_stmt_bind_param($requete, "ssssisi", $mail, $adresse, $telephone, $code_postal, $id_payeur, $ville, $password, $id_famille);
+    } else {
+        mysqli_stmt_bind_param($requete, "sssssii", $mail, $adresse, $telephone, $code_postal, $ville, $id_payeur, $id_famille);
+    }
+
+    return mysqli_stmt_execute($requete);
+}
