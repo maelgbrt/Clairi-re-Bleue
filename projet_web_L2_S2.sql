@@ -60,7 +60,7 @@ CREATE TABLE `emplacements` (
   `capacite` int(11) NOT NULL,
   `prix` int(11) NOT NULL,
   `nom` varchar(50) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Déchargement des données de la table `emplacements`
@@ -96,7 +96,7 @@ CREATE TABLE `equipe_technique` (
   `mail` varchar(50) NOT NULL,
   `password` varchar(255) NOT NULL,
   `access` int(11) NOT NULL DEFAULT 3
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Déchargement des données de la table `equipe_technique`
@@ -120,7 +120,7 @@ CREATE TABLE `familles` (
   `code_postal` int(11) NOT NULL,
   `id_payeur` int(11) DEFAULT NULL,
   `ville` varchar(50) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Déchargement des données de la table `familles`
