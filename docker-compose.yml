@@ -11,8 +11,11 @@ services:
             - DB_USER=${DB_USER}
             - DB_PASSWORD=${DB_PASSWORD}
     mariadb:
-        image: maelgbrt/monmariadb
-        restart : always
+        build:
+            context: .
+            dockerfile: Dockerfile.MariaDB
+        image: maelgbrt/monmariadb  # Docker nommera l'image construite localement ainsi
+        restart: always
         environment:
             - MARIADB_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
             - MARIADB_DATABASE=${DB_NAME}
@@ -22,7 +25,6 @@ services:
             - ./base_neuve:/var/lib/mysql
         ports:
             - "${PORT_DB}:3306"
-
     phpmyadmin:
         image: phpmyadmin
         environment:

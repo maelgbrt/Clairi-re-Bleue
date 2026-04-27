@@ -33,7 +33,13 @@
         <div v-if="choiceMenu == null">
             <div id="text-user">
                 <h1>Bonjour {{ payeur.prenom }},</h1>
-                <p>Adresse : {{ payeur.adresse }}</p>
+                <div><label>Adresse : </label><input type="text" :value="payeur.adresse"></div>
+                <div><label>Date de </label><input type="text" :value="payeur.adresse"></div>
+                <div><label>Adresse : </label><input type="text" :value="payeur.adresse"></div>
+                <div><label>Adresse : </label><input type="text" :value="payeur.adresse"></div>
+                <div><label>Adresse : </label><input type="text" :value="payeur.adresse"></div>
+                <div><label>Adresse : </label><input type="text" :value="payeur.adresse"></div>
+                
                 <p>Date de naissance : {{ payeur.date_naissance }}</p>
                 <p>Numéro de téléphone : {{ payeur.telephone }}</p>
                 <p>Email : {{ payeur.mail }}</p>
