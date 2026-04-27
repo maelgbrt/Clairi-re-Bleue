@@ -36,7 +36,7 @@ CREATE TABLE `activites` (
   `cap_act` int(11) NOT NULL,
   `description` text DEFAULT NULL,
   `lieu` varchar(100) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Déchargement des données de la table `activites`
