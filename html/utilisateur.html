@@ -34,17 +34,13 @@
             <div id="text-user">
                 <h1>Bonjour {{ payeur.prenom }},</h1>
                 <div><label>Adresse : </label><input type="text" :value="payeur.adresse"></div>
-                <div><label>Date de </label><input type="text" :value="payeur.adresse"></div>
-                <div><label>Adresse : </label><input type="text" :value="payeur.adresse"></div>
-                <div><label>Adresse : </label><input type="text" :value="payeur.adresse"></div>
-                <div><label>Adresse : </label><input type="text" :value="payeur.adresse"></div>
-                <div><label>Adresse : </label><input type="text" :value="payeur.adresse"></div>
+                <div><label>Date de Naissance : </label><input type="text" :value="payeur.date_naissance"></div>
+                <div><label>Numéro de Téléphone : </label><input type="number" :value="payeur.telephone"></div>
+                <div><label>Email : </label><input type="text" :value="payeur.mail"></div>
+                <div><label>Code Postal : </label><input type="text" :value="payeur.code_postal"></div>
+                <div><label>Ville : </label><input type="text" :value="payeur.ville"></div>
                 
-                <p>Date de naissance : {{ payeur.date_naissance }}</p>
-                <p>Numéro de téléphone : {{ payeur.telephone }}</p>
-                <p>Email : {{ payeur.mail }}</p>
-                <p>Code postal : {{ payeur.code_postal }}</p>
-                <p>Ville : {{ payeur.ville }}</p>
+              
                 <button>Modifier les Informations</button>
             </div>
         </div>
