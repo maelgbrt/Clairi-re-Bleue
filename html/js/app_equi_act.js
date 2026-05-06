@@ -27,6 +27,14 @@ createApp({
       
     }
 
+
+
+
+    const update_activites = () => {
+      axios.post("",data.value).then(response =>{
+        activite.value = response.data;        
+      })
+    }
     onMounted(() => {
       get_activites();
     });

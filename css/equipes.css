@@ -21,6 +21,9 @@
 
 #right {
     color: white;
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
 }
 
 #planning{
@@ -40,7 +43,7 @@
     justify-content: space-around;
 }
 
-.activites button{
+button{
     background-color: red;
     border: none;
     padding: 10px;
@@ -50,7 +53,7 @@
     transition: 1s;
 }
 
-.activites button:hover{
+button:hover{
     background-color: rgb(167, 0, 0);
     transition: 1s;
     cursor: pointer;
