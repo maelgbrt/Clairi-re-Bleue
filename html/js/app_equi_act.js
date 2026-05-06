@@ -15,6 +15,7 @@ createApp({
 
 
     const activites = ref([]);
+    // const tab_res1 = ref([]);
 
     const get_activites = () => {
       axios.get("../../php/admin/activites").then(response => {
@@ -22,9 +23,13 @@ createApp({
       });
     };
 
-    const get_activite_by_Id = () => {
+  //  const get_activite_by_Id = (id) => {
+  //     axios.get(`../../php/admin/activites/${id}`).then(response =>{
+  //       tab_res1.value = response.data;
+  //       console.log(tab_res1.value);
+  //     });
       
-    }
+  //   }
 
 
 
@@ -47,12 +52,14 @@ createApp({
     };
     onMounted(() => {
       get_activites();
+      // get_activite_by_Id(54);
     });
 
     return {
       activite,
       activites,
-      creation_activites
+      creation_activites,
+      // tab_res1,
     };
   }
 }).mount('#app');  
