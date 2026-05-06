@@ -33,6 +33,7 @@
         <div v-if="choiceMenu == null">
             <div id="text-user">
                 <h1>Bonjour {{ payeur.prenom }},</h1>
+                <div class="infos-user"><label>Nom :</label><input type="text" v-model="payeur.nom"></div>
                 <div class="infos-user"><label>Adresse :</label><input type="text" v-model="payeur.adresse"></div>
                 <div class="infos-user"><label>Date de Naissance : </label><input type="text" v-model="payeur.date_naissance"></div>
                 <div class="infos-user"><label>Numéro de Téléphone : </label><input type="number" v-model="payeur.telephone"></div>
