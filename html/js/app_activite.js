@@ -18,16 +18,24 @@ createApp({
 
     
 
-    const tab_act = ref([{"prix" : 12, "date_d" : "2026-04-02 09:12:44", "date_f" : "2026-04-02 09:12:44","id" : 87, "nom" : "Kayak", "cap_act" : 15, "description" : "venez faire du kayak svp", "lieu" : "Pontons du lac"}, 
-      {"prix" : 15, "date_d" : "2026-04-03 09:12:44", "date_f" : "2026-04-03 10:12:44","id" : 150, "nom" : "Yoga", "cap_act" : 20, "description" : "venez faire du yoga svp", "lieu" : "Salle de yoga"}])
 
-    
+
+    const tab_res = ref([]);
+
+
+    const get_activites = () => {
+      axios.get("../../php/admin/activites").then(response => {
+        tab_res.value = response.data
+      
+      })
+    }
 
   
 
 
 
     onMounted(() => {
+      get_activites();
     });
 
     return { 
@@ -35,7 +43,7 @@ createApp({
         ageplus,
         tab,
         dico,
-        tab_act,
+        tab_res,
     };
   }
 }).mount('#app');
