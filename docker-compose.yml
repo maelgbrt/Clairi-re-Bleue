@@ -38,6 +38,7 @@ services:
       - PMA_ARBITRARY=0
     ports:
       - "${PORT_PMA}:80"
-
+    volumes:
+      - ./pma_themes/blueberry:/var/www/html/themes/blueberry
 volumes:
   mariadb_data:

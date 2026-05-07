@@ -21,6 +21,8 @@ tags:
     description: "Gestion des inscriptions, désinscriptions et de la file d'attente (FIFO)"
   - name:  Utilisateurs
     description: "Gestion des sous-profils liés à une famille"
+  - name: Equipe technique
+    description : "Gestion de l'équipe technique"
 
 # 1. Définition des chemins (Routes)
 paths:
@@ -34,7 +36,7 @@ paths:
         tags: 
           - Familles
         parameters:
-          - name: id
+          - name: id_famille
             in: path
             required: true
             schema:
@@ -48,6 +50,7 @@ paths:
                   type : integer
                   example : 5
   /admin/familles/delete/{id_famille}:
+    #supprime la famille mais pas les utilisateur présent dans la famille
       delete:
         summary: "Supprimer famille grâce à son id"
         tags:
@@ -132,7 +135,16 @@ paths:
             content:
               application/json:
                 schema:
-                  $ref: '#/components/schemas/Familles'
+                  type: object
+                  properties:
+                    id_famille : {type : integer ,example : 67}
+                    mail : {type : string ,example : "mail@mail.com"}
+                    password : {type : string ,example : "$2y$10$7GQO.zYhmjdvgJETj8GMiulheX3LFdQdrlkzIkDKdMXcnSTX8Z2Nq"}
+                    adresse : {type : string ,example : "168 rue des palntees"}
+                    telephonne : {type : integer ,example : 0707070707}
+                    code_postal : {type: integer, example: 73100}
+                    id_payeur : {type : integer ,example : 112 }
+                    ville : {type : string ,example : "Aiguebelette"}
   /admin/familles:
     get:
       summary: "Récupération de toute les familles"
@@ -179,7 +191,13 @@ paths:
             content:
               application/json:
                 schema:
-                  $ref: '#/components/schemas/Users'
+                  type: object
+                  properties:
+                    id : {type : integer ,example : 67}
+                    nom : {type : string ,example : "Jacquet"}
+                    prenom : {type : string ,example : "Quentin"}
+                    date_naissance : {type : string ,example : "2006-10-25"}
+                    id_famille : {type : integer ,example : 67}
   /admin/users:
     get:
       summary: "Recupération Utilisateur"
@@ -213,19 +231,18 @@ paths:
           schema:
             type: integer
       responses:
-        '200':
-          description: "Opération traitée par le serveur"
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  status: 
-                    type: string
-                    example: "success"
-                  msg: 
-                    type: string
-                    example: "Entrée supprimée de la file d'attente"
+          '200':
+            description: "Demande supprimé de la file d'attente avec succès"
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Success'
+          '400' :
+            description : "Erreur lors de la suppression"
+            content: 
+              application/json:
+                schema :
+                  $ref: '#/components/schemas/Error'
   /admin/activites/fifo/accept:
       post:
         summary: "Accept File attente"
@@ -251,22 +268,40 @@ paths:
                   type: object
                   properties :
                     msg : {type : string ,example : impossible de supprimer l'élément de la file d'attente}
-                    mskg : {type : string ,example : impossible de supprimer l'élément de la file d'attente}
-# /admin/activites/fifo/add :
 
-
-
-
-
+  /admin/activites/fifo/add :
+    post :
+      summary : "Ajoute une famille à la File attente"
+      tags:
+        - Réservations & Attente
+      requestBody:
+            required: true
+            content:
+              application/json:
+                schema:     
+                    type: object               
+                    properties :
+                      id_famille : {type : integer ,example : 4}
+                      id_activite : {type : integer ,example : 4}
+                      nb_membre : {type : integer ,example : 4}
+      responses:
+          '200':
+            description: "Ajout à la file d'attente réalisé avec succès"
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties :
+                    msg : {type : string ,example : impossible d'ajouter l'élément a la file d'attente}
 
   /admin/activites/fifo:
       get:
-        summary: "Supprimer famille grâce à son id"
+        summary: "Récupère toutes infos des files d'attente d'activités "
         tags:
         - Réservations & Attente
         responses:
           '200':
-            description: "Données chargées avec succès"
+            description: "Données récupéré avec avec succès"
             content:
               application/json:
                 schema:
@@ -296,15 +331,43 @@ paths:
           schema:
             type: integer
       responses:
-        '200':
-          description: "Réservation supprimée avec succès"
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Success' 
+          '200':
+            description: "Réservation supprimé avec succès"
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Success'
+          '400' :
+            description : "Erreur lors de la suppression"
+            content: 
+              application/json:
+                schema :
+                  $ref: '#/components/schemas/Error'
 # /admin/activites/reservations/add:
-
-
+  /admin/activites/reservations/add:  
+    post :
+      summary : "Ajoute une réservation à une activité"
+      tags:
+        - Réservations & Attente
+      requestBody:
+            required: true
+            content:
+              application/json:
+                schema:     
+                    type: object               
+                    properties :
+                      id_famille : {type : integer ,example : 4}
+                      id_activite : {type : integer ,example : 4}
+                      nb_membre : {type : integer ,example : 4}
+      responses:
+          '200':
+            description: "Ajoutde la réservation réalisé avec succès"
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties :
+                    msg : {type : string ,example : impossible d'ajouter la réservation}
 
 
   /admin/activites/reservations/{id_reservation_activite}:
@@ -313,7 +376,7 @@ paths:
         tags :
           - Réservations & Attente
         parameters:
-          - name: id
+          - name: id_reservation_activite
             in: path
             required: true
             schema:
@@ -324,7 +387,12 @@ paths:
             content:
               application/json:
                 schema:
-                  $ref: '#/components/schemas/ReservationActivite'
+                  type: object
+                  properties:
+                    id_famille : {type : integer ,example : 67}
+                    id_activite : {type : integer ,example : 67}
+                    id_reservation_activite : {type : integer ,example : 3}
+                    nb_membre : {type : integer ,example : 3}
   /admin/activites/reservations:
       get:
         summary: "Récupère les réservations pour une activité"
@@ -342,21 +410,21 @@ paths:
                     id_activite : {type : integer ,example : 47}
                     id_reservation_activite : {type : integer ,example : 234}
                     nb_membre : {type : integer ,example : 10}
-  /admin/activites/participants/{id}:
+  /admin/activites/participants/{id_activite}:
     get :
-      summary : "récupère un participant via son id"
+      summary : "Liste des familles participantes et de leurs responsables pour une activité donnée."
       tags:
       - Réservations & Attente
       parameters :
-      - name : id
+      - name : id_activite
         in : path
         required: true
-        description: "L'ID du participant à récupérer"
+        description: "L'ID de l'activité à récupérer"
         schema:
           type: integer
       responses:
         '200':
-          description: "Echec de la récupération"
+          description: "Donnée récupéré avec succès"
           content:
             application/json:
               schema:
@@ -559,7 +627,61 @@ paths:
                 schema:
                   $ref: '#/components/schemas/Emplacements'
 
+# /admin/equipeTechnique
+  /admin/equipeTechnique/getMembre/{id_equipe_tech}:
+    get:
+      summary: "Récupère un membre de l'équipe technique via son id"
+      tags: 
+        - Equipe technique"
+      parameters:
+        - name : id_equipe_tech
+          in : path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: "Equipié récupéré avec succès"
+          content:
+            application/json:
+              schema:
+                type : object
+                properties :
+                    id_equipe_tech : {type : integer ,example : 1}
+                    nom : {type : string ,example : "gaborit"}
+                    prenom : {type : string ,example : "mael"}
+                    mail : {type : string ,example : "mail@mail.com"}
+                    password : {type : string ,example : "mdp"}
+                    access : {type: integer, example: 1}
 
+# MESSAGE
+
+  /admin/message:
+    post :
+      summary : "Envoie un message"
+      tags:
+        - Réservations & Attente
+      requestBody:
+            required: true
+            content:
+              application/json:
+                schema:     
+                    type: object               
+                    properties :
+                      nom : {type : string ,example : "mollet"}
+                      prenom : {type : string ,example : "enzo"}
+                      mail : {type : string ,example : "mail@mail.com"}
+                      text : {type : string ,example : "je vous contact pour..."}
+                      objet : {type : string ,example : "problème technique"}
+      responses:
+          '200':
+            description: "Message envoyé !"
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties :
+                    msg : {type : string ,example : impossible d'envoyer le message}   
 
 #UTILISATEUR
   /utilisateur/payeur/{id} :
@@ -808,24 +930,6 @@ paths:
   #             application/json:
   #               schema:
   #                 $ref: '#/components/schemas/Participant'
-
-
-
-
-
-
-
-
-                      
-
-
-
-
-
-
-
-
-
 
 
 

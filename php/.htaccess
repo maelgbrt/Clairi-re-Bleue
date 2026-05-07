@@ -21,8 +21,10 @@ RewriteRule ^admin/familles/create$ admin.php?entity=family&option=create [L,QSA
 RewriteRule ^admin/activites/reservations/([0-9]+)$ admin.php?entity=activites&option=reservations&id=$1 [L,QSA]
 RewriteRule ^admin/activites/participants/([0-9]+)$ admin.php?entity=activites&option=participants&id=$1 [L,QSA]
 RewriteRule ^admin/activites/delete/([0-9]+)$ admin.php?entity=activites&option=delete&id=$1 [L,QSA]
+RewriteRule ^admin/activites/withAnimateur/([0-9]+)$ admin.php?entity=activites&option=withanimateur&id=$1 [L,QSA]
 RewriteRule ^admin/familles/NbMembre/([0-9]+)$ admin.php?entity=family&option=nbMembre&id=$1 [L,QSA]
 RewriteRule ^admin/familles/delete/([0-9]+)$ admin.php?entity=family&option=delete&id=$1 [L,QSA]
+RewriteRule ^admin/equipeTechnique/getMembre/([0-9]+)$ admin.php?entity=equipeTechnique&option=getMembre&id=$1 [L,QSA]
 
 # --- 4. LISTES ET ROUTES DE BASE (Le plus court en dernier) ---
 # On traite d'abord les sous-sections
