@@ -15,14 +15,14 @@ createApp({
     });
 
 
-    const id_equipe_tech = 1;
+    const id_equipe_tech = ref(1);
 
     const membre_equipe_tech = ref([]);
 
     const get_membre_equipe = () => {
       axios.get("..").then(response => {
         membre_equipe_tech.value = response.data;
-
+        id_equipe_tech.value = response.data.id_equipe_tech;
       })
     };
 
@@ -72,9 +72,11 @@ const modif = (act) => {
     }
 
     const creation_activites = () => {
+      activite.value.id_animateur = id_equipe_tech.value;
       console.log(activite.value);
       axios.post('../../php/admin.php?entity=activites&option=add', activite.value)
         .then(response => {
+          console.log(response.data);
           loadData();
           reponse.value = "Activité créée";
         })

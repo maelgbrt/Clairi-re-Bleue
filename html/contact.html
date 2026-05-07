@@ -3,34 +3,47 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+        <!-- <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script> -->
+        <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+        <script defer src="js/app_contact.js"></script>
+
     
         <link rel="stylesheet" href="../css/style_formulaire.css">
         </head>
-<body> <h1>Formulaire</h1>
-  <div class="wrapper">
+    <body id="app">
+        <div class="wrapper">
+     <h1>Formulaire</h1>
     <h2>Vos informations</h2>
-       <form action="" method="post">
+       <form @submit.prevent="sendMessage()">
         <div class="input-box">
-          <input type="number" name="nom" placeholder="Entrez votre nom" >
+          <select v-model="message.objet">
+            <option disabled selected>Objet de votre contact</option>
+            <option>Problème de Réservation</option>
+            <option>Problème Activité</option>
+            <option>Problème Emplacemenent</option>
+            <option>Problème Technique</option>
+            <option>Autre</option>
+          </select>
         </div>
         <div class="input-box">
-          <input type="text" name="prenom" placeholder="Entrez votre prénom" >
+          <input type="text" name="nom" v-model="message.nom" placeholder="Entrez votre nom" >
         </div>
         <div class="input-box">
-          <input type="number" name="age" placeholder="Entrez votre âge" >
+          <input type="text" name="prenom" v-model="message.prenom" placeholder="Entrez votre prénom" >
+        </div>
+        
+        <div class="input-box">
+          <input type="email" v-model="message.mail" placeholder="Entrez votre mail">
         </div>
         <div class="input-box">
-          <input type="date" name="date_naissance" placeholder="Entrez votre date de naissance" >
+          <textarea name="" id="" v-model="message.text" placeholder="Entrez votre message"></textarea>
         </div>
         <div class="input-box button">
           <input type="Submit" value="Envoyer">
         </div>
       </form>
   </div>
-
-    <div id="url"></div>
-<script defer src="../js/script_formulaire.js"></script>
+<!-- <script defer src="../js/script_formulaire.js"></script> -->
   </body>
 
    

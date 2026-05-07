@@ -31,5 +31,18 @@ function get_payeur($conn, $id) {
 }
 
 
+function sendMessage($conn,$data){
+    $nom = $data['nom'];
+    $prenom = $data['prenom'];
+    $mail = $data['mail'];
+    $text = $data['text'];
+    $objet = $data['objet'];
+    
+    $sql = "INSERT into message (objet,nom,prenom,mail,text) VALUES (?,?,?,?,?)";
+    $requete = mysqli_prepare($conn,$sql);
+    mysqli_stmt_bind_param($requete,"sssss",$objet,$nom,$prenom,$mail,$text);
+    return mysqli_stmt_execute($requete);
+}
+
 
 ?>

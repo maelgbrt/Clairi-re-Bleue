@@ -80,6 +80,12 @@ createApp({
     }
 
     const reserverActivite = (id_activite) => {
+      if(nb_membre.value <= 0){
+
+        alert("Le nombre de personnes doit être supérieur à 0");
+        nb_membre.value = 0;
+        return;
+    }
       data.value.id_activite = id_activite;
       data.value.nb_membre = nb_membre.value;
 
@@ -161,6 +167,12 @@ createApp({
 
 
   const InscrireFamilleEmplacement = (num_emplacement) => { 
+
+    if(nb_membre.value <=0 ){
+      alert("Vous devez etre plsude 0");
+      nb_membre.value = 0;
+      return
+    }
   const data = {
     num_emplacement: num_emplacement,
     id_famille: id_famille.value,

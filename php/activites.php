@@ -153,14 +153,15 @@ function addActivite($conn, $data)
     $prix = $data['prix'] ?? '';
     $description = $data['description'] ?? '';
     $lieu = $data['lieu'] ?? '';
+    $id_animateur = $data['id_animateur'] ?? '';
 
     if (empty($nom) || $cap_act <= 0) {
         return false;
     }
 
-    $sql = "INSERT INTO activites (nom, date_f, date_d, cap_act, prix,lieu,description) VALUES (?, ?, ?, ?, ?,?,?)";
+    $sql = "INSERT INTO activites (nom, date_f, date_d, cap_act, prix,lieu,description,id_animateur) VALUES (?, ?, ?, ?, ?,?,?,?)";
     $stmt = mysqli_prepare($conn, $sql);
-    mysqli_stmt_bind_param($stmt, "sssiiss", $nom, $date_f, $date_d, $cap_act, $prix,$lieu,$description);
+    mysqli_stmt_bind_param($stmt, "sssiissi", $nom, $date_f, $date_d, $cap_act, $prix,$lieu,$description,$id_animateur);
 
     return mysqli_stmt_execute($stmt);
 }
@@ -425,6 +426,7 @@ function updateActivite($conn,$data){
     $lieu = $data['lieu'];
     $id = $data['id'];
     $cap_act = $data['cap_act'];
+    $id_animateur = $data['id_animateur'];
 
 
     $sql = "UPDATE activites SET 
@@ -434,9 +436,11 @@ function updateActivite($conn,$data){
     nom = ?,
     cap_act = ?,
     description = ?,
-    lieu = ? WHERE id = ?";
+    lieu = ?,
+    id_animateur = ?
+     WHERE id = ?";
 
     $res = mysqli_prepare($conn,$sql);
-    mysqli_stmt_bind_param($res,"isssissi",$prix,$date_d,$date_f,$nom,$cap_act,$description,$lieu,$id);
+    mysqli_stmt_bind_param($res,"isssissi",$prix,$date_d,$date_f,$nom,$cap_act,$description,$lieu,$id_animateur,$id);
     return mysqli_stmt_execute($res);
 }

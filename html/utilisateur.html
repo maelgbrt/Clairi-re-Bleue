@@ -64,8 +64,8 @@
                     <p>Prix : {{ activite.prix }} €</p>
                     <p>{{activite.nb_reservations}} places réservées</p>
                     <p>Prix Total : {{ activite.prix * activite.nb_reservations}} €</p>
-                    <input v-model="nb_membre" type="number" placeholder="Nombre de Personnes">
-                    <p>Prix : {{ activite.prix * nb_membre }} €</p>
+                    <input v-model="nb_membre" type="number" min="1" step="1" placeholder="Nombre de Personnes">
+                    <p>Prix : {{ activite.prix * Math.max(nb_membre || 0, 0) }} €</p>
                     <!-- Pas encore réservé -->
 <div v-if="activite.nb_reservations == 0 && activite.file_attente_activite == null ">
     <button @click="reserverActivite(activite.id_activite)">Réserver</button>

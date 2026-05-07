@@ -166,7 +166,13 @@ switch ($entity) {
                 $response = getMembreEquipe($conn,$id);
             }
         break;
-
+    case 'message' :
+        $res = sendMessage($conn,$data);
+        $response = [
+            "status" => $res ? "Success" : "Error",
+            "msg" => $res
+        ];
+    break;
     default:
         http_response_code(400);
         $response = ["status" => "error", "msg" => "Entity non reconnue"];

@@ -130,6 +130,9 @@ switch ($entity) {
             // $response = getEmplacements($conn);
         }
         break;
+
+
+
 }
 
 echo json_encode($response);
