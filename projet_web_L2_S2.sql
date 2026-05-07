@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : mariadb
--- Généré le : jeu. 07 mai 2026 à 12:08
+-- Généré le : jeu. 07 mai 2026 à 12:21
 -- Version du serveur : 12.2.2-MariaDB-ubu2404
 -- Version de PHP : 8.3.30
 
@@ -20,6 +20,8 @@ SET time_zone = "+00:00";
 --
 -- Base de données : `projet_web_L2_S2`
 --
+CREATE DATABASE IF NOT EXISTS `projet_web_L2_S2` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_uca1400_ai_ci;
+USE `projet_web_L2_S2`;
 
 -- --------------------------------------------------------
 
@@ -27,6 +29,7 @@ SET time_zone = "+00:00";
 -- Structure de la table `activites`
 --
 
+DROP TABLE IF EXISTS `activites`;
 CREATE TABLE `activites` (
   `prix` int(11) NOT NULL,
   `date_d` datetime NOT NULL,
@@ -58,6 +61,7 @@ INSERT INTO `activites` (`prix`, `date_d`, `date_f`, `id`, `nom`, `cap_act`, `de
 -- Structure de la table `emplacements`
 --
 
+DROP TABLE IF EXISTS `emplacements`;
 CREATE TABLE `emplacements` (
   `num_emplacement` int(11) NOT NULL,
   `capacite` int(11) NOT NULL,
@@ -92,6 +96,7 @@ INSERT INTO `emplacements` (`num_emplacement`, `capacite`, `prix`, `nom`) VALUES
 -- Structure de la table `equipe_technique`
 --
 
+DROP TABLE IF EXISTS `equipe_technique`;
 CREATE TABLE `equipe_technique` (
   `id_equipe_tech` int(11) NOT NULL,
   `nom` varchar(50) NOT NULL,
@@ -114,6 +119,7 @@ INSERT INTO `equipe_technique` (`id_equipe_tech`, `nom`, `prenom`, `mail`, `pass
 -- Structure de la table `familles`
 --
 
+DROP TABLE IF EXISTS `familles`;
 CREATE TABLE `familles` (
   `id_famille` int(11) NOT NULL,
   `mail` varchar(50) NOT NULL,
@@ -130,7 +136,7 @@ CREATE TABLE `familles` (
 --
 
 INSERT INTO `familles` (`id_famille`, `mail`, `password`, `adresse`, `telephone`, `code_postal`, `id_payeur`, `ville`) VALUES
-(66, 'maelgaborit1407@gmail.com', '$2y$10$F3fJ/FNN/qkIT045OHMbpuo/VOwpOdeFUyBqaAGvMC/MXeMnEwgeK', '260 route de Coutalon Areches', 768680116, 73270, 119, 'Areches'),
+(66, 'maelgaborit1407@gmail.com', '$2y$10$W3mXBT1syk461evhwWHA8uJmTtotMm.8G6nLpI27L8GO6W.uXg7mO', '260 route de Coutalon Areches', 768680116, 73270, 119, 'Areches'),
 (67, 'teliogaborit@gmail.com', '$2y$10$W3mXBT1syk461evhwWHA8uJmTtotMm.8G6nLpI27L8GO6W.uXg7mO', '955 Rte de l\'École du Tremblay', 768680116, 73290, 122, 'LA MOTTE SERVOLEX'),
 (69, 'telio@gmail.com', '$2y$10$ENhS7vlszs7Y0HV5nmwT/ONpHKH.yd/j5RgGmBDFTqbf/K0p5341W', '260 route de Coutalon Areches', 768680116, 73270, 122, 'Areches'),
 (70, 'mail@mail.fr', '$2y$10$hGgVqcbJ187Me69EBN4xNObPU0a0u2yIsQN2JeNicSrO516Qn.pDm', '260 route du chemin', 7, 7270, 123, 'Areches'),
@@ -143,6 +149,7 @@ INSERT INTO `familles` (`id_famille`, `mail`, `password`, `adresse`, `telephone`
 -- Structure de la table `file_attente_activites`
 --
 
+DROP TABLE IF EXISTS `file_attente_activites`;
 CREATE TABLE `file_attente_activites` (
   `id_famille` int(11) NOT NULL,
   `id_activite` int(11) NOT NULL,
@@ -157,6 +164,7 @@ CREATE TABLE `file_attente_activites` (
 -- Structure de la table `file_attente_emplacements`
 --
 
+DROP TABLE IF EXISTS `file_attente_emplacements`;
 CREATE TABLE `file_attente_emplacements` (
   `id_famille` int(11) NOT NULL,
   `id_emplacement` int(11) NOT NULL,
@@ -171,6 +179,7 @@ CREATE TABLE `file_attente_emplacements` (
 -- Structure de la table `message`
 --
 
+DROP TABLE IF EXISTS `message`;
 CREATE TABLE `message` (
   `objet` varchar(50) NOT NULL,
   `nom` varchar(50) NOT NULL,
@@ -186,6 +195,7 @@ CREATE TABLE `message` (
 -- Structure de la table `reservation_activites`
 --
 
+DROP TABLE IF EXISTS `reservation_activites`;
 CREATE TABLE `reservation_activites` (
   `id_famille` int(11) NOT NULL,
   `id_activite` int(11) NOT NULL,
@@ -199,6 +209,7 @@ CREATE TABLE `reservation_activites` (
 -- Structure de la table `reservation_emplacement`
 --
 
+DROP TABLE IF EXISTS `reservation_emplacement`;
 CREATE TABLE `reservation_emplacement` (
   `id_famille` int(11) NOT NULL,
   `num_emplacement` int(11) NOT NULL,
@@ -213,6 +224,7 @@ CREATE TABLE `reservation_emplacement` (
 -- Structure de la table `utilisateurs`
 --
 
+DROP TABLE IF EXISTS `utilisateurs`;
 CREATE TABLE `utilisateurs` (
   `id` int(11) NOT NULL,
   `nom` varchar(50) NOT NULL,
@@ -226,7 +238,7 @@ CREATE TABLE `utilisateurs` (
 --
 
 INSERT INTO `utilisateurs` (`id`, `nom`, `prenom`, `date_naissance`, `id_famille`) VALUES
-(119, 'Gaborit', 'Maël', '2006-07-14', 66),
+(119, 'Gabori', 'Maël', '2006-07-14', 66),
 (120, 'Gaborit', 'Telio', '2001-12-05', 67),
 (122, 'Gaborit', 'Telio', '2026-04-03', 69),
 (123, 'Gaborit', 'Greg', '2006-07-14', 70),
