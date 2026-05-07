@@ -17,14 +17,15 @@ createApp({
 
     const id_equipe_tech = ref(5);
 
+  
     const membre_equipe_tech = ref([]);
 
-    const get_membre_equipe = () => {
-      axios.get("..").then(response => {
-        membre_equipe_tech.value = response.data;
-        id_equipe_tech.value = response.data.id_equipe_tech;
-      })
-    };
+    // const get_membre_equipe = () => {
+    //   axios.get("..").then(response => {
+    //     membre_equipe_tech.value = response.data;
+    //     id_equipe_tech.value = response.data.id_equipe_tech;
+    //   })
+    // };
 
 
     const loadData = () => {
@@ -97,6 +98,7 @@ const modif = (act) => {
       update_activites,
       reponse,
       supprimer_activite,
+      id_equipe_tech
     };
   }
 }).mount('#app');  
