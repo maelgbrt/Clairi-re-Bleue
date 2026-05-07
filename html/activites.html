@@ -103,10 +103,14 @@
 </body>
 
 <script>
-  // Si "?activites" est dans l'URL, on clique sur le bouton automatiquement
-  if (window.location.search.includes('activites')) {
-    document.querySelector('a[ @click*="activites" ]').click();
-  }
+  // Dès que la page s'affiche
+  window.onload = function() {
+    // Si l'URL contient "activites"
+    if (window.location.href.indexOf('activites') > -1) {
+      // On force le clic sur le bouton
+      document.getElementById('btn-activites').click();
+    }
+  };
 </script>
 
 
