@@ -30,6 +30,7 @@ RewriteRule ^admin/equipeTechnique/getMembre/([0-9]+)$ admin.php?entity=equipeTe
 # On traite d'abord les sous-sections
 RewriteRule ^admin/activites/fifo$ admin.php?entity=activites&option=fifo [L,QSA]
 RewriteRule ^admin/activites/reservations$ admin.php?entity=activites&option=reservations [L,QSA]
+RewriteRule ^admin/activites/add$ admin.php?entity=activites&option=add [L,QSA]
 
 # Puis les IDs simples admin
 RewriteRule ^admin/familles/([0-9]+)$ admin.php?entity=family&id=$1 [L,QSA]
@@ -37,12 +38,13 @@ RewriteRule ^admin/users/([0-9]+)$ admin.php?entity=users&id=$1 [L,QSA]
 RewriteRule ^admin/emplacements/([0-9]+)$ admin.php?entity=emplacements&id=$1 [L,QSA]
 RewriteRule ^admin/activites/([0-9]+)$ admin.php?entity=activites&id=$1 [L,QSA]
 
+
 # Enfin les listes globales admin
 RewriteRule ^admin/familles$ admin.php?entity=family [L,QSA]
 RewriteRule ^admin/users$ admin.php?entity=users [L,QSA]
 RewriteRule ^admin/emplacements$ admin.php?entity=emplacements [L,QSA]
 RewriteRule ^admin/activites$ admin.php?entity=activites [L,QSA]
-RewriteRule ^admin/activites/add$ admin.php?entity=activites&option=add [L,QSA]
+RewriteRule ^admin/message$ admin.php?entity=message [L,QSA]
 
 # --- UTILISATEUR 
 # --- 1. ROUTES COMPLEXES (3 segments ou plus après l'entité) ---
