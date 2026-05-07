@@ -13,7 +13,7 @@ const { createApp, ref, onMounted } = Vue;
 createApp({
   setup() {
     const menuOpen = ref(false);
-    const id_famille = ref(66);
+    const id_famille = ref();
     const payeur = ref([]);
     const activites = ref([]);
     const fifo_activite = ref([]);
@@ -29,6 +29,7 @@ createApp({
     const ResaEmplacement = ref([]);
     const ChoiceOverlay = ref(null);
     const Infos_activites = ref([]);
+    const id_payeur = ref();
 
 
 
@@ -55,10 +56,9 @@ createApp({
     };
 
 
-    const get_payeur = (id) => {
-      axios.get(`../../php/utilisateur.php?entity=payeur&id=66`, {
-        params: { id_famille: id }
-      })
+    const  get_payeur = async (id) => {
+      id_famille.value = await isConnected();
+      axios.get(`../../php/utilisateur.php?entity=payeur&id=${id_famille.value}`)
       .then((response) => {
         payeur.value = response.data;
         console.log("le payeur");
@@ -271,22 +271,32 @@ const disconnect = () => {
 
 
 
-const isConnected = () => {
-  axios.get('../php/login/isConnected').then(response => {
-    console.log("fonctionnement de connexion");
-    console.log(response.data);
-    var res = response.data;
-    if(res['status'] == 'disconnected'){
-      window.location.href = "login.html";
-    }else{
-      if(res['admin'] == "admin"){
-        window.location.href = "admin.php";
-      }else{
-        console.log("connecter pr famille");
-        id_famille.value = res['id'];
-      }
+// const isConnected = () => {
+//   axios.get('../php/login/isConnected').then(response => {
+//     console.log("fonctionnement de connexion");
+//     console.log(response.data);
+//     var res = response.data;
+//     if(res['status'] == 'disconnected'){
+//       window.location.href = "login.html";
+//     }else{
+//       if(res['admin'] == "admin"){
+//         window.location.href = "admin.php";
+//       }else{
+//         console.log("connecter pr famille");
+//         return res['id'];
+//       }
+//     }
+//   })
+// }
+async function isConnected() {
+    try {
+        const response = await axios.get('../../php/login/isConnected');
+        console.log(response.data.id);
+        return response.data.id; 
+    } catch (error) {
+        console.error("Erreur de session", error);
+        return null;
     }
-  })
 }
 
 const InfoActivite = (id_activite) => {
