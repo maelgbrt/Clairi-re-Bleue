@@ -19,4 +19,4 @@ createApp({
       tab_res,
     };
   }
-}).mount('#app');  
+}).mount('#app'); 
