@@ -30,7 +30,7 @@
                     <div v-for="act in activites"  class="activites">
                         <p>{{act.nom}}</p>
                         <button @click="modif(act)">Modifier</button>
-                        <button @click="">Supprimer</button>
+                        <button @click="supprimer_activite(act.id)">Supprimer</button>
                     </div>
                 </div>
                 <div id="activiteCRUD">

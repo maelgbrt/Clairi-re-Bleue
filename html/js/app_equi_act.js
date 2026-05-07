@@ -64,8 +64,9 @@ const modif = (act) => {
     }
 
 
-    const supprimer_activite = () => {
-      axios.delete("../../").then(response => {
+    const supprimer_activite = (id) => {
+      axios.delete(`../../php/admin/activites/delete/${id}`).then(response => {
+      loadData();
 
       })
     }
@@ -81,6 +82,8 @@ const modif = (act) => {
     };
     onMounted(() => {
       loadData();
+      
+
     });
 
     return {
@@ -90,7 +93,8 @@ const modif = (act) => {
       modif,
       form_choice,
       update_activites,
-      reponse
+      reponse,
+      supprimer_activite,
     };
   }
 }).mount('#app');  
