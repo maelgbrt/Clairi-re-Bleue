@@ -22,6 +22,7 @@ createApp({
 
 
     const activites = ref([]);
+    // const tab_res1 = ref([]);
 
     const form_choice = ref('creation');
 
