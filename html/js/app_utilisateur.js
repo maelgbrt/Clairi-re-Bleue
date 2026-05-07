@@ -13,7 +13,7 @@ const { createApp, ref, onMounted } = Vue;
 createApp({
   setup() {
     const menuOpen = ref(false);
-    const id_famille = ref(66);
+    const id_famille = ref();
     const payeur = ref([]);
     const activites = ref([]);
     const fifo_activite = ref([]);
@@ -284,6 +284,7 @@ const isConnected = () => {
       }else{
         console.log("connecter pr famille");
         id_famille.value = res['id'];
+        
       }
     }
   })

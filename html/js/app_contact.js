@@ -16,7 +16,8 @@ const notif = ref();
 
 const sendMessage = () => {
   console.log(message.value);
-  axios.get("../../php/admin/message").then(response =>{
+  axios.post("../../php/admin/message",message.value).then(response =>{
+    console.log(response.data);
     if (response.data.status == "Success"){
       notif.value = "Message envoyé avec Succes";
     }else{
@@ -33,7 +34,8 @@ const sendMessage = () => {
 
     return {
      message,
-     sendMessage
+     sendMessage,
+     notif
     };
   }
 }).mount('#app');  
