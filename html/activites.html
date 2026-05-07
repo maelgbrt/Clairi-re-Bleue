@@ -41,7 +41,14 @@
         <div v-for="tabl in tab_res">
             <div class="activite">
             
-            <p>{{ tabl.nom }}</p>
+            <h1>{{ tabl.nom }}</h1>
+
+        <p>Description : {{tabl.description}}</p>
+        <p>Lieu : {{tabl.lieu}}</p>
+        <p>Capacité : {{tabl.cap_act}}</p>
+        <p>prix : {{tabl.prix}}</p>
+        <p>date début : {{tabl.date_d}}</p>
+        <p>date fin : {{tabl.date_f}}</p>
 
             <a href ="utilisateur.html">"btn-reservation">Je reserve</button></a>
         </div>   
