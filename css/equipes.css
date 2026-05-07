@@ -81,4 +81,7 @@ form input,form textarea{
     color: white;
     resize: vertical;
 }
-
+#noPlanning{
+    margin: auto;
+    color: white;
+}

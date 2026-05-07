@@ -27,10 +27,14 @@
 
             <div id="left">
                 <div id="planning">
-                    <div v-for="act in activites"  class="activites">
+                    
+                    <div v-if="activites.length !=0" v-for="act in activites"  class="activites">
                         <p>{{act.nom}}</p>
                         <button @click="modif(act)">Modifier</button>
                         <button @click="supprimer_activite(act.id)">Supprimer</button>
+                    </div>
+                    <div v-else id="noPlanning">
+                        <p>Aucune activité prévue</p>
                     </div>
                 </div>
                 <div id="activiteCRUD">
