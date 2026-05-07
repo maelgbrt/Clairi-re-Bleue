@@ -413,3 +413,30 @@ function UpdateNbMembreFifo($conn, $data,$id){
     
     return mysqli_stmt_execute($requete);
 }
+
+function updateActivite($conn,$data){
+
+
+    $nom = $data['nom'];
+    $prix = $data['prix'];
+    $date_f = $data['date_f'];
+    $date_d = $data['date_d'];
+    $description = $data['description'];
+    $lieu = $data['lieu'];
+    $id = $data['id'];
+    $cap_act = $data['cap_act'];
+
+
+    $sql = "UPDATE activites SET 
+    prix = ?,
+    date_d = ?,
+    date_f = ?,
+    nom = ?,
+    cap_act = ?,
+    description = ?,
+    lieu = ? WHERE id = ?";
+
+    $res = mysqli_prepare($conn,$sql);
+    mysqli_stmt_bind_param($res,"isssissi",$prix,$date_d,$date_f,$nom,$cap_act,$description,$lieu,$id);
+    return mysqli_stmt_execute($res);
+}

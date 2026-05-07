@@ -62,3 +62,14 @@ button:hover{
 #activiteCRUD{
     background-color: yellow;
 }
+
+form{
+    display: flex;
+    flex-direction: column;
+}
+
+form button{
+    width: 50%;
+    margin: auto;
+    margin-top: 20px;
+}

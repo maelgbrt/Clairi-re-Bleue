@@ -115,13 +115,18 @@ switch ($entity) {
             }
         }elseif ($option === 'participants' && $id){
             $response = getParticipantsById($conn,$id);
-        }
-        
-        elseif ($option === 'delete' && $id) {
+        }elseif ($option === 'delete' && $id) {
             $res = deleteActivite($conn, $id);
             $response = [
                 "status" => $res ? "success" : "error", 
                 "msg"    => $res ? "Activité supprimée" : "Erreur lors de la suppression"
+            ];
+        } elseif($option === 'update' && $data){
+            
+            $res = updateActivite($conn,$data);
+            $response = [
+                "status" => $res ? "success" : "error", 
+                "msg"    => $res ? "Activité update" : "Erreur lors de update"
             ];
         } elseif($option === 'add'){
             $res = addActivite($conn, $data);

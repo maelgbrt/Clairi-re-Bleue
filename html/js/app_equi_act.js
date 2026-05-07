@@ -3,6 +3,7 @@ const { createApp, ref, onMounted } = Vue;
 createApp({
   setup() {
 
+
     const activite = ref({
       "nom" : '',
       "prix" : '',
@@ -13,8 +14,16 @@ createApp({
       "cap_act":""
     });
 
+    const loadData = () => {
+      get_activites();
+    }
+
+    const reponse = ref();
+
 
     const activites = ref([]);
+
+    const form_choice = ref('creation');
 
     const get_activites = () => {
       axios.get("../../php/admin/activites").then(response => {
@@ -22,37 +31,52 @@ createApp({
       });
     };
 
-    const get_activite_by_Id = () => {
-      
+const modif = (act) => {
+
+    activite.value = {
+        ...act,
+        date_d: act.date_d.split(' ')[0],
+        date_f: act.date_f.split(' ')[0]
+    };
+    form_choice.value = 'modification';
+}
+
+
+    const update_activites = () => {
+      axios.post("../../php/admin.php?entity=activites&option=update",activite.value).then(response =>{
+        loadData();
+        reponse.value = "Activité mise à jour";
+      })
     }
 
 
+    const supprimer_activite = () => {
+      axios.delete("../../").then(response => {
 
-
-    // const update_activites = () => {
-    //   axios.post("",data.value).then(response =>{
-    //     activite.value = response.data;        
-    //   })
-    // }
-
+      })
+    }
 
     const creation_activites = () => {
       console.log(activite.value);
       axios.post('../../php/admin.php?entity=activites&option=add', activite.value)
         .then(response => {
-          // console.log("gooo");
-          console.log(response.data);
+          loadData();
+          reponse.value = "Activité créée";
         })
         .catch(error => console.error('Erreur POST:', error));
     };
     onMounted(() => {
-      get_activites();
+      loadData();
     });
 
     return {
       activite,
       activites,
-      creation_activites
+      creation_activites,
+      modif,
+      form_choice,
+      update_activites,
+      reponse
     };
   }
 }).mount('#app');  
