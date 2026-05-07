@@ -73,3 +73,12 @@ form button{
     margin: auto;
     margin-top: 20px;
 }
+
+form input,form textarea{
+    background: transparent;
+    border: 2px solid white;
+    padding: 10px;
+    color: white;
+    resize: vertical;
+
+}

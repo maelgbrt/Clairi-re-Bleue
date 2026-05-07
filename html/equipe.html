@@ -39,7 +39,7 @@
             </div>
             <div id="right">
                 <h1>
-                    {{ form_choice == 'creation' ? 'Création' : 'Modification' }}
+                    {{ form_choice == 'creation' ? 'Création' : 'Modification ' + activite.nom }}
                 </h1>
                 <form @submit.prevent="form_choice == 'creation' ? creation_activites() : update_activites()">
                     <p>Nom de l'activité : </p>
