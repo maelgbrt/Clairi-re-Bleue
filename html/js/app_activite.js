@@ -3,7 +3,6 @@ const { createApp, ref, onMounted, computed } = Vue;
 createApp({
   setup() {
     const tab_res = ref([]);
-    const triSelectionne = ref(""); 
 
     const get_activites = () => {
       axios.get("../../php/admin/activites").then(response => {

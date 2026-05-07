@@ -292,7 +292,7 @@ paths:
                 schema:
                   type: object
                   properties :
-                    msg : {type : string ,example : impossible d'ajouter l'élément a la file d'attente}
+                    msg : {type : string ,example : "Ajout à la file d'attente réalisé avec succès"}
 
   /admin/activites/fifo:
       get:
@@ -367,7 +367,7 @@ paths:
                 schema:
                   type: object
                   properties :
-                    msg : {type : string ,example : impossible d'ajouter la réservation}
+                    msg : {type : string ,example : "Ajout de la réservation réalisé avec succès"}
 
 
   /admin/activites/reservations/{id_reservation_activite}:
