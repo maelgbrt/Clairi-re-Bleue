@@ -97,8 +97,7 @@ const modif = (act) => {
       form_choice,
       update_activites,
       reponse,
-      supprimer_activite,
-      id_equipe_tech
+      supprimer_activite
     };
   }
 }).mount('#app');  
