@@ -15,7 +15,7 @@ createApp({
     });
 
 
-    const id_equipe_tech = ref(1);
+    const id_equipe_tech = ref(5);
 
     const membre_equipe_tech = ref([]);
 
@@ -40,7 +40,7 @@ createApp({
     const form_choice = ref('creation');
 
     const get_activites = () => {
-      axios.get("../../php/admin/activites").then(response => {
+      axios.get("../../php/admin/activites/withAnimateur/"+id_equipe_tech.value).then(response => {
         activites.value = response.data;
       });
     };
