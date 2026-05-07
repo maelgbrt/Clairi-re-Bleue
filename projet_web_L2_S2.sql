@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : mariadb
--- Généré le : lun. 27 avr. 2026 à 13:59
+-- Généré le : jeu. 07 mai 2026 à 12:08
 -- Version du serveur : 12.2.2-MariaDB-ubu2404
 -- Version de PHP : 8.3.30
 
@@ -35,19 +35,22 @@ CREATE TABLE `activites` (
   `nom` varchar(50) NOT NULL,
   `cap_act` int(11) NOT NULL,
   `description` text DEFAULT NULL,
-  `lieu` varchar(100) DEFAULT NULL
+  `lieu` varchar(100) DEFAULT NULL,
+  `id_animateur` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Déchargement des données de la table `activites`
 --
 
-INSERT INTO `activites` (`prix`, `date_d`, `date_f`, `id`, `nom`, `cap_act`, `description`, `lieu`) VALUES
-(35, '2026-04-02 09:12:44', '2026-04-02 09:12:44', 47, 'AquaSplash', 0, NULL, NULL),
-(25, '2026-04-14 00:00:00', '2026-04-14 00:00:00', 49, 'Barbecue', 25, '\"Partagez plus qu’un repas, partagez un moment !\"\r\n\r\nRejoignez-nous autour du grill pour l\'événement le plus chaleureux de la semaine ! Que vous soyez en famille ou entre amis, notre soirée barbecue est l\'occasion idéale de savourer de délicieuses grillades tout en profitant de l\'ambiance unique du camping.\r\n\r\nAu menu : Une sélection de viandes marinées, de brochettes de saison et d\'options végétariennes, le tout accompagné d\'un buffet de salades fraîches.\r\n\r\nL\'ambiance : Musique d\'ambiance, grandes tablées sous les étoiles et rires garantis.\r\n\r\nLe petit plus : Finissez la soirée en beauté autour du brasero pour griller quelques guimauves !', 'Arêches'),
-(12, '2026-04-04 00:00:00', '2026-04-05 00:00:00', 54, 'Boire de l\'Eau', 12, NULL, NULL),
-(1, '2026-04-01 00:00:00', '2026-04-26 00:00:00', 55, 'Activité TEst', 1, NULL, NULL),
-(2, '2026-03-30 00:00:00', '2026-04-01 00:00:00', 56, 'jsp', 25, NULL, NULL);
+INSERT INTO `activites` (`prix`, `date_d`, `date_f`, `id`, `nom`, `cap_act`, `description`, `lieu`, `id_animateur`) VALUES
+(35, '2026-04-02 09:12:44', '2026-04-02 09:12:44', 47, 'AquaSplash', 0, NULL, NULL, 5),
+(25, '2026-04-14 00:00:00', '2026-04-14 00:00:00', 49, 'Barbecue', 25, '\"Partagez plus qu’un repas, partagez un moment !\"\r\n\r\nRejoignez-nous autour du grill pour l\'événement le plus chaleureux de la semaine ! Que vous soyez en famille ou entre amis, notre soirée barbecue est l\'occasion idéale de savourer de délicieuses grillades tout en profitant de l\'ambiance unique du camping.\r\n\r\nAu menu : Une sélection de viandes marinées, de brochettes de saison et d\'options végétariennes, le tout accompagné d\'un buffet de salades fraîches.\r\n\r\nL\'ambiance : Musique d\'ambiance, grandes tablées sous les étoiles et rires garantis.\r\n\r\nLe petit plus : Finissez la soirée en beauté autour du brasero pour griller quelques guimauves !', 'Arêches', 5),
+(12, '2026-04-04 00:00:00', '2026-04-05 00:00:00', 54, 'Boire de l\'Eau', 12, NULL, NULL, 0),
+(1, '2026-04-01 00:00:00', '2026-04-26 00:00:00', 55, 'Activité TEst', 1, NULL, NULL, 0),
+(2, '2026-03-30 00:00:00', '2026-04-01 00:00:00', 56, 'jsp', 25, NULL, NULL, 0),
+(0, '2026-05-02 00:00:00', '2026-05-17 00:00:00', 63, 'mael', 6, 'mael', 'are', 0),
+(5, '2026-05-13 00:00:00', '2026-05-30 00:00:00', 64, 'colisp', 7, 'ae', 'ad', 1);
 
 -- --------------------------------------------------------
 
@@ -165,6 +168,21 @@ CREATE TABLE `file_attente_emplacements` (
 -- --------------------------------------------------------
 
 --
+-- Structure de la table `message`
+--
+
+CREATE TABLE `message` (
+  `objet` varchar(50) NOT NULL,
+  `nom` varchar(50) NOT NULL,
+  `prenom` varchar(50) NOT NULL,
+  `mail` varchar(50) NOT NULL,
+  `text` text NOT NULL,
+  `id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Structure de la table `reservation_activites`
 --
 
@@ -188,13 +206,6 @@ CREATE TABLE `reservation_emplacement` (
   `date_fin` datetime NOT NULL,
   `id_res_empl` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Déchargement des données de la table `reservation_emplacement`
---
-
-INSERT INTO `reservation_emplacement` (`id_famille`, `num_emplacement`, `date_debut`, `date_fin`, `id_res_empl`) VALUES
-(66, 1, '2026-04-10 00:00:00', '2026-04-19 00:00:00', 54);
 
 -- --------------------------------------------------------
 
@@ -266,6 +277,12 @@ ALTER TABLE `file_attente_emplacements`
   ADD PRIMARY KEY (`id_fifo_emplacement`);
 
 --
+-- Index pour la table `message`
+--
+ALTER TABLE `message`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Index pour la table `reservation_activites`
 --
 ALTER TABLE `reservation_activites`
@@ -287,6 +304,34 @@ ALTER TABLE `reservation_emplacement`
 ALTER TABLE `utilisateurs`
   ADD PRIMARY KEY (`id`),
   ADD KEY `FK_Id_famille` (`id_famille`);
+
+--
+-- AUTO_INCREMENT pour les tables déchargées
+--
+
+--
+-- AUTO_INCREMENT pour la table `activites`
+--
+ALTER TABLE `activites`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=65;
+
+--
+-- AUTO_INCREMENT pour la table `file_attente_activites`
+--
+ALTER TABLE `file_attente_activites`
+  MODIFY `id_attente` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT pour la table `message`
+--
+ALTER TABLE `message`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
+-- AUTO_INCREMENT pour la table `reservation_activites`
+--
+ALTER TABLE `reservation_activites`
+  MODIFY `id_reservation_activite` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
