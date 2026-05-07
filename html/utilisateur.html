@@ -41,6 +41,7 @@
                 <div class="infos-user"><label>Code Postal : </label><input type="text" v-model="payeur.code_postal"></div>
                 <div class="infos-user"><label>Ville : </label><input type="text" v-model="payeur.ville"></div>
                 <button @click="MajInfos()">Modifier les Informations</button>
+                <p v-if="confirmation" style="color: green; font-weight: bold;">Les changements ont été enregistrés</p>
             </div>
         </div>
 

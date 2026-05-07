@@ -12,6 +12,7 @@ const { createApp, ref, onMounted } = Vue;
 
 createApp({
   setup() {
+    const confirmation = ref(false);
     const menuOpen = ref(false);
     const id_famille = ref();
     const payeur = ref([]);
@@ -338,8 +339,10 @@ const InfoActivite = (id_activite) => {
 
     const MajInfos = () => {
       axios.post(`../../php/utilisateur.php?entity=users&option=update`, payeur.value).then(response =>{
-        loadData();
-        alert(" Succès : Vos informations ont bien été modifiées !")
+      loadData();
+        //alert(" Succès : Vos informations ont bien été modifiées !")
+      confirmation.value = true;
+      setTimeout(() => { confirmation.value = false; }, 3000);
       })
 
     }
@@ -388,7 +391,8 @@ const InfoActivite = (id_activite) => {
       deleteFifo,
       addFifoMb,
       delFifoMb,
-      MajInfos
+      MajInfos,
+      confirmation,
     };
   }
 }).mount('#app');
