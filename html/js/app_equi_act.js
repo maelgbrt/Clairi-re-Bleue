@@ -40,7 +40,7 @@ createApp({
     const form_choice = ref('creation');
 
     const get_activites = () => {
-      axios.get("../../php/admin/activites/withAnimateur/"+id_equipe_tech.value).then(response => {
+      axios.get(`../../php/admin/activites/withAnimateur/${id_equipe_tech.value}`).then(response => {
         activites.value = response.data;
       });
     };
