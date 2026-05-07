@@ -267,7 +267,7 @@ paths:
                 schema:
                   type: object
                   properties :
-                    msg : {type : string ,example : impossible de supprimer l'élément de la file d'attente}
+                    msg : {type : string ,example : Demande de la file d'attente acceptée avec succès}
 
   /admin/activites/fifo/add :
     post :
