@@ -80,8 +80,8 @@ createApp({
     }
 
     const reserverActivite = (id_activite) => {
+      console.log("la fonction")
       if(nb_membre.value <= 0){
-
         alert("Le nombre de personnes doit être supérieur à 0");
         nb_membre.value = 0;
         return;
