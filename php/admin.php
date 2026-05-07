@@ -7,6 +7,7 @@ include("familles.php");
 include("user.php");
 include("activites.php");
 include("emplacements.php");
+include("equipe.php");
 
 
 // Autorise n'importe quelle origine (ton Swagger)
@@ -28,7 +29,7 @@ $id       = $_GET['id'] ?? null;
 $option   = $_GET['option'] ?? '';
 $secondOption = $_GET['secondOption'] ?? null;
 $date_debut = $_GET['date_debut'] ?? null;
-$date_fin =$_GET['date_fin'] ?? null;
+$date_fin = $_GET['date_fin'] ?? null;
 $today = $_GET['today'] ?? date('Y-m-d');
 $mois = $_GET['mois'] ?? null;
 // $today = date('Y-m-d H:i:s');
@@ -38,29 +39,25 @@ $response = null;
 
 switch ($entity) {
     case 'family':
-     if ($option === 'nbMembre' && $id){
-            $response = getNbMembre($conn,$id);
-        } 
-        elseif ($option === 'delete' && $id){
-            $resultat = deleteFamille($conn,$id);
+        if ($option === 'nbMembre' && $id) {
+            $response = getNbMembre($conn, $id);
+        } elseif ($option === 'delete' && $id) {
+            $resultat = deleteFamille($conn, $id);
             $response = [
-            "status" => ($resultat === "success") ? "success" : $resultat,
-            "msg" => $resultat
-        ];
-        }
-         elseif ($option === 'withPayeur') {
+                "status" => ($resultat === "success") ? "success" : $resultat,
+                "msg" => $resultat
+            ];
+        } elseif ($option === 'withPayeur') {
             $response = getFamilleswithPayeur($conn);
         } elseif ($option === 'create') {
-        $resultat = createPackFamily($conn, $data);
-        $response = [
-            "status" => ($resultat === "success") ? "success" : "failed",
-            "msg" => $resultat
-        ];
-
-        }elseif ($id) {
+            $resultat = createPackFamily($conn, $data);
+            $response = [
+                "status" => ($resultat === "success") ? "success" : "failed",
+                "msg" => $resultat
+            ];
+        } elseif ($id) {
             $response = getFamilleById($conn, $id);
-        }
-        else {
+        } else {
             $response = getFamilles($conn);
         }
         break;
@@ -71,107 +68,103 @@ switch ($entity) {
 
     case 'activites':
         if ($option === 'fifo') {
-            if($secondOption === 'delete' && $id){
+            if ($secondOption === 'delete' && $id) {
                 $res = deleteFromFifo($conn, $id);
                 $response = [
-                    "status" => $res ? "success" : "error", 
+                    "status" => $res ? "success" : "error",
                     "msg"    => $res ? "Entrée supprimée de la file d'attente" : "Erreur lors de la suppression"
                 ];
-
-            }elseif ($secondOption === 'accept'){
-                $res = AcceptFifo($conn,$data);
+            } elseif ($secondOption === 'accept') {
+                $res = AcceptFifo($conn, $data);
                 $response = [
                     "msg" => ($res === "success") ? "success" : $res
                 ];
-
-            }elseif($secondOption === 'add'){
-                $res = PutFamilyFiFo($conn,$data);
+            } elseif ($secondOption === 'add') {
+                $res = PutFamilyFiFo($conn, $data);
                 $response = [
-                    "status" => $res ? "success" : "error", 
+                    "status" => $res ? "success" : "error",
                     "msg"    => $res ? "Entrée ajouter à la file d'attente" : "Erreur lors de l'ajout"
-                ];   
+                ];
             } else {
-                
+
                 $response = getActivitesFifo($conn);
             }
         } elseif ($option === 'reservations') {
-        
 
-            if($secondOption === 'delete' && $id){
-                $res = deleteReservation($conn,$id);
+
+            if ($secondOption === 'delete' && $id) {
+                $res = deleteReservation($conn, $id);
                 $response = [
-                    "status" => $res ? "success" : "error", 
+                    "status" => $res ? "success" : "error",
                     "msg"    => $res ? "Reservation supprime" : "Erreur lors de la suppression"
                 ];
-            }elseif($secondOption === 'add'){
-                $res = putReservationActivite($conn,$data);
+            } elseif ($secondOption === 'add') {
+                $res = putReservationActivite($conn, $data);
                 $response = [
-                    "status" => $res ? "success" : "error", 
+                    "status" => $res ? "success" : "error",
                     "msg"    => $res ? "Reservation AQJOUTE" : "Erreur lors de l ajout"
-                ]; 
-
-            }else{
-            $response = $id ? getReservationsActivitebyId($conn, $id) : getReservationsActivite($conn);
+                ];
+            } else {
+                $response = $id ? getReservationsActivitebyId($conn, $id) : getReservationsActivite($conn);
             }
-        }elseif ($option === 'participants' && $id){
-            $response = getParticipantsById($conn,$id);
-        }elseif ($option === 'delete' && $id) {
+        } elseif ($option === 'participants' && $id) {
+            $response = getParticipantsById($conn, $id);
+        } elseif ($option === 'delete' && $id) {
             $res = deleteActivite($conn, $id);
             $response = [
-                "status" => $res ? "success" : "error", 
+                "status" => $res ? "success" : "error",
                 "msg"    => $res ? "Activité supprimée" : "Erreur lors de la suppression"
             ];
-        } elseif($option === 'update' && $data){
-            
-            $res = updateActivite($conn,$data);
+        } elseif ($option === 'update' && $data) {
+
+            $res = updateActivite($conn, $data);
             $response = [
-                "status" => $res ? "success" : "error", 
+                "status" => $res ? "success" : "error",
                 "msg"    => $res ? "Activité update" : "Erreur lors de update"
             ];
-        } elseif($option === 'add'){
+        } elseif ($option === 'add') {
             $res = addActivite($conn, $data);
             $response = [
-                "status" => $res ? "success" : "error", 
+                "status" => $res ? "success" : "error",
                 "msg"    => $res ? "Activité ajoutée" : "Erreur lors de l'ajout"
             ];
-        }
-        
-        else {
+        } else {
             $response = $id ? getActiviteById($conn, $id) : getActivites($conn);
         }
         break;
 
     case 'emplacements':
-        
-        if ($option === 'reservations'){
+
+        if ($option === 'reservations') {
             // if($secondOption === 'entreDate' && $date_debut && $date_fin){
             //     $response = getReservationEmplacementswithDates($conn, $date_debut, $date_fin);
             //     // $response = $date_fin;
             // if($secondOption === 'BetweenDate' && $today ){
             //     $response = ($conn,$today);
-           if($secondOption === 'add'){
-                $response = PutReservationsEmplacement($conn,$data);    
-            }
-            elseif($secondOption === 'delete' && $id){
-                $res = deleteReservationEmplacement($conn,$id);
+            if ($secondOption === 'add') {
+                $response = PutReservationsEmplacement($conn, $data);
+            } elseif ($secondOption === 'delete' && $id) {
+                $res = deleteReservationEmplacement($conn, $id);
                 $response = [
-                    "status" => $res ? "success" : "error", 
+                    "status" => $res ? "success" : "error",
                     "msg"    => $res ? "Reservation supprime" : "Erreur lors de la suppression"
                 ];
             }
+        } elseif (($option === 'mois' && $mois)) {
+            $response = getBetweenDateOnEmplacementGeneral($conn, $mois);
+            // $response = [
+            //     "res" => $date_debut,
+            //     "date_fin" => $date_fin
+            // ];
+        } else {
+            $response = getEmplacement($conn);
         }
-        elseif(($option === 'mois' && $mois)){
-                $response = getBetweenDateOnEmplacementGeneral($conn, $mois);
-                // $response = [
-                //     "res" => $date_debut,
-                //     "date_fin" => $date_fin
-                // ];
-        }
-          
-        
-        else{
-        $response = getEmplacement($conn);
-        }
+        break;
+    case 'equipeTechnique':
+
+            if ($option == "getMembre" && $id) {
+                $response = getMembreEquipe($conn,$id);
+            }
         break;
 
     default:

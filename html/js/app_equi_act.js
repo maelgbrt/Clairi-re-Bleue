@@ -14,6 +14,19 @@ createApp({
       "cap_act":""
     });
 
+
+    const id_equipe_tech = 1;
+
+    const membre_equipe_tech = ref([]);
+
+    const get_membre_equipe = () => {
+      axios.get("..").then(response => {
+        membre_equipe_tech.value = response.data;
+
+      })
+    };
+
+
     const loadData = () => {
       get_activites();
     }
