@@ -128,6 +128,8 @@ switch ($entity) {
                 "status" => $res ? "success" : "error",
                 "msg"    => $res ? "Activité ajoutée" : "Erreur lors de l'ajout"
             ];
+        } elseif ($option === 'withanimateur' && $id) {
+            $response = getwithAnimateur($conn,$id);
         } else {
             $response = $id ? getActiviteById($conn, $id) : getActivites($conn);
         }
