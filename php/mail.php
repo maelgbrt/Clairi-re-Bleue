@@ -1,7 +1,7 @@
 <?php
 
 //variables
-$destinataire = "Shaka.holt@yahoo.com";
+$destinataire = "maelgaborit1407@gmail.com";
 $sujet = "Test d'envoi d'email";
 $message = "<html><body>";
 $message .= "<h1>Voici le recapitulatif de votre reservation</h1>";
