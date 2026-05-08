@@ -64,9 +64,12 @@ createApp({
     }
 
 
+    const mdp_reset = () => {
+
+    }
 
 
-
+    const 
 
 
 
@@ -82,7 +85,8 @@ createApp({
         handleLogin,
         error,
         inscription,
-        handleRegister
+        handleRegister,
+        mdp_reset
     };
   }
 }).mount('#app');

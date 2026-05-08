@@ -32,10 +32,13 @@
         <p class="mt-5" @click="action = 'inscription'" style="cursor: pointer;">
             Vous n'êtes pas encore inscrit ?
         </p>
+        <p class="mt-5" @click="action = 'mdp_oublie'" style="cursor: pointer;">
+            Mot de Passe Oublié ?
+        </p>
         
     </div>
 
-    <div v-else class="  gap-2 box-border flex items-center relative flex-col backdrop-blur-3xl text-white p-5 rounded-xl shadow-2xl box-border">
+    <div v-else-if="action === 'inscription'" class="  gap-2 box-border flex items-center relative flex-col backdrop-blur-3xl text-white p-5 rounded-xl shadow-2xl box-border">
         <div class=" w-32 h-32 rounded-full">
         <img src="../images/connexion.png" alt="" class="w-full">
         </div>
@@ -72,6 +75,25 @@
             Déjà un compte ? Connectez-vous.
         </p>
         <p v-if="error">{{error}}</p>
+    </div>
+
+    <div v-else-if="action === 'mdp_oublie'"  class="gap-2 box-border flex items-center relative flex-col backdrop-blur-3xl text-white p-5 rounded-xl shadow-2xl box-border">
+        <div class=" w-32 h-32 rounded-full">
+        <img src="../images/connexion.png" alt="" class="w-full">
+        </div>
+        <form @submit.prevent="mdp_reset()" class="flex flex-col gap-5 box-border">
+             <h1 class="font-bold text-3xl text-center">MOT DE PASSE OUBLIÉ ?</h1>
+            <div class="flex flex-col gap-4 items-center box-border">
+                <input placeholder="Votre Adresse Mail" class="text-black shadow-md p-3 w-full min-w-0 box-border rounded-lg" v-model="inscription.prenom" type="text" id="reg-prenom" required>
+                <input type="submit" value="Envoyer" class="p-3 text-white rounded-lg cursor-pointer transition duration-1000 bg-red-500 hover:bg-red-600 shadow-xl w-full">
+            </div>
+        </form>
+        <p class="mt-5" @click="action = 'inscription'" style="cursor: pointer;">
+            Vous n'êtes pas encore inscrit ?
+        </p>
+         <p @click="action = 'connexion'" style="cursor: pointer;">
+            Déjà un compte ? Connectez-vous.
+        </p>
     </div>
 
 </body>
