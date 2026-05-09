@@ -41,8 +41,24 @@ switch ($entity) {
     case 'family':
         if ($option === 'nbMembre' && $id) {
             $response = getNbMembre($conn, $id);
-        } elseif ($option === 'membre' && $id) {
-            $response = getMembreFamille($conn,$id);
+        } elseif ($option === 'membre') {
+            if($secondOption === 'add'){
+                $res = ajouterMembreFamille($conn,$data);
+                $response = [
+                    "status" => $res ? "Success" : "Error",
+                    "msg" => $res ? "Membre ajouté a la famille" : "Erreur lors de l'ajout du membre dans une famille"
+                ];
+            }elseif($secondOption == 'delete' && $id){
+                $res = deleteMembreFamille($conn,$id);
+                $response = [
+                    "status" => $res ? "Success": "Error",
+                    "msg" => $res ? "Membre supprimer avec Success" : "Error : Le membre n'a pas été supprimé"
+                ];
+            }else{
+                if($id){
+                    $response = getMembreFamille($conn,$id);
+                }
+            }
         } elseif ($option === 'delete' && $id) {
             $resultat = deleteFamille($conn, $id);
             $response = [

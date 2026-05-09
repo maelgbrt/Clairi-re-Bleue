@@ -235,11 +235,19 @@ overflow: hidden;
 
 
 .img-membre-famille{
-  width: 20px;
+  width: 30px;
+  margin: 0 auto;
 }
 
 .membre-famille{
-  background-color: black;
+  padding: 10px;
+  border: 2px solid white;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+.membre-famille p{
+  margin: 5px;
 }
 
 #list-membres-famille{

@@ -163,39 +163,30 @@
 
 
         <div v-if="choiceMenu == 'famille'">
-            <h1>Membre de la Famille</h1>
+            <h1>Membre de la famille : </h1>
             <div id="list-membres-famille">
-                <div class="membre-famille">
+                <div class="membre-famille" v-for="membre in membresFamilles">
                     <img src="../images/connexion.png" alt="" class="img-membre-famille">
-                    <p>Nom</p>
-                    <p>Prenom</p>
-                    <p>Date Naissance</p>
-                </div>
-                <div class="membre-famille">
-                    <img src="../images/connexion.png" alt="" class="img-membre-famille">
-                    <p>Nom</p>
-                    <p>Prenom</p>
-                    <p>Date Naissance</p>
-                </div>
-                <div class="membre-famille">
-                    <img src="../images/connexion.png" alt="" class="img-membre-famille">
-                    <p>Nom</p>
-                    <p>Prenom</p>
-                    <p>Date Naissance</p>
+                    <p>{{membre.nom}}</p>
+                    <p>{{membre.prenom}}</p>
+                    <p>{{membre.date_naissance}}</p>
+                    <button @click="deleteMembre(membre.id)">Supprimer</button> 
                 </div>
             </div>
-            <form id="creation-membre">
+            <form @submit.prevent="createMembre()" id="creation-membre" v-if="ajoutMembre">
                 <h2>Ajouter un membre</h2>
                 <label for="Prenom">Prenom :</label>
-                <input type="text" placeholder="Christopher">
+                <input type="text" v-model="membre.prenom" placeholder="Christopher">
                 <label for="Prenom">Nom :</label>
-                <input type="text" placeholder="Nolane">
+                <input type="text" placeholder="Nolane" v-model="membre.nom">
                 <label for="Prenom">Date de Naissance :</label>
-                <input type="date">
-                <button type="submit">Ajouter Prenom</button>
+                <input type="date" v-model ="membre.date_naissance">
+                <button type="submit">Ajouter {{membre.prenom}}</button>
             </form>
-            <button>Ajouter Membre</button>
-        </div>
+<button @click="ajoutMembre = !ajoutMembre">
+  {{ ajoutMembre ? "Annuler" : "Ajouter Membre" }}
+</button>
+    </div>
 </body>
 
 </html>

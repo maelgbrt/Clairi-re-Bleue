@@ -44,5 +44,10 @@ function sendMessage($conn,$data){
     return mysqli_stmt_execute($requete);
 }
 
+function deleteMembreFamille($conn,$id_membre){
+    $stmt = $conn->prepare("DELETE FROM utilisateurs WHERE id = ?");
+    $stmt->bind_param("i",$id_membre);
+    return $stmt->execute();
+}
 
 ?>

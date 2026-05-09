@@ -15,6 +15,7 @@ createApp({
     const fifo_emplacements = ref([]);
     const emplacements = ref([]);
     const msg = ref(null);
+    const menuOpen = ref(null);
     
     const aujourdhui = new Date();
     console.log("aujourdhui" + aujourdhui);
@@ -580,7 +581,8 @@ const ChercherEmplacements = () => {
     handleAccept, findParticipantsActivite, visible, visibleChoice, reservationDelete,
     Choice, FamilleChoice_id, NBMembres, InscrireF_A, InscrireFamilleAFifo,
     emplacements, fifo_emplacements, reservations_emplacements, todayEU,
-    datePrev, dateNext,InscrireF_E,dateDebutEmplacement,dateFinEmplacement,NumEmplacementChoisi,msg,getDuree,reserverCreneau,InscrireFamilleEmplacment,calendrier,creneaux,month,ChercherEmplacements,reservationEmpDelete
+    datePrev, dateNext,InscrireF_E,dateDebutEmplacement,dateFinEmplacement,NumEmplacementChoisi,msg,getDuree,reserverCreneau,InscrireFamilleEmplacment,calendrier,creneaux,month,ChercherEmplacements,reservationEmpDelete,
+    menuOpen
   };
   }
 }).mount('#app');

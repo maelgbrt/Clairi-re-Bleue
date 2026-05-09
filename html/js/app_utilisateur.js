@@ -31,8 +31,17 @@ createApp({
     const ChoiceOverlay = ref(null);
     const Infos_activites = ref([]);
     const id_payeur = ref();
+    const membresFamilles = ref([]);
+    const ajoutMembre = ref();
 
 
+    const membre = ref(
+      {
+        "nom" : '',
+        "prenom" : '',
+        "date_naissance" : ''
+      }
+    )
 
     const Pos_emplacements = [
     { id: 1, x: 0, y: 20 },
@@ -130,6 +139,7 @@ createApp({
     }
 
 
+    
 
     const deleteReservation = (id_res_empl) => {
       
@@ -147,6 +157,12 @@ createApp({
         activites.value = response.data;
       }).catch(err => console.error("Erreur API :", err));
     };
+
+    const get_membres_famille = () => {
+      axios.get(`../../php/admin/familles/membres/${id_famille.value}`).then(response =>{
+        membresFamilles.value = response.data;
+      })
+    }
 
     // const get_fifo_activites = (id_famille) => {
     //   axios.get(`../php/utilisateur.php?entity=activite&option=fifo&id=`${id_famille}).then(response=> {
@@ -273,6 +289,23 @@ const disconnect = () => {
 }
 
 
+const createMembre = () => {
+  membre.value.id_famille = id_famille.value;
+  console.log(membre.value);
+  axios.post("../../php/admin/familles/membres/add",membre.value).then(response =>{
+    console.log("creation membre")
+    console.log(response.data);
+    loadData();
+    ajoutMembre.value = !ajoutMembre.value;
+  })
+}
+
+const deleteMembre = (id_membre) => {
+  axios.delete(`../../php/admin/familles/membres/delete/${id_membre}`).then(response => {
+    loadData();
+  })
+}
+
 
 
 
@@ -293,16 +326,6 @@ const disconnect = () => {
 //     }
 //   })
 // }
-async function isConnected() {
-    try {
-        const response = await axios.get('../../php/login/isConnected');
-        console.log(response.data.id);
-        return response.data.id; 
-    } catch (error) {
-        console.error("Erreur de session", error);
-        return null;
-    }
-}
 
 const InfoActivite = (id_activite) => {
   ChoiceOverlay.value = 'InfoActivite';
@@ -341,6 +364,8 @@ const InfoActivite = (id_activite) => {
 
 
 
+
+
     const MajInfos = () => {
       axios.post(`../../php/utilisateur.php?entity=users&option=update`, payeur.value).then(response =>{
       loadData();
@@ -353,7 +378,11 @@ const InfoActivite = (id_activite) => {
 async function isConnected() {
         try {
             const response = await axios.get('../../php/login/isConnected.php');
-            return response.data.id; 
+            if (response.data.role == 'famille'){
+              return response.data.id; 
+            }else{
+              return null
+            }
         } catch (error) {
             console.error("Erreur de session", error);
             return null;
@@ -363,6 +392,7 @@ async function isConnected() {
     // --- Chargement des données ---
     const loadData = async () => {
         const id = await isConnected();
+        console.log("c quoi le id : ",id)
         if (id) {
             id_famille.value = id;
             
@@ -371,6 +401,7 @@ async function isConnected() {
             get_activites_with_reservations(id);
             get_reservation_famille(id);
             get_emplacements(); // Ne dépend pas forcément de l'ID famille
+            get_membres_famille();
         } else {
             // Optionnel : rediriger vers login si pas d'ID
             window.location.href = "login.html";
@@ -413,6 +444,11 @@ onMounted(() => {
       delFifoMb,
       MajInfos,
       confirmation,
+      membresFamilles,
+      ajoutMembre,
+      membre,
+      createMembre,
+      deleteMembre
     };
   }
 }).mount('#app');
