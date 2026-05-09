@@ -17,15 +17,16 @@
 
 
     <div id="menu">
-    <button id="burger" @click="menuOpen = !menuOpen">☰</button>
-    <div id="menu-links" :class="{ open: menuOpen }">
-        <a href="../index.html">Home</a>
-        <a @click="choiceMenu = 'activites'">Activités</a>
-        <a @click="choiceMenu = 'emplacement'">Emplacement</a>
-        <a @click="choiceMenu = null">Informations</a>
-        <a @click="disconnect()">Deconnexion</a>
+        <button id="burger" @click="menuOpen = !menuOpen">☰</button>
+        <div id="menu-links" :class="{ open: menuOpen }">
+            <a href="../index.html">Home</a>
+            <a @click="choiceMenu = 'activites'">Activités</a>
+            <a @click="choiceMenu = 'emplacement'">Emplacement</a>
+            <a @click="choiceMenu = 'famille'">Famille</a>
+            <a @click="choiceMenu = null">Informations</a>
+            <a @click="disconnect()">Deconnexion</a>
+        </div>
     </div>
-</div>
 
 
     <div id="card">
@@ -35,13 +36,17 @@
                 <h1>Bonjour {{ payeur.prenom }},</h1>
                 <div class="infos-user"><label>Nom :</label><input type="text" v-model="payeur.nom"></div>
                 <div class="infos-user"><label>Adresse :</label><input type="text" v-model="payeur.adresse"></div>
-                <div class="infos-user"><label>Date de Naissance : </label><input type="text" v-model="payeur.date_naissance"></div>
-                <div class="infos-user"><label>Numéro de Téléphone : </label><input type="number" v-model="payeur.telephone"></div>
+                <div class="infos-user"><label>Date de Naissance : </label><input type="text"
+                        v-model="payeur.date_naissance"></div>
+                <div class="infos-user"><label>Numéro de Téléphone : </label><input type="number"
+                        v-model="payeur.telephone"></div>
                 <div class="infos-user"><label>Email : </label><input type="text" v-model="payeur.mail"></div>
-                <div class="infos-user"><label>Code Postal : </label><input type="text" v-model="payeur.code_postal"></div>
+                <div class="infos-user"><label>Code Postal : </label><input type="text" v-model="payeur.code_postal">
+                </div>
                 <div class="infos-user"><label>Ville : </label><input type="text" v-model="payeur.ville"></div>
                 <button @click="MajInfos()">Modifier les Informations</button>
-                <p v-if="confirmation" style="color: green;font-size: 1.4em; font-weight: bold;">Les changements ont été enregistrés</p>
+                <p v-if="confirmation" style="color: green;font-size: 1.4em; font-weight: bold;">Les changements ont été
+                    enregistrés</p>
             </div>
         </div>
 
@@ -54,7 +59,8 @@
                     <div id="valid" v-if="activite.nb_reservations != 0">
                         <p>VOTRE RÉSERVATION EST VALIDÉ !! </p>
                     </div>
-                    <div style="background-color: blueviolet;" id="valid" v-else-if="activite.file_attente_activite != null">
+                    <div style="background-color: blueviolet;" id="valid"
+                        v-else-if="activite.file_attente_activite != null">
                         <p>VOUS ETES DANS LA FILE D'ATTENTE</p>
                     </div>
 
@@ -68,36 +74,43 @@
                     <input v-model="nb_membre" type="number" min="1" step="1" placeholder="Nombre de Personnes">
                     <p>Prix : {{ activite.prix * Math.max(nb_membre || 0, 0) }} €</p>
                     <!-- Pas encore réservé -->
-<div v-if="activite.nb_reservations == 0 && activite.file_attente_activite == null ">
-    <button @click="reserverActivite(activite.id_activite)">Réserver</button>
-                            <p>Encore {{ activite.cap_act }} places disponibles</p>
+                    <div v-if="activite.nb_reservations == 0 && activite.file_attente_activite == null ">
+                        <button @click="reserverActivite(activite.id_activite)">Réserver</button>
+                        <p>Encore {{ activite.cap_act }} places disponibles</p>
 
-</div>
+                    </div>
 
- <div v-else-if="activite.file_attente_activite != null">
-    <button @click="delFifoMb(activite.file_attente_activite.id_attente)">Retirer Membre(s)</button>
-    <button @click="addFifoMb(activite.file_attente_activite.id_attente)">Ajouter Membre(s) File Attente</button>
-    <button @click="deleteFifo(activite.file_attente_activite.id_attente)">Supprimer de la file attente</button>
-    <p>{{activite.file_attente_activite.nb_membre}} en file d'attente</p>
+                    <div v-else-if="activite.file_attente_activite != null">
+                        <button @click="delFifoMb(activite.file_attente_activite.id_attente)">Retirer Membre(s)</button>
+                        <button @click="addFifoMb(activite.file_attente_activite.id_attente)">Ajouter Membre(s) File
+                            Attente</button>
+                        <button @click="deleteFifo(activite.file_attente_activite.id_attente)">Supprimer de la file
+                            attente</button>
+                        <p>{{activite.file_attente_activite.nb_membre}} en file d'attente</p>
 
-</div>
-<!-- En file d'attente
+                    </div>
+                    <!-- En file d'attente
 
 
 <!-- Déjà réservé → boutons gestion -->
-<div v-else>
-    <button @click="retirerMembreActivite(activite.id_activite, activite.id_reservation_activite)">Retirer Membre(s)</button>
-    <button @click="ajouterMembreActivite(activite.id_activite, activite.id_reservation_activite)">Ajouter Membre(s)</button>
-    <button @click="deleteReservationActivite(activite.id_reservation_activite)">Supprimer la réservation</button>
+                    <div v-else>
+                        <button
+                            @click="retirerMembreActivite(activite.id_activite, activite.id_reservation_activite)">Retirer
+                            Membre(s)</button>
+                        <button
+                            @click="ajouterMembreActivite(activite.id_activite, activite.id_reservation_activite)">Ajouter
+                            Membre(s)</button>
+                        <button @click="deleteReservationActivite(activite.id_reservation_activite)">Supprimer la
+                            réservation</button>
                         <p>Encore {{ activite.cap_act }} places disponibles</p>
 
-</div>
+                    </div>
                 </div>
             </div>
         </div>
 
 
-       <div v-if="choiceMenu == 'emplacement'" id="emplacements">
+        <div v-if="choiceMenu == 'emplacement'" id="emplacements">
             <div v-if="ResaEmplacement.length > 0" id="resaEmplacement">
                 <h1>Oooh Mais c'est pour bientôt !!!</h1>
                 <div v-for="resa in ResaEmplacement" :key="resa.id" class="resaEmplacement">
@@ -105,6 +118,7 @@
                         Tu as réservé l'emplacement <b>{{ resa.nom }}</b>
                         du {{ new Date(resa.date_debut).toLocaleDateString() }}
                         au {{ new Date(resa.date_fin).toLocaleDateString() }}
+                        pour {{resa.nb_membre}} membres
                     </p>
                     <button @click="deleteReservation(resa.id_res_empl)">Supprimer la réservation</button>
                 </div>
@@ -119,10 +133,12 @@
                     <p>Capacité : {{ emplacement.capacite }}</p>
                     <div v-for="resa in emplacement.reservations" :key="resa.id">
                         <h3>Reservation</h3>
-                        <p>Réservé du {{  new Date(resa.date_debut).toLocaleDateString() }} au {{  new Date(resa.date_fin).toLocaleDateString()}}</p>
+                        <p>Réservé du {{ new Date(resa.date_debut).toLocaleDateString() }} au {{ new
+                            Date(resa.date_fin).toLocaleDateString()}}</p>
                     </div>
 
-                    <form @submit.prevent="InscrireFamilleEmplacement(emplacement.num_emplacement)" class="formulaire">
+                    <form @submit.prevent="InscrireFamilleEmplacement(emplacement.num_emplacement,emplacement.capacite)"
+                        class="formulaire">
                         <input type="number" required placeholder="Nb de Places" v-model="nb_membre">
                         <input type="date" required v-model="date_debut">
                         <input type="date" required v-model="date_fin">
@@ -140,10 +156,46 @@
                     </div>
                 </div>
             </div>
-       </div>
+        </div>
 
 
 
-       </body>
+
+
+        <div v-if="choiceMenu == 'famille'">
+            <h1>Membre de la Famille</h1>
+            <div id="list-membres-famille">
+                <div class="membre-famille">
+                    <img src="../images/connexion.png" alt="" class="img-membre-famille">
+                    <p>Nom</p>
+                    <p>Prenom</p>
+                    <p>Date Naissance</p>
+                </div>
+                <div class="membre-famille">
+                    <img src="../images/connexion.png" alt="" class="img-membre-famille">
+                    <p>Nom</p>
+                    <p>Prenom</p>
+                    <p>Date Naissance</p>
+                </div>
+                <div class="membre-famille">
+                    <img src="../images/connexion.png" alt="" class="img-membre-famille">
+                    <p>Nom</p>
+                    <p>Prenom</p>
+                    <p>Date Naissance</p>
+                </div>
+            </div>
+            <form id="creation-membre">
+                <h2>Ajouter un membre</h2>
+                <label for="Prenom">Prenom :</label>
+                <input type="text" placeholder="Christopher">
+                <label for="Prenom">Nom :</label>
+                <input type="text" placeholder="Nolane">
+                <label for="Prenom">Date de Naissance :</label>
+                <input type="date">
+                <button type="submit">Ajouter Prenom</button>
+            </form>
+            <button>Ajouter Membre</button>
+        </div>
+</body>
 
 </html>

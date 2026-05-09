@@ -21,7 +21,7 @@ createApp({
     const data = ref([]);
     const nb_membre = ref(null);
     const displayMenu = ref(true);
-    const choiceMenu = ref();
+    const choiceMenu = ref('famille');
     const emplacements = ref([]);
     const month = ref(new Date().toISOString().slice(0, 7));
     const date_debut = ref();
@@ -73,15 +73,14 @@ createApp({
       
       axios.get(`../../php/utilisateur.php?entity=emplacements&option=reservation&id=${id_famille.value}`)
         .then((response) => {
-          console.log("Réponse de l'API pour la réservation d'emplacement :", response.data);
           ResaEmplacement.value = response.data;
-          console.log("Réservation d'emplacement de la famille :", ResaEmplacement.value);
+          console.log("jej veux voir ou jen suis");
+          console.log(response.data);
         })
         .catch(err => console.error("Erreur API :", err));
     }
 
     const reserverActivite = (id_activite) => {
-      console.log("la fonction")
       if(nb_membre.value <= 0){
         alert("Le nombre de personnes doit être supérieur à 0");
         nb_membre.value = 0;
@@ -89,10 +88,12 @@ createApp({
     }
       data.value.id_activite = id_activite;
       data.value.nb_membre = nb_membre.value;
+      data.value.id_famille = id_famille.value;
+      
 
       axios.post('../../php/utilisateur.php?entity=users&option=reservation&secondOption=add',data.value) .then((response) => {
-        console.log("Réservation ajoutée :", response.data);
         loadData(); // Recharger les données après la réservation
+        nb_membre.value = NULL;
       })
       .catch(err => console.error("Erreur API :", err));
     };
@@ -101,30 +102,28 @@ createApp({
     const deleteFifo = (id) => {
       axios.get(`../../php/admin/activites/fifo/delete/`+id).then(response => {
         loadData();
+        nb_membre.value = NULL;
       })
     }
 
 
     const addFifoMb = (id) => {
       data.value = {"nb_membre_aj" : nb_membre.value}
-      console.log(data.value);
-      console.log(id);
       axios.post(`../../php/utilisateur.php?entity=activites&option=fifo&secondOption=addM&id=${id}`,data.value).then(response => {
         loadData();
+        nb_membre.value = NULL;
       })
     }
     const delFifoMb = (id) => {
       data.value = {"nb_membre_aj" : nb_membre.value}
-      console.log(data.value);
-      console.log(id);
       axios.post(`../../php/utilisateur.php?entity=activites&option=fifo&secondOption=delM&id=${id}`,data.value).then(response => {
         loadData();
+        nb_membre.value = NULL;
       })
     }
 
 
     const deleteReservationActivite = (id_res_activite) => {
-      console.log(id_res_activite);
       axios.get(`../../php/admin.php?entity=activites&option=reservations&secondOption=delete&id=${id_res_activite}`).then(response => {
         loadData();
       })
@@ -137,7 +136,6 @@ createApp({
       axios.post(`../../php/utilisateur.php?entity=emplacements&option=delete&id=${id_res_empl}`)
         .then((response) => {
           alert("Réservation supprimée !");
-          console.log("Réservation supprimée :", response.data);
           get_reservation_famille(); // Recharger les réservations après suppression
         })
         .catch(err => console.error("Erreur API :", err));
@@ -147,7 +145,6 @@ createApp({
     const get_activites_with_reservations = (id_famille) => {
       axios.get(`../../php/utilisateur.php?entity=activites&option=with_reservations&id=${id_famille}`).then((response) => {
         activites.value = response.data;
-        console.log("Activités avec réservations :", activites.value); 
       }).catch(err => console.error("Erreur API :", err));
     };
 
@@ -161,43 +158,50 @@ createApp({
     const get_emplacements = () => {
     axios.get('../../php/admin/emplacements/mois/' + month.value).then(response => {
     emplacements.value = response.data
+    console.log("les emplacements");
     console.log(response.data);
    });
 }
 
 
 
-  const InscrireFamilleEmplacement = (num_emplacement) => { 
+const InscrireFamilleEmplacement = (num_emplacement, capacite) => { 
 
-    if(nb_membre.value <=0 ){
-      alert("Vous devez etre plsude 0");
-      nb_membre.value = 0;
-      return
-    }
-  const data = {
-    num_emplacement: num_emplacement,
-    id_famille: id_famille.value,
-    nb_membre: nb_membre.value,
-    date_debut: date_debut.value,
-    date_fin: date_fin.value
-  };
+  if(nb_membre.value <= 0){
+    alert("Vous devez etre plus de 0");
+    nb_membre.value = 0;
+    return;
+  }
+  else if(nb_membre.value > capacite){
+    alert("Vous etes trop nombreux");
+    nb_membre.value = null;
+    return;
+  }
+  else {
+    const data = {
+      num_emplacement: num_emplacement,
+      id_famille: id_famille.value,
+      nb_membre: nb_membre.value,
+      date_debut: date_debut.value,
+      date_fin: date_fin.value
+    };
 
-  NumEmplacement.value = num_emplacement;
-  console.log("Numéro d'emplacement sélectionné :", NumEmplacement.value);
-  console.log("Données envoyées à l'API :", data);
+    NumEmplacement.value = num_emplacement;
+    console.log("Numéro d'emplacement sélectionné :", NumEmplacement.value);
+    console.log("Données envoyées à l'API :", data);
 
-  axios.post('../../php/admin/emplacements/reservations/add', data).then(response =>{
-    if (response.data.status === 'compromis'){
-
-    calendrier.value = response.data.calendrier;
-    console.log(calendrier.value);
-    creneauxDispo();
-    }
-    else if(response.data.status === 'success'){
-      alert("Réservation réussie !");
-    }
-  })
-  loadData();
+    axios.post('../../php/admin/emplacements/reservations/add', data).then(response => {
+      if (response.data.status === 'compromis'){
+        calendrier.value = response.data.calendrier;
+        console.log(calendrier.value);
+        creneauxDispo();
+      }
+      else if(response.data.status === 'success'){
+        alert("Réservation réussie !");
+      }
+    });
+    loadData();
+  }
 };
   
 const calendrier = ref([]);
@@ -346,20 +350,36 @@ const InfoActivite = (id_activite) => {
       })
 
     }
+async function isConnected() {
+        try {
+            const response = await axios.get('../../php/login/isConnected.php');
+            return response.data.id; 
+        } catch (error) {
+            console.error("Erreur de session", error);
+            return null;
+        }
+    }
 
-    const loadData = () => {
-      get_activites_with_reservations(id_famille.value);
-      get_payeur(id_famille.value);
-      nb_membre.value = null; 
-      get_emplacements(); 
-      get_reservation_famille();
-
+    // --- Chargement des données ---
+    const loadData = async () => {
+        const id = await isConnected();
+        if (id) {
+            id_famille.value = id;
+            
+            // On lance toutes les requêtes qui dépendent de l'ID
+            get_payeur(id);
+            get_activites_with_reservations(id);
+            get_reservation_famille(id);
+            get_emplacements(); // Ne dépend pas forcément de l'ID famille
+        } else {
+            // Optionnel : rediriger vers login si pas d'ID
+            window.location.href = "login.html";
+        }
     };
+onMounted(() => {
+  loadData();
+});
 
-    onMounted(() => {
-      isConnected();
-      loadData();
-    });
 
     return { 
       id_famille, // Ajouté pour pouvoir l'utiliser dans le HTML

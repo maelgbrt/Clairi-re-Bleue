@@ -177,10 +177,12 @@ const dateNext = () => {
     };
 
     const reservationDelete = (id) => {
+
   if(confirm("Supprimer")) {
     axios.get("../php/admin/activites/reservations/delete/" + id).then(result => {
+      console.log(result.data);
       if(result.data.status === 'success') {
-        participants.value = participants.value.filter(p => p.id_famille !== id)
+        participants.value = participants.value.filter(p => p.id_reservation_activite !== id)
       }
     })
   }
@@ -253,7 +255,7 @@ const dateNext = () => {
     axios.post("../../php/admin/activites/reservations/add", data)
         .then(response => {
             if (response.data.status === "success") {
-                alert("Inscription réussie !");
+                
                 loadData(); 
                 Choice.value = null;
                 NBMembres.value = null;

@@ -44,6 +44,7 @@ function connected($conn,$data){
                 $_SESSION['equipe_tech'] = $equipe_tech['id_equipe_tech'];
                 $res['status'] = "success";
                 $res['role'] = "equipe_tech";
+                $res['access'] = $equipe_tech['access'];
             } else {
                 $res['status'] = "failed";
                 $res['debug'] = "Mot de passe Incorrect Compte Admin";
@@ -78,10 +79,10 @@ function verifConnect(){
             "id" => $_SESSION['famille'],
             "Role" => "famille"
         ];
-    }elseif(isset($_SESSION['admin'])){
+    }elseif(isset($_SESSION['equipe_tech'])){
         $res = [
-            "id" => $_SESSION['admin'],
-            "Role" => "admin"
+            "id" => $_SESSION['equipe_tech'],
+            "Role" => "equipe_tech"
         ];
     }
     else{

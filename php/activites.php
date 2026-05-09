@@ -244,6 +244,7 @@ $sql = "SELECT
     rs.id_activite,
     rs.nb_membre,
     rs.id_famille, 
+    rs.id_reservation_activite,
     u.nom AS nom_payeur,
 
     u.prenom AS prenom_payeur
@@ -441,7 +442,7 @@ function updateActivite($conn,$data){
      WHERE id = ?";
 
     $res = mysqli_prepare($conn,$sql);
-    mysqli_stmt_bind_param($res,"isssissi",$prix,$date_d,$date_f,$nom,$cap_act,$description,$lieu,$id_animateur,$id);
+    mysqli_stmt_bind_param($res, "isssissii", $prix, $date_d, $date_f, $nom, $cap_act, $description, $lieu, $id_animateur, $id);
     return mysqli_stmt_execute($res);
 }
 

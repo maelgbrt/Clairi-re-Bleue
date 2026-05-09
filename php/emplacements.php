@@ -181,11 +181,13 @@ function PutReservationEmplacementConfirme($conn,$data)
     $num_emplacement = $data['num_emplacement'];
     $date_debut = $data['date_debut'];
     $date_fin = $data['date_fin'];
+        $nb_membre = $data['nb_membre'];
 
-    $sql     = "INSERT INTO reservation_emplacement (id_famille, num_emplacement, date_debut, date_fin)
-                VALUES (?, ?, ?, ?)";
+
+    $sql     = "INSERT INTO reservation_emplacement (id_famille, num_emplacement, date_debut, date_fin,nb_membre)
+                VALUES (?, ?, ?, ?,?)";
     $requete = mysqli_prepare($conn, $sql);
-    mysqli_stmt_bind_param($requete, "iiss", $id_famille, $num_emplacement, $date_debut, $date_fin);
+    mysqli_stmt_bind_param($requete, "iissi", $id_famille, $num_emplacement, $date_debut, $date_fin,$nb_membre);
     return mysqli_stmt_execute($requete);
 }
 

@@ -41,6 +41,8 @@ switch ($entity) {
     case 'family':
         if ($option === 'nbMembre' && $id) {
             $response = getNbMembre($conn, $id);
+        } elseif ($option === 'membre' && $id) {
+            $response = getMembreFamille($conn,$id);
         } elseif ($option === 'delete' && $id) {
             $resultat = deleteFamille($conn, $id);
             $response = [

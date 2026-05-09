@@ -60,13 +60,13 @@
             <input placeholder="Numéro de Téléphone (+33)" class="text-black shadow-md p-3 rounded-lg" v-model="inscription.tel" type="tel" id="reg-adresse" required>
             
             <div class="flex gap-4 items-center">
-                <input placeholder="Ville" class="text-black w-full shadow-md p-3 rounded-lg" v-model="inscription.adresse" type="text" id="reg-ville" required>
+                <input placeholder="Ville" class="text-black w-full shadow-md p-3 rounded-lg" v-model="inscription.ville" type="text" id="reg-ville" required>
                 <input placeholder="Code Postal" class="text-black  w-full shadow-md p-3 rounded-lg" v-model="inscription.code_postal" type="number" id="reg-code_postal" required>
             </div>
             <div class="flex gap-4 items-center">
-                <input placeholder="Mot de Passe" class="text-black w-full shadow-md p-3 rounded-lg" v-model="inscription.password" type="password" id="reg-password" required>
+                <input placeholder="Mot de Passe" class="text-black w-full shadow-md p-3 rounded-lg" v-model="inscription.password" type="password"  required>
                 
-                <input placeholder="Confirmation Mot de Passe" class="text-black w-full shadow-md p-3 rounded-lg" v-model="inscription.confirm_password" type="password" id="reg-password" required>
+                <input placeholder="Confirmation Mot de Passe" class="text-black w-full shadow-md p-3 rounded-lg" v-model="inscription.confirm_password" type="password"  required>
             </div>
 
             <input class="p-3 text-white rounded-lg cursor-pointer transition duration-1000 bg-red-500 hover:bg-red-600 shadow-xl" type="submit" value="Créer un compte">
@@ -84,9 +84,10 @@
         <form @submit.prevent="mdp_reset()" class="flex flex-col gap-5 box-border">
              <h1 class="font-bold text-3xl text-center">MOT DE PASSE OUBLIÉ ?</h1>
             <div class="flex flex-col gap-4 items-center box-border">
-                <input placeholder="Votre Adresse Mail" class="text-black shadow-md p-3 w-full min-w-0 box-border rounded-lg" v-model="inscription.prenom" type="text" id="reg-prenom" required>
+                <input placeholder="Votre Adresse Mail" class="text-black shadow-md p-3 w-full min-w-0 box-border rounded-lg" v-model="mail_reinitialisation" type="text"  required>
                 <input type="submit" value="Envoyer" class="p-3 text-white rounded-lg cursor-pointer transition duration-1000 bg-red-500 hover:bg-red-600 shadow-xl w-full">
             </div>
+            {{log}}
         </form>
         <p class="mt-5" @click="action = 'inscription'" style="cursor: pointer;">
             Vous n'êtes pas encore inscrit ?
