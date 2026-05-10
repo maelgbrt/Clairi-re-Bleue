@@ -102,8 +102,10 @@ switch ($entity) {
                 $response = [
                     "status" => $res ? "success" : "error",
                     "msg"    => $res ? "Entrée ajouter à la file d'attente" : "Erreur lors de l'ajout"
-                ];
-            } else {
+                    ];
+            } elseif ($secondOption === 'update') {
+                $response = UpdateNbMembreFifo($conn,$data,$id);
+             }else {
 
                 $response = getActivitesFifo($conn);
             }
@@ -122,6 +124,9 @@ switch ($entity) {
                     "status" => $res ? "success" : "error",
                     "msg"    => $res ? "Reservation AQJOUTE" : "Erreur lors de l ajout"
                 ];
+            }elseif($secondOption == 'updateCapResa'){
+                $response ="yo";
+                $response = UpdateCapReservationActivite($conn,$data,$id);
             } else {
                 $response = $id ? getReservationsActivitebyId($conn, $id) : getReservationsActivite($conn);
             }

@@ -85,8 +85,9 @@
                             Attente</button>
                         <button @click="deleteFifo(activite)">Supprimer de la file
                             attente</button>
-                        <p>{{activite.file_attente_activite.nb_membre}} en file d'attente</p>
-                        <p>{{error}}</p>
+                            <p>{{activite.file_attente_activite.nb_membre}} en file d'attente</p>
+                            <p>{{activite.cap_act}} place(s) encore disponible</p>
+                            <p>{{error}}</p>
 
                     </div>
                     <!-- En file d'attente

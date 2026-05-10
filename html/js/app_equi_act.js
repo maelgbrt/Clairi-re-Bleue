@@ -52,7 +52,7 @@ createApp({
 
         get_activites();
       }else{
-        window.location.href = "utilisateur.html";
+        window.location.href = "login.html";
       }
     }
 

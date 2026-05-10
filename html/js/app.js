@@ -196,7 +196,7 @@ const dateNext = () => {
       get_animateur();
       get_membres();
       }else{
-        window.location.href ="login.html";
+        // window.location.href ="login.html";
       }
 }
 
@@ -609,7 +609,7 @@ const DeleteAnimateur = (id_equipe_tech) =>{
 
 const disconnect = () => {
   axios.get('../../php/login/disconnected').then(response => {
-    window.location.href = 'login.html';
+    // window.location.href = 'login.html';
   }).catch(err => {
     console.error("Erreur lors de la déconnexion :", err);
   });

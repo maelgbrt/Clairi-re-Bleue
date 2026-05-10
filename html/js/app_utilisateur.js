@@ -185,7 +185,6 @@ createApp({
     const addFifoMb = (activite) => {
       id = activite.file_attente_activite.id_attente
       data.value = { "nb_membre_aj": nb_membre.value };
-      console.log("ya");
       console.log(data.value);
       axios.post(`../../php/utilisateur.php?entity=activites&option=fifo&secondOption=addM&id=${id}`, data.value).then(() => {
         loadData();
@@ -193,29 +192,62 @@ createApp({
       });
     };
 
-    const delFifoMb = (activite) => {
+
+
+
+ function updateResaActivite(activite,nb_membre){
+   data.value = {"id_activite" : activite.id_activite,"id_famille" : id_famille.value,"nb_membre" : nb_membre}
+   console.log(data.value);
+    axios.post(`../../php/admin.php?entity=activites&option=reservations&secondOption=updateCapResa&id=${nb_membre}`,data.value).then(response =>{
+      console.log(response.data);
+    })
+    }
+
+
+  
+    // updateFifo(activite);
+
+
+
+
+
+
+
+
+
+
+
+
+   const delFifoMb = (activite) => {
   if (!nb_membre.value || nb_membre.value <= 0) {
     alert("Veuillez saisir un nombre");
     return;
   }
 
-  const nb_apres_retrait = activite.file_attente_activite.nb_membre - nb_membre.value;
+  console.log("ho hey");
 
-  if (nb_membre.value > activite.file_attente_activite.nb_membre) {
+  const nb_fifo_actuel = activite.file_attente_activite.nb_membre;
+  const nb_apres_retrait = nb_fifo_actuel - nb_membre.value;
+  
+
+  console.log("après retrait:", nb_apres_retrait,"acivite capacite : " ,activite.cap_act);
+
+  if (nb_membre.value > nb_fifo_actuel) {
     alert("Vous n'êtes pas autant dans la file d'attente");
     return;
-  } else if (nb_apres_retrait <= 0) {
-    deleteFifo(activite.file_attente_activite.id_attente);
+  } else if (nb_apres_retrait == 0) {
+    // Plus personne → juste supprimer la fifo
+    deleteFifo(activite).then(() => loadData());
   } else if (nb_apres_retrait <= activite.cap_act) {
-    const payload = {
-      id_activite: activite.id_activite,
-      id_famille: id_famille.value,
-      nb_membre: nb_apres_retrait,
-    };
-    axios.post('../../php/utilisateur.php?entity=users&option=reservation&secondOption=add', payload)
-      .then(() => deleteFifo(activite))
-      .then(() => loadData());
-  } else {
+   
+    console.log("on peut le metre ds resa")
+    nb_membre.value = nb_apres_retrait
+    console.log(activite);
+    updateResaActivite(activite,nb_apres_retrait);
+    deleteFifo(activite)
+    loadData();
+  }else{
+    console.log("il va la");
     const payload = { nb_membre_aj: nb_membre.value, signe: '-' };
     axios.post(`../../php/utilisateur.php?entity=activites&option=fifo&secondOption=delM&id=${activite.file_attente_activite.id_attente}`, payload)
       .then(() => { loadData(); nb_membre.value = null; });
