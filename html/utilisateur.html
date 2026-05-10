@@ -59,8 +59,7 @@
                     <div id="valid" v-if="activite.nb_reservations != 0">
                         <p>VOTRE RÉSERVATION EST VALIDÉ !! </p>
                     </div>
-                    <div style="background-color: blueviolet;" id="valid"
-                        v-else-if="activite.file_attente_activite != null">
+                    <div id="valid" style="background-color: blueviolet;" v-if="activite.file_attente_activite != null" >
                         <p>VOUS ETES DANS LA FILE D'ATTENTE</p>
                     </div>
 
@@ -81,12 +80,13 @@
                     </div>
 
                     <div v-else-if="activite.file_attente_activite != null">
-                        <button @click="delFifoMb(activite.file_attente_activite.id_attente)">Retirer Membre(s) File Attente</button>
-                        <button @click="addFifoMb(activite.file_attente_activite.id_attente)">Ajouter Membre(s) File
+                        <button @click="delFifoMb(activite)">Retirer Membre(s) File Attente</button>
+                        <button @click="addFifoMb(activite)">Ajouter Membre(s) File
                             Attente</button>
-                        <button @click="deleteFifo(activite.file_attente_activite.id_attente)">Supprimer de la file
+                        <button @click="deleteFifo(activite)">Supprimer de la file
                             attente</button>
                         <p>{{activite.file_attente_activite.nb_membre}} en file d'attente</p>
+                        <p>{{error}}</p>
 
                     </div>
                     <!-- En file d'attente

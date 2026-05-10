@@ -174,30 +174,53 @@ createApp({
         .catch(err => console.error("Erreur API :", err));
     };
 
-    const deleteFifo = (id) => {
+    const deleteFifo = (activite) => {
+      id = activite.file_attente_activite.id_attente
       axios.get(`../../php/admin/activites/fifo/delete/` + id).then(() => {
         loadData();
         nb_membre.value = null;
       });
     };
 
-    const addFifoMb = (id) => {
+    const addFifoMb = (activite) => {
+      id = activite.file_attente_activite.id_attente
       data.value = { "nb_membre_aj": nb_membre.value };
       console.log("ya");
       console.log(data.value);
-      // axios.post(`../../php/utilisateur.php?entity=activites&option=fifo&secondOption=addM&id=${id}`, data.value).then(() => {
-      //   loadData();
-      //   nb_membre.value = null;
-      // });
-    };
-
-    const delFifoMb = (id) => {
-      data.value = { "nb_membre_aj": nb_membre.value };
-      axios.post(`../../php/utilisateur.php?entity=activites&option=fifo&secondOption=delM&id=${id}`, data.value).then(() => {
+      axios.post(`../../php/utilisateur.php?entity=activites&option=fifo&secondOption=addM&id=${id}`, data.value).then(() => {
         loadData();
         nb_membre.value = null;
       });
     };
+
+    const delFifoMb = (activite) => {
+  if (!nb_membre.value || nb_membre.value <= 0) {
+    alert("Veuillez saisir un nombre");
+    return;
+  }
+
+  const nb_apres_retrait = activite.file_attente_activite.nb_membre - nb_membre.value;
+
+  if (nb_membre.value > activite.file_attente_activite.nb_membre) {
+    alert("Vous n'êtes pas autant dans la file d'attente");
+    return;
+  } else if (nb_apres_retrait <= 0) {
+    deleteFifo(activite.file_attente_activite.id_attente);
+  } else if (nb_apres_retrait <= activite.cap_act) {
+    const payload = {
+      id_activite: activite.id_activite,
+      id_famille: id_famille.value,
+      nb_membre: nb_apres_retrait,
+    };
+    axios.post('../../php/utilisateur.php?entity=users&option=reservation&secondOption=add', payload)
+      .then(() => deleteFifo(activite))
+      .then(() => loadData());
+  } else {
+    const payload = { nb_membre_aj: nb_membre.value, signe: '-' };
+    axios.post(`../../php/utilisateur.php?entity=activites&option=fifo&secondOption=delM&id=${activite.file_attente_activite.id_attente}`, payload)
+      .then(() => { loadData(); nb_membre.value = null; });
+  }
+};
 
     const deleteReservationActivite = (activite) => {
       id_res_activite = activite.id_reservation_activite
