@@ -184,14 +184,50 @@ switch ($entity) {
 
             if ($option == "getMembre" && $id) {
                 $response = getMembreEquipe($conn,$id);
-            }
+            }elseif($option == "animateurs"){
+                if($secondOption == 'update' && $data){
+                    $res = updateAnimateur($conn,$data);
+                    $response = [
+                        "status" => $res ? "Success" : "Error",
+                        "msg" => $res ? "Animateur modifié avec success": "Error lors de l'update de l'animateur"
+                    ];
+               }elseif($secondOption == 'add'){
+                    $res = createMembreEquipe($conn,$data);
+                    $response = [
+                        "status" => $res ? "Success" : "Error",
+                        "msg" => $res ? "Membre crée avec success" :"Error lors de l'ajout du membre"
+                    ];
+                }else{
+                $response = getAnimateurs($conn);
+                }
+            }elseif($option == 'delete' && $id){
+                    $res = deleteMembreEquipe($conn,$id);
+                    $response = [
+                        "status" => $res ? "Success" : "Error",
+                        "msg" => $res ? "Membre supprimer avec success" : "Error lors de la suppression du membre"
+                    ];
+             }else{
+
+                    $response = getMembreEquipeAll($conn);
+                }
+
         break;
     case 'message' :
+        if($option == 'delete' && $id){
+            $res = deleteMessage($conn,$id);
+            $response = [
+                "status" => $res ? "Success" : "Error",
+                "msg" => $res ? "Message supprimer avec succès" : "Error lors de la suppression du message"
+            ];
+        }
+        elseif($data){
         $res = sendMessage($conn,$data);
         $response = [
             "status" => $res ? "Success" : "Error",
-            "msg" => $res
-        ];
+            "msg" => $res 
+        ];}else{
+            $response=getMessage($conn);
+        }
     break;
     default:
         http_response_code(400);

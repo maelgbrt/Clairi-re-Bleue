@@ -32,14 +32,12 @@ createApp({
       console.log(connexion.value);
       axios.post('../../php/login/connected',connexion.value).then(response => {
         let res = response.data;
+        console.log(res);
         if (res.status == "success"){
           if(res.role == "equipe_tech"){
-            if (res.access == 1){
-              window.location.href = "admin.html";
-            }else{
-              window.location.href = "equipe.html";
-            }
-            console.log(res);
+            window.location.href = "equipe.html";
+          }else if(res.role == 'admin'){
+            window.location.href = "admin.html";    
           }else{
             window.location.href = "utilisateur.html";
           }

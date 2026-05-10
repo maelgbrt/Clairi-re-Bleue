@@ -2,7 +2,7 @@
 
 function getActivites($conn)
 {
-    $sql = "SELECT * FROM `activites`";
+    $sql = "SELECT  activites.*, equipe_technique.nom as nom_anim, equipe_technique.prenom as prenom_anim FROM `activites` JOIN equipe_technique ON activites.id_animateur = equipe_technique.id_equipe_tech";
     $requete = mysqli_prepare($conn, $sql);
     mysqli_stmt_execute($requete);
     $res = mysqli_stmt_get_result($requete);

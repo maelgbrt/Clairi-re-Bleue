@@ -16,6 +16,11 @@ createApp({
     const emplacements = ref([]);
     const msg = ref(null);
     const menuOpen = ref(null);
+    const animateurs = ref([]);
+    const animateursSelectionnes = ref();
+    const rechercheCreneaux = ref(false);
+    const nvAnimateur = ref({});
+    const membres = ref([]);
     
     const aujourdhui = new Date();
     console.log("aujourdhui" + aujourdhui);
@@ -153,9 +158,32 @@ const dateNext = () => {
 
 
 
-    
+    async function isConnected() {
+        try {
+            const response = await axios.get('../../php/login/isConnected.php');
+            if (response.data.role == 'admin'){
+              return response.data.id; 
+            }else{
+              return null
+            }
+        } catch (error) {
+            console.error("Erreur de session", error);
+            return null;
+        }
+    }
 
-    const loadData = () => {
+
+
+
+
+
+
+
+      const loadData = async () => {
+        const id = await isConnected();
+        console.log("c quoi le id : ",id)
+        if (id) {
+           
       afficheFamille();
       console.log("afficher la famille");
       console.log(familles);
@@ -165,7 +193,12 @@ const dateNext = () => {
       // apiGet('../../php/admin/emplacements/reservations').then(data => reservations_emplacements.value = data);
       apiGet(`../../php/admin/emplacements/reservations/BetweenDate/${today.value}`).then(data => reservations_emplacements.value = data ?? []);
       ChercherEmplacements();
-      };
+      get_animateur();
+      get_membres();
+      }else{
+        window.location.href ="login.html";
+      }
+}
 
     const handleDelete = (id) => {
       if (confirm("Supprimer ?")) {
@@ -476,6 +509,7 @@ const grouperDatesConsecutives = (dates) => {
     fin: fin
   });
 
+  rechercheCreneaux.value = true;
   return creneaux;
 };
 
@@ -497,6 +531,23 @@ const reserverCreneau = (creneau) => {
   
 };
 
+
+
+const UpdateAnimateur = (animateur) =>{
+  axios.post('../../php/admin/equipeTechnique/animateurs/update',animateur).then(response =>{
+    console.log(response.data);
+    animateur.status = response.data.msg;
+    setTimeout(() => animateur.status = '', 3000)
+
+ })
+}
+
+const createAnimateur = () => {
+  console.log(nvAnimateur.value);
+  axios.post('../../php/admin/equipeTechnique/animateurs/add',nvAnimateur.value).then(response => {
+    loadData();
+  })
+}
 
 
 
@@ -550,6 +601,20 @@ const getDuree = (date_debut, date_fin) => {
 };
 
 
+const DeleteAnimateur = (id_equipe_tech) =>{
+  axios.get(`../../php/admin/equipeTechnique/delete/${id_equipe_tech}`).then(response => {
+    loadData();
+  })
+}
+
+const disconnect = () => {
+  axios.get('../../php/login/disconnected').then(response => {
+    window.location.href = 'login.html';
+  }).catch(err => {
+    console.error("Erreur lors de la déconnexion :", err);
+  });
+}
+
 const ChercherEmplacements = () => {
 
   axios.get('../../php/admin/emplacements/mois/' + month.value).then(response => {
@@ -558,8 +623,24 @@ const ChercherEmplacements = () => {
    });
 }
 
+const get_animateur = () => {
+  axios.get('../../php/admin/equipeTechnique/animateurs').then(response => {
+    animateurs.value = response.data;
+  })
+}
+const get_membres = () => {
+  axios.get('../../php/admin/equipeTechnique').then(response => {
+    console.log("les membres");
+    console.log(response.data);
+    membres.value = response.data;
+    console.log(membres);
+  })
+}
+
     
     const ajoutAct = () => {
+      
+      nouvelleActivite.value.id_animateur = animateursSelectionnes.value
       axios.post('../../php/admin.php?entity=activites&option=add', nouvelleActivite.value)
         .then(response => {
           const result = response.data;
@@ -582,7 +663,14 @@ const ChercherEmplacements = () => {
     Choice, FamilleChoice_id, NBMembres, InscrireF_A, InscrireFamilleAFifo,
     emplacements, fifo_emplacements, reservations_emplacements, todayEU,
     datePrev, dateNext,InscrireF_E,dateDebutEmplacement,dateFinEmplacement,NumEmplacementChoisi,msg,getDuree,reserverCreneau,InscrireFamilleEmplacment,calendrier,creneaux,month,ChercherEmplacements,reservationEmpDelete,
-    menuOpen
+    menuOpen,animateurs,animateursSelectionnes,
+    rechercheCreneaux,
+    UpdateAnimateur,
+    nvAnimateur,
+    createAnimateur,
+    membres,
+    DeleteAnimateur,
+    disconnect
   };
   }
 }).mount('#app');

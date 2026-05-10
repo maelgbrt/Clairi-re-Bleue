@@ -44,6 +44,20 @@ function sendMessage($conn,$data){
     return mysqli_stmt_execute($requete);
 }
 
+function getMessage($conn){
+    $stmt = $conn->prepare("SELECT * FROM message");
+    $stmt->execute();
+    $res = $stmt->get_result();
+    return $res->fetch_all(MYSQLI_ASSOC) ?: [];
+}
+
+function deleteMessage($conn,$id_message){
+    $stmt = $conn->prepare("DELETE FROM message WHERE id = ?");
+    $stmt->bind_param("i",$id_message);
+    return $stmt->execute();
+}
+
+
 function deleteMembreFamille($conn,$id_membre){
     $stmt = $conn->prepare("DELETE FROM utilisateurs WHERE id = ?");
     $stmt->bind_param("i",$id_membre);

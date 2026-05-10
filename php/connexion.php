@@ -41,10 +41,17 @@ function connected($conn,$data){
         if ($equipe_tech = mysqli_fetch_assoc($resultat_sql)) {
         
             if (password_verify($password_saisi, $equipe_tech['password'])) {
-                $_SESSION['equipe_tech'] = $equipe_tech['id_equipe_tech'];
-                $res['status'] = "success";
-                $res['role'] = "equipe_tech";
-                $res['access'] = $equipe_tech['access'];
+
+                if( $equipe_tech['access'] == 1){
+                        $_SESSION['admin'] = $equipe_tech['id_equipe_tech'];
+                        $res['role'] = "admin";
+                }else{
+                    $_SESSION['equipe_tech'] = $equipe_tech['id_equipe_tech'];
+                    $res['role'] = "equipe_tech";
+                }
+                    $res['status'] = "success";
+                    $res['access'] = $equipe_tech['access'];
+
             } else {
                 $res['status'] = "failed";
                 $res['debug'] = "Mot de passe Incorrect Compte Admin";
@@ -83,6 +90,11 @@ function verifConnect(){
         $res = [
             "id" => $_SESSION['equipe_tech'],
             "Role" => "equipe_tech"
+        ];
+    }elseif(isset($_SESSION['admin'])){
+        $res = [
+            "id" => $_SESSION['admin'],
+            "Role" => "admin"
         ];
     }
     else{

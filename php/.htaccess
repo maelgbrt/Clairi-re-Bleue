@@ -62,14 +62,21 @@ RewriteRule ^utilisateur/activites/with_reservations/([0-9]+)$ utilisateur.php?e
 RewriteRule ^utilisateur/activites/delete/([0-9]+)$ utilisateur.php?entity=activites&option=delete&id=$1 [L,QSA]
 RewriteRule ^utilisateur/emplacements/reservation/([0-9]+)$ utilisateur.php?entity=emplacements&option=reservation&id=$1 [L,QSA]
 RewriteRule ^utilisateur/emplacements/delete/([0-9]+)$ utilisateur.php?entity=emplacements&option=delete&id=$1 [L,QSA]
+RewriteRule ^admin/equipeTechnique/animateurs/update admin.php?entity=equipeTechnique&option=animateurs&secondOption=update [L,QSA]
+RewriteRule ^admin/equipeTechnique/animateurs/add admin.php?entity=equipeTechnique&option=animateurs&secondOption=add [L,QSA]
+RewriteRule ^admin/equipeTechnique/delete/([0-9]+)$ admin.php?option=delete&entity=equipeTechnique&id=$1 [L,QSA]
 
 # --- 4. LISTES ET ROUTES DE BASE (Le plus court en dernier) ---
 RewriteRule ^utilisateur/users/reservations$ utilisateur.php?entity=users&option=reservations [L,QSA]
 
 # Puis les IDs simples utilisateur
+RewriteRule ^admin/equipeTechnique/animateurs admin.php?entity=equipeTechnique&option=animateurs [L,QSA]
+RewriteRule ^admin/equipeTechnique admin.php?entity=equipeTechnique [L,QSA]
 RewriteRule ^utilisateur/payeur/([0-9]+)$ utilisateur.php?entity=payeur&id=$1 [L,QSA]
 RewriteRule ^utilisateur/users/([0-9]+)$ utilisateur.php?entity=users&id=$1 [L,QSA]
 RewriteRule ^utilisateur/activites/([0-9]+)$ utilisateur.php?entity=activites&id=$1 [L,QSA]
+RewriteRule ^messages/delete/([0-9]+)$ admin.php?entity=message&option=delete&id=$1 [L,QSA]
+RewriteRule ^messages admin.php?entity=message$ [L,QSA]
 
 # Enfin les listes globales admin
 RewriteRule ^utilisateur/users$ utilisateur.php?entity=users [L,QSA]

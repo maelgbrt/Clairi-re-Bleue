@@ -3,7 +3,9 @@ const { createApp, ref, onMounted } = Vue;
 createApp({
   setup() {
 
+    const debug = ref();
 
+    const messages = ref([]);
 const message = ref({
   "objet" : null,
   "nom" : null,
@@ -27,15 +29,38 @@ const sendMessage = () => {
 
 }
 
+const get_messages= () => {
+  axios.get('../../php/admin/message').then(response =>{
+    messages.value = response.data;
+  })
+}
+
+
+
+const deleteMessage = (id_message) => {
+  const choix = confirm("Voulez vous vraiment supprimer ce message ?");
+  if (choix){
+  axios.delete(`../../php/messages/delete/${id_message}`).then(response =>{
+    if(response.data.status == 'Success'){
+      get_messages();
+    }else
+      debug.value = response.data.msg;
+  })
+  }
+}
 
  onMounted(() => {      
-
+  get_messages();
     });
 
     return {
      message,
      sendMessage,
-     notif
+     notif,
+     messages,
+     get_messages,
+     deleteMessage,
+     debug
     };
   }
-}).mount('#app');  
+}).mount('.app');  
