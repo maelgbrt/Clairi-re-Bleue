@@ -81,7 +81,7 @@
                     </div>
 
                     <div v-else-if="activite.file_attente_activite != null">
-                        <button @click="delFifoMb(activite.file_attente_activite.id_attente)">Retirer Membre(s)</button>
+                        <button @click="delFifoMb(activite.file_attente_activite.id_attente)">Retirer Membre(s) File Attente</button>
                         <button @click="addFifoMb(activite.file_attente_activite.id_attente)">Ajouter Membre(s) File
                             Attente</button>
                         <button @click="deleteFifo(activite.file_attente_activite.id_attente)">Supprimer de la file
@@ -95,15 +95,15 @@
 <!-- Déjà réservé → boutons gestion -->
                     <div v-else>
                         <button
-                            @click="retirerMembreActivite(activite.id_activite, activite.id_reservation_activite)">Retirer
+                            @click="retirerMembreActivite(activite)">Retirer
                             Membre(s)</button>
                         <button
-                            @click="ajouterMembreActivite(activite.id_activite, activite.id_reservation_activite)">Ajouter
+                            @click="ajouterMembreActivite(activite)">Ajouter
                             Membre(s)</button>
-                        <button @click="deleteReservationActivite(activite.id_reservation_activite)">Supprimer la
+                        <button @click="deleteReservationActivite(activite)">Supprimer la
                             réservation</button>
                         <p>Encore {{ activite.cap_act }} places disponibles</p>
-
+                        <p>{{error}}</p>
                     </div>
                 </div>
             </div>
