@@ -56,6 +56,17 @@ form [type="submit"]:hover{
     cursor: pointer;
 }
 
+img{
+ position: absolute;
+    top: 20px;    
+    left: 20px;      
+    z-index: 1000;  
+    transition: transform 0.3s ease;
+    width: 100px; 
+    height: auto;
+    cursor: pointer;
+}
+
 form textarea{
   resize: vertical;
 }

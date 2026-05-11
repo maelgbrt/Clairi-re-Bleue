@@ -11,6 +11,17 @@ nav{
     box-sizing: border-box;
 }
 
+#back1{
+ position: absolute;
+    top: 80px;    
+    left: 20px;      
+    z-index: 1000;  
+    transition: transform 0.3s ease;
+    width: 100px; 
+    height: auto;
+    cursor: pointer;
+}
+
 #link{
     width: 90%;
     display: flex;
