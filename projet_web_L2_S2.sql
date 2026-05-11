@@ -39,6 +39,17 @@ CREATE TABLE `activites` (
 INSERT INTO `activites` (`prix`, `date_d`, `date_f`, `id`, `nom`, `cap_act`, `description`, `lieu`, `id_animateur`) VALUES
 (35, '2026-05-08 00:00:00', '2026-05-08 00:00:00', 65, 'AquaSplash', 20, 'description', 'Areches', 56);
 
+--
+-- Déchargement des données de la table `activites`
+--
+
+INSERT INTO `activites` (`prix`, `date_d`, `date_f`, `id`, `nom`, `cap_act`, `description`, `lieu`, `id_animateur`) VALUES
+(40, '2026-05-21 09:45:00', '2026-05-21 11:00:00', 1, 'Acrobranche', 20, 'Parcours acrobranche', 'camping la clairiere bleue', 5),
+(50, '2026-05-30 11:00:00', '2026-05-30 15:40:00', 2, 'Barbecue', 12, 'Repas barbecue en plein air', 'Camping la Clairiere bleue', 5),
+(15, '2026-05-23 15:00:00', '2026-05-23 16:00:00', 4, 'canoe', 8, 'Canoe sur le Lac Serpentin.', 'Camping la clairiere bleue', 5),
+(100, '2026-05-20 14:00:00', '2026-05-20 16:00:00', 6, 'VTT électrique', 4, 'Parcours dans la forêt en vtt à assistance électrique.', 'Départ à l\'accueil du camping de la clairiere bleue.', 5),
+(25, '2026-05-24 14:30:00', '2026-05-24 17:30:00', 66, 'Randonnée', 20, 'Randonnée en pleine nature aux alentours du lac Serpentin.', 'Lac Serpentin', 5);
+
 -- --------------------------------------------------------
 
 DROP TABLE IF EXISTS `emplacements`;
