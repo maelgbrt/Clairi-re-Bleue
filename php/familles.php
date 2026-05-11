@@ -235,3 +235,24 @@ function UpdateUserAll($conn, $data){
     
     return mysqli_stmt_execute($requete);
 }
+
+function getMembreFamille($conn, $id_famille) {
+    $stmt = $conn->prepare("SELECT * FROM utilisateurs WHERE id_famille = ?");
+    $stmt->bind_param("i", $id_famille);
+    $stmt->execute();
+    $res = $stmt->get_result();
+    return $res->fetch_all(MYSQLI_ASSOC) ?: [];
+}
+
+
+
+function ajouterMembreFamille($conn,$data){
+    $nom = $data['nom'];
+    $prenom = $data['prenom'];
+    $date_naissance = $data['date_naissance'];
+    $id_famille = $data['id_famille'];
+
+    $stmt  = $conn->prepare("INSERT INTO utilisateurs (nom,prenom,date_naissance,id_famille) VALUES (?,?,?,?)");
+    $stmt->bind_param("sssi",$nom,$prenom,$date_naissance,$id_famille);
+    return $stmt->execute(); 
+}

@@ -18,10 +18,10 @@
                 <a href="#">ACTIVITES</a>
                 <a href="contact.html">CONTACT</a>
                 <a href="a_propos.html">A PROPOS</a>
+                <a @click="disconnect()">DECONNEXION</a>
             </div>
             <a id="logo-identification"  href="../html/utilisateur.html"><img src="../images/connexion.png" alt="" id="logo-id-img"></a>
         </nav>
-
 
         <h1>{{ id_equipe_tech }}</h1>
         <div id="equipe-page">
@@ -39,8 +39,12 @@
                         <p>Aucune activité prévue</p>
                     </div>
                 </div>
-                <div id="activiteCRUD">
-                    les activites
+                <div id="membres">
+                    <div v-for="famille in membres_act" class="activites">
+                        <p>{{famille.nom_payeur}}</p>
+                        <p>Effectifs: {{famille.nb_membre}}</p>
+                        <button @click="supprimer_reservation_famille_activite(famille.id_reservation_activite)">Supprimer</button>
+                    </div>
                 </div>
             </div>
             <div id="right">

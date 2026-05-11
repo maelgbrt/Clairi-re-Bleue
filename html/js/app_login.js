@@ -10,6 +10,9 @@ createApp({
         password_saisi: ''
     });
 
+    const mail_reinitialisation = ref();
+
+    const log = ref ();
     const inscription = ref({
       nom : '',
       prenom : '',
@@ -29,9 +32,12 @@ createApp({
       console.log(connexion.value);
       axios.post('../../php/login/connected',connexion.value).then(response => {
         let res = response.data;
+        console.log(res);
         if (res.status == "success"){
           if(res.role == "equipe_tech"){
-            window.location.href = "admin.html";
+            window.location.href = "equipe.html";
+          }else if(res.role == 'admin'){
+            window.location.href = "admin.html";    
           }else{
             window.location.href = "utilisateur.html";
           }
@@ -63,14 +69,17 @@ createApp({
       }
     }
 
-
-    const mdp_reset = () => {
-
+const mdp_reset = () => {
+        console.log("on va reinitialiser mail : ");
+        console.log(mail_reinitialisation.value);
+        let data = {
+        "Adress": mail_reinitialisation.value
+    };
+        axios.post("../../php/gestion_mail.php?entity=reinitialiser",data).then(response => {
+          console.log(response.data);
+          log.value = response.data.msg;
+        })
     }
-
-
-    const 
-
 
 
 
@@ -86,7 +95,10 @@ createApp({
         error,
         inscription,
         handleRegister,
-        mdp_reset
+        mdp_reset,
+        mail_reinitialisation,
+        log
+
     };
   }
 }).mount('#app');

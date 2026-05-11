@@ -41,6 +41,24 @@ switch ($entity) {
     case 'family':
         if ($option === 'nbMembre' && $id) {
             $response = getNbMembre($conn, $id);
+        } elseif ($option === 'membre') {
+            if($secondOption === 'add'){
+                $res = ajouterMembreFamille($conn,$data);
+                $response = [
+                    "status" => $res ? "Success" : "Error",
+                    "msg" => $res ? "Membre ajouté a la famille" : "Erreur lors de l'ajout du membre dans une famille"
+                ];
+            }elseif($secondOption == 'delete' && $id){
+                $res = deleteMembreFamille($conn,$id);
+                $response = [
+                    "status" => $res ? "Success": "Error",
+                    "msg" => $res ? "Membre supprimer avec Success" : "Error : Le membre n'a pas été supprimé"
+                ];
+            }else{
+                if($id){
+                    $response = getMembreFamille($conn,$id);
+                }
+            }
         } elseif ($option === 'delete' && $id) {
             $resultat = deleteFamille($conn, $id);
             $response = [
@@ -84,8 +102,10 @@ switch ($entity) {
                 $response = [
                     "status" => $res ? "success" : "error",
                     "msg"    => $res ? "Entrée ajouter à la file d'attente" : "Erreur lors de l'ajout"
-                ];
-            } else {
+                    ];
+            } elseif ($secondOption === 'update') {
+                $response = UpdateNbMembreFifo($conn,$data,$id);
+             }else {
 
                 $response = getActivitesFifo($conn);
             }
@@ -104,6 +124,9 @@ switch ($entity) {
                     "status" => $res ? "success" : "error",
                     "msg"    => $res ? "Reservation AQJOUTE" : "Erreur lors de l ajout"
                 ];
+            }elseif($secondOption == 'updateCapResa'){
+                $response ="yo";
+                $response = UpdateCapReservationActivite($conn,$data,$id);
             } else {
                 $response = $id ? getReservationsActivitebyId($conn, $id) : getReservationsActivite($conn);
             }
@@ -166,14 +189,50 @@ switch ($entity) {
 
             if ($option == "getMembre" && $id) {
                 $response = getMembreEquipe($conn,$id);
-            }
+            }elseif($option == "animateurs"){
+                if($secondOption == 'update' && $data){
+                    $res = updateAnimateur($conn,$data);
+                    $response = [
+                        "status" => $res ? "Success" : "Error",
+                        "msg" => $res ? "Animateur modifié avec success": "Error lors de l'update de l'animateur"
+                    ];
+               }elseif($secondOption == 'add'){
+                    $res = createMembreEquipe($conn,$data);
+                    $response = [
+                        "status" => $res ? "Success" : "Error",
+                        "msg" => $res ? "Membre crée avec success" :"Error lors de l'ajout du membre"
+                    ];
+                }else{
+                $response = getAnimateurs($conn);
+                }
+            }elseif($option == 'delete' && $id){
+                    $res = deleteMembreEquipe($conn,$id);
+                    $response = [
+                        "status" => $res ? "Success" : "Error",
+                        "msg" => $res ? "Membre supprimer avec success" : "Error lors de la suppression du membre"
+                    ];
+             }else{
+
+                    $response = getMembreEquipeAll($conn);
+                }
+
         break;
     case 'message' :
+        if($option == 'delete' && $id){
+            $res = deleteMessage($conn,$id);
+            $response = [
+                "status" => $res ? "Success" : "Error",
+                "msg" => $res ? "Message supprimer avec succès" : "Error lors de la suppression du message"
+            ];
+        }
+        elseif($data){
         $res = sendMessage($conn,$data);
         $response = [
             "status" => $res ? "Success" : "Error",
-            "msg" => $res
-        ];
+            "msg" => $res 
+        ];}else{
+            $response=getMessage($conn);
+        }
     break;
     default:
         http_response_code(400);

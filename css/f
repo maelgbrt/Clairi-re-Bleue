@@ -1,0 +1,230 @@
+
+#list-familles, #list-activites {
+    flex-direction: column;
+    display: grid;
+    grid-template-columns: repeat(2,1fr);
+    gap: 10px;
+    width: 90%;
+    box-sizing: border-box;
+}
+
+#list-familles>div , #list-activites>div{
+    border: 4px solid white;
+    /* padding: 10px; */
+    /* box-sizing: border-box; */
+}
+
+
+#list-familles .list-buttons{
+    display: flex;
+    gap: 20px;
+}
+
+
+#list-activites{
+    grid-template-columns: repeat(1,1fr);
+}
+
+#ajout,#ajoutFamille{
+    background-color: red;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+}
+
+.flex_act{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.inputWithLabel {
+    display: flex;
+    align-items: center;
+    justify-content: space-between
+
+}
+.flex_act input{
+    padding: 7px;
+    border: none;
+    border-radius: 7px;
+    border-bottom: 2px solid black;
+}
+
+#ajout button{
+    background-color: white;
+    width: 100%;
+    padding: 10px;
+    border: none;
+    margin-top:10px ;
+    border-radius: 7px;
+    font-family: 'Poppins',sans-serif;
+    font-weight: 700;
+    transition: 1s;
+}
+
+#ajout button:hover{
+    transition: 1s;
+    background-color: rgb(197, 193, 193);
+    cursor: pointer;
+    
+}
+
+#formulaireCreationFamille{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+}
+#formulaireCreationFamille input{
+    padding: 7px 10px;
+    border-radius: 5px;
+    border: none;
+}
+
+
+.list-infos{
+    display: flex;
+    width: 100%;
+    gap: 10px;
+}
+
+
+.list-infos input {
+    flex: 1 1 150px;
+    width: 100%;
+
+}
+#formulaireCreationFamille button{
+    padding: 10px;
+    font-weight: 700;
+    border: none;
+    border-radius: 7px;
+    transition: 1s;
+}
+
+
+#formulaireCreationFamille button:hover{
+     transition: 1s;
+    background-color: rgb(197, 193, 193);
+    cursor: pointer;
+}
+
+#bottom, #fifo{
+    margin-top: 30px;
+    backdrop-filter: blur(50px);
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.397);
+    color: white;
+    font-family: 'Poppins',sans-serif;
+}
+#fifo{
+    display: grid;
+}
+
+#list-fifo-empl{
+    display: grid;
+    grid-template-columns: repeat(6,1fr);
+}
+
+.fifo{
+    border: 4px solid white;
+    padding: 10px;
+}
+.fifo button{
+    padding: 10px 20px;
+    margin-right: 10px;
+    border: none;
+    color: white;
+    font-weight: 600;
+    border-radius: 5px;
+    transition: 1s;
+}
+.fifo button:first-of-type {
+    background-color: green;
+}
+
+.fifo button:first-of-type:hover{
+    transition: 1s;
+    background-color: rgb(2, 77, 2);
+    cursor: pointer;
+
+}
+/* Cible le dernier bouton rencontré dans .fifo */
+.fifo button:last-of-type {
+    background-color: red;
+}
+.fifo button:last-of-type:hover {
+    background-color: rgb(167, 4, 4);
+    cursor: pointer;
+}
+#tabEmplacement{
+    display: grid;
+    margin-top: 20px;
+    grid-template-columns: repeat(4,1fr);
+    gap: 10px;
+}
+
+#moisChoice{
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    font-weight: 600;
+}
+#moisChoice input{
+    padding: 10px;
+    border-radius: 7px;
+}
+#tabEmplacement>div{
+    border: 4px solid white;
+    padding: 10px;
+    background-color: rgba(0, 0, 0, 0.274);
+}
+
+
+#tabEmplacement>div button{
+    background-color: red;
+    padding: 7px;
+    color: white;
+    font-weight: 600;
+    border: none;
+    border-radius: 7px;
+    transition:1s;
+}
+
+#burger{
+    display: none;
+}
+
+#tabEmplacement>div button:hover{
+    background-color: rgb(133, 4, 4);
+    transition:1s;
+    cursor: pointer;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ */

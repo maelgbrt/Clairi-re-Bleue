@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en" class="min-h-screen w-full">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mes Messages</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+        <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+        <script defer src="js/app_contact.js"></script>
+
+</head>
+
+<body class="bg-[url(../images/fond.png)] bg-cover bg-center min-h-screen flex justify-center items-center app">
+    <div
+        class="box-border items-center text-white flex backdrop-blur-3xl flex-col p-8 rounded-xl shadow-2xl gap-2 max-w-lg">
+        <h1 class="text-2xl font-bold">Mes Messages :</h1>
+        <div class="grid gap-4">
+            <p v-if="messages.length == 0">Aucun message pour le moment</p>
+            <div v-for ="message in messages" class="border-[4px] border-white p-4 flex flex-col gap-2">
+                <p>Objet : {{message.objet}}</p>
+                <p>{{message.prenom}} {{message.nom}}</p>
+                <p>{{message.mail}}</p>
+                <p>Message : {{message.text}}</p>
+                <button @click="deleteMessage(message.id)" class="cursor-pointer bg-red-600 p-2 rounded-lg duration-700 hover:bg-red-900 ">
+                    Supprimer
+                </button>
+                {{debug}}
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
