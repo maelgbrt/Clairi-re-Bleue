@@ -55,7 +55,7 @@ createApp({
 
     onMounted(get_activites);
 
-    return { tab_res, t, changeLanguage,
+    return { tab_res,t, changeLanguage,
       currentLang 
      };
   }
