@@ -11,7 +11,7 @@ createApp({
     const data = ref([]);
     const nb_membre = ref(null);
     const displayMenu = ref(true);
-    const choiceMenu = ref('famille');
+    const choiceMenu = ref(null);
     const emplacements = ref([]);
     const month = ref(new Date().toISOString().slice(0, 7));
     const date_debut = ref();
@@ -138,11 +138,12 @@ createApp({
       InscrireFamilleEmplacement(NumEmplacement.value);
     };
 
-    const get_payeur = async (id) => {
-      id_famille.value = await isConnected();
+    const get_payeur = () => {
       axios.get(`../../php/utilisateur.php?entity=payeur&id=${id_famille.value}`)
         .then((response) => {
           payeur.value = response.data;
+          console.log("le payeur");
+          console.log(payeur.value);
         })
         .catch(err => console.error("Erreur API :", err));
     };
@@ -387,7 +388,7 @@ createApp({
       console.log("c quoi le id : ", id);
       if (id) {
         id_famille.value = id;
-        get_payeur(id);
+        get_payeur();
         get_activites_with_reservations(id);
         get_reservation_famille(id);
         get_emplacements();

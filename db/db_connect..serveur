@@ -1,0 +1,12 @@
+<?php
+$host = 'localhost';
+$user = 'info7';
+$password = '9rB';
+$database = 'info7'; // à changer si le nom de la BDD est différent
+
+$conn = mysqli_connect($host, $user, $password, $database);
+
+if (!$conn) {
+    die("Erreur de connexion : " . mysqli_connect_error());
+}
+?>

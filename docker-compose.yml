@@ -12,6 +12,11 @@ services:
     depends_on:
       - mariadb
 
+  
+
+
+
+
   mariadb:
     build:
       context: .
@@ -28,6 +33,7 @@ services:
       - ./projet_web_L2_S2.sql:/docker-entrypoint-initdb.d/projet_web_L2_S2.sql
     ports:
       - "${PORT_DB}:3306"
+
 
   phpmyadmin:
     image: phpmyadmin

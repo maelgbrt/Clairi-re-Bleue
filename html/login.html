@@ -85,9 +85,12 @@
              <h1 class="font-bold text-3xl text-center">MOT DE PASSE OUBLIÉ ?</h1>
             <div class="flex flex-col gap-4 items-center box-border">
                 <input placeholder="Votre Adresse Mail" class="text-black shadow-md p-3 w-full min-w-0 box-border rounded-lg" v-model="mail_reinitialisation" type="text"  required>
-                <input type="submit" value="Envoyer" class="p-3 text-white rounded-lg cursor-pointer transition duration-1000 bg-red-500 hover:bg-red-600 shadow-xl w-full">
+                <div v-if="isLoading">Chargement en cours ...</div>
+                <div v-else-if="log">{{log}}</div>
+                <input v-else type="submit" value="Envoyer" class="p-3 text-white rounded-lg cursor-pointer transition duration-1000 bg-red-500 hover:bg-red-600 shadow-xl w-full">
+                
             </div>
-            {{log}}
+            
         </form>
         <p class="mt-5" @click="action = 'inscription'" style="cursor: pointer;">
             Vous n'êtes pas encore inscrit ?

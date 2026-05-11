@@ -6,99 +6,53 @@
     <link rel="stylesheet" href="../css/style_activites.css">
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+<script src="https://unpkg.com/vue-i18n@9/dist/vue-i18n.global.js"></script>
     <script defer src="js/app_activite.js"></script>
 
     <title>Activites</title>
 </head>
 <body id="app">
-         <nav>
-            <div id="link">
-                <a href="../index.html">HOME</a>
-                <a href="#">ACTIVITES</a>
-                <a href="contact.html">CONTACT</a>
-                <a href="a_propos.html">A PROPOS</a>
-            </div>
-            <a id="logo-identification"  href="../html/utilisateur.html"><img src="../images/connexion.png" alt="" id="logo-id-img"></a>
-        </nav>
-    <h1 id="title">- Les Activités -</h1>
+    <nav>
+        <div id="link">
+            <!-- Utilisation de t() pour le menu -->
+            <a href="../index.html">{{ t('nav.home') }}</a>
+            <a href="#">{{ t('nav.activities') }}</a>
+            <a href="contact.html">{{ t('nav.contact') }}</a>
+            <a href="a_propos.html">{{ t('nav.about') }}</a>
+        </div>
+        
+       
+<select v-model="currentLang" @change="changeLanguage(currentLang)" id="chooseLanguage">
+    <option selected value="fr">Français</option>
+    <option value="en">Anglais</option>
+</select>
 
-<!-- 
+        <a id="logo-identification" href="../html/utilisateur.html">
+            <img src="../images/connexion.png" alt="" id="logo-id-img">
+        </a>
+    </nav>
 
-<div id="app">
-    <select name="trier" id="ipt-trier">
-        <option disabled selected>Trier Par</option>
-        <option >Date (ordre croissant)</option>
-        <option >Date (ordre croissant)</option>
-        <option >Prix (ordre decroissant)</option>
-        <option >Prix (ordre decroissant)</option>
-    </select>
-</div> -->
-
-
-
+    <!-- Titre traduit -->
+    <h1 id="title">- {{ t('page_title') }} -</h1>
 
     <div id="list-activites">
-        <div v-for="tabl in tab_res">
+        <div v-for="tabl in tab_res" :key="tabl.id">
             <div class="activite">
-            
-            <h1>{{ tabl.nom }}</h1>
+                <h1>{{ tabl.nom }}</h1>
 
-        <p>Description : {{tabl.description}}</p>
-        <p>Lieu : {{tabl.lieu}}</p>
-        <p>Capacité : {{tabl.cap_act}}</p>
-        <p>prix : {{tabl.prix}}</p>
-        <p>date début : {{tabl.date_d}}</p>
-        <p>date fin : {{tabl.date_f}}</p>
+                <!-- Libellés traduits -->
+                <p>{{ t('labels.description') }} : {{ tabl.description }}</p>
+                <p>{{ t('labels.location') }} : {{ tabl.lieu }}</p>
+                <p>{{ t('labels.capacity') }} : {{ tabl.cap_act }}</p>
+                <p>{{ t('labels.price') }} : {{ tabl.prix }}€</p>
+                <p>{{ t('labels.date_start') }} : {{ tabl.date_d }}</p>
+                <p>{{ t('labels.date_end') }} : {{ tabl.date_f }}</p>
 
-            <a href ="utilisateur.html?activites"><button class="btn-reservation">Je réserve</button></a>
-        </div>   
-                 
-
-        
-            <!--<button class="btn-reservation">Je reserve</button>
+                <a href="utilisateur.html?activites">
+                    <button class="btn-reservation">{{ t('buttons.reserve') }}</button>
+                </a>
+            </div>   
         </div>
-        <div class="activite">
-            <h1>Nom</h1>
-            <p>Date d</p>
-            <p>Date f</p>
-            <p>La description</p>
-            <button class="btn-reservation">Je reserve</button>
-        </div>
-        <div class="activite">
-            <h1>Nom</h1>
-            <p>Date d</p>
-            <p>Date f</p>
-            <p>La description</p>
-            <button class="btn-reservation">Je reserve</button>
-        </div>
-        <div class="activite">
-            <h1>Nom</h1>
-            <p>Date d</p>
-            <p>Date f</p>
-            <p>La description</p>
-            <button class="btn-reservation">Je reserve</button>
-        </div>
-        <div class="activite">
-            <h1>Nom</h1>
-            <p>Date d</p>
-            <p>Date f</p>
-            <p>La description</p>
-            <button class="btn-reservation">Je reserve</button>
-        </div>
-        <div class="activite">
-            <h1>Nom</h1>
-            <p>Date d</p>
-            <p>Date f</p>
-            <p>La description</p>
-            <button class="btn-reservation">Je reserve</button>
-        </div>
-        <div class="activite">
-            <h1>Nom</h1>
-            <p>Date d</p>
-            <p>Date f</p>
-            <p>La description</p>
-            <button class="btn-reservation">Je reserve</button>
-        </div> -->
     </div>
 </body>
 

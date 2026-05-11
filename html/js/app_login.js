@@ -10,6 +10,8 @@ createApp({
         password_saisi: ''
     });
 
+    const isLoading = ref(false);
+
     const mail_reinitialisation = ref();
 
     const log = ref ();
@@ -71,6 +73,7 @@ createApp({
 
 const mdp_reset = () => {
         console.log("on va reinitialiser mail : ");
+        isLoading.value = true;
         console.log(mail_reinitialisation.value);
         let data = {
         "Adress": mail_reinitialisation.value
@@ -78,6 +81,7 @@ const mdp_reset = () => {
         axios.post("../../php/gestion_mail.php?entity=reinitialiser",data).then(response => {
           console.log(response.data);
           log.value = response.data.msg;
+          isLoading.value =false;
         })
     }
 
@@ -97,7 +101,8 @@ const mdp_reset = () => {
         handleRegister,
         mdp_reset,
         mail_reinitialisation,
-        log
+        log,
+        isLoading
 
     };
   }

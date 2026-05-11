@@ -28,7 +28,7 @@ switch ($entity) {
         $res =  reinitialisation_token($conn,$data);
         $response = [
             "status" => $res ? "success" : "error",
-            "msg" => $res 
+            "msg" => $res ? "Mail envoyé avec success" : "Error lors de l'envoi du mail"
         ];
         break;
 

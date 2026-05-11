@@ -5,7 +5,7 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
 
-require '../vendor/autoload.php'; // On remonte d'un dossier pour trouver vendor
+require '../vendor/autoload.php'; 
 use PHPMailer\PHPMailer\PHPMailer;
 
  $mail = new PHPMailer(true);
@@ -60,19 +60,25 @@ function mail_reinitiaisation ($Adress,$lien) {
         return false; 
     }
 }
-
-
-
-function reinitialisation_token($conn,$data){
+function reinitialisation_token($conn, $data){
     $Adress = $data["Adress"];
-    $res = verif_mail($conn,$Adress);
+    $res = verif_mail($conn, $Adress);
+
     if(!$res){
-        $token = update_token($conn,$Adress);
-        $lien = "http://localhost:8085/php/reset.php?token=" . $token;
-        if($lien != NULL){
-            mail_reinitiaisation($Adress,$lien);
+        $token = update_token($conn, $Adress);
+        
+        if($token){
+            $lien = "http://localhost:8085/php/reset.php?token=" . $token;
+            
+            $envoiMail = mail_reinitiaisation($Adress, $lien);
+            
+            if($envoiMail){
+                return true;
+            }
         }
     }
+    
+    return false;
 }
 
 
