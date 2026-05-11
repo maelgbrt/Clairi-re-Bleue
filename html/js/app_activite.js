@@ -1,7 +1,7 @@
 const { createApp, ref, onMounted } = Vue;
 const { createI18n, useI18n } = VueI18n;
 
-const currentLang = ref('fr'); // C'est ici que tu définis le choix par défaut
+const currentLang = ref('fr');
 
 const messages = {
   en: {

@@ -8,22 +8,35 @@
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <script defer src="html/js/app_home.js"></script>
     <link rel="stylesheet" href="css/style_home.css">
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+
+<script src="https://unpkg.com/vue-i18n@9"></script>
+
+<script defer src="html/js/app_index.js"></script>
 </head>
 <body id="app">
     <div id="home">
         <nav>
             <div id="link">
-                <a href="#">HOME</a>
-                <a href="html/activites.html">ACTIVITES</a>
-                <a href="html/contact.html">CONTACT</a>
-                <a href="contact/Apropos.html">A PROPOS</a>
+                <a href="#">{{ $t('nav.home') }}</a>
+                <a href="html/activites.html">{{ $t('nav.activities') }}</a>
+                <a href="html/contact.html">{{ $t('nav.contact') }}</a>
+                <a href="contact/Apropos.html">{{ $t('nav.about') }}</a>
+                
+                <select v-model="currentLang" @change="changeLanguage" id="chooseLanguage">
+                    <option value="fr">{{ $t('nav.lang_fr') }}</option>
+                    <option value="en">{{ $t('nav.lang_en') }}</option>
+                </select>
             </div>
-            <a id="logo-identification"  href="html/admin.html"><img src="images/connexion.png" alt="" id="logo-id-img"></a>
+            <a id="logo-identification" href="html/admin.html">
+                <img src="images/connexion.png" alt="" id="logo-id-img">
+            </a>
         </nav>
         <div id="logo-center">
             <img src="images/logo blanc.png" alt="" id="logo-center-img">
         </div>
     </div>
+
     <div id="second-page">
 
         <div class="formules" v-for="formule in formules" :id="'formule-' + formule.id">
@@ -35,14 +48,21 @@
             </div>
         </div>
     </div>
+
     <div id="third-page">
         <img src="images/fleur.png" alt="" class="logo-fleur">
-        <p>Situé au cœur de la nature, le Camping de la Clairière Bleue vous accueille dans un cadre paisible et verdoyant, idéal pour des vacances en famille, entre amis ou en couple. Entouré d’arbres et de grands espaces naturels, notre camping vous offre un véritable moment de détente et de déconnexion.</p>
+        <p>{{ $t('description.part1') }}</p>
+        
         <img src="images/fleur.png" alt="" class="logo-fleur">
-        <p>>Nous proposons différents types d’hébergements confortables ainsi que des emplacements spacieux pour tentes, caravanes et camping-cars. </p>
+        <p>{{ $t('description.part2') }}</p>
+        
         <img src="images/fleur.png" alt="" class="logo-fleur">
-        <p>De nombreuses activités sont disponibles sur place : canoë, accrobranche, animations, activités sportives et espaces de loisirs pour petits et grands.Le Camping de la Clairière Bleue met un point d’honneur à offrir un accueil chaleureux, des services de qualité et une ambiance conviviale, afin de rendre votre séjour inoubliable.</p>
+        <p>{{ $t('description.part3') }}</p>
+        
         <img src="images/fleur.png" alt="" class="logo-fleur">
-    </div>           
+    </div>
+</div>
+
+    
 </body>
 </html>
