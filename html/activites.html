@@ -15,10 +15,10 @@
     <nav>
         <div id="link">
             <!-- Utilisation de t() pour le menu -->
-            <a href="../index.html">{{ t('nav.home') }}</a>
-            <a href="#">{{ t('nav.activities') }}</a>
-            <a href="contact.html">{{ t('nav.contact') }}</a>
-            <a href="a_propos.html">{{ t('nav.about') }}</a>
+            <a href="../index.html">{{ $t('nav.home') }}</a>
+            <a href="#">{{ $t('nav.activities') }}</a>
+            <a href="contact.html">{{ $t('nav.contact') }}</a>
+            <a href="a_propos.html">{{ $t('nav.about') }}</a>
         </div>
         
        
@@ -33,7 +33,7 @@
     </nav>
 
     <!-- Titre traduit -->
-    <h1 id="title">- {{ t('page_title') }} -</h1>
+    <h1 id="title">- {{ $t('page_title') }} -</h1>
 
     <div id="list-activites">
         <div v-for="tabl in tab_res" :key="tabl.id">
@@ -41,15 +41,15 @@
                 <h1>{{ tabl.nom }}</h1>
 
                 <!-- Libellés traduits -->
-                <p>{{ t('labels.description') }} : {{ tabl.description }}</p>
-                <p>{{ t('labels.location') }} : {{ tabl.lieu }}</p>
-                <p>{{ t('labels.capacity') }} : {{ tabl.cap_act }}</p>
-                <p>{{ t('labels.price') }} : {{ tabl.prix }}€</p>
-                <p>{{ t('labels.date_start') }} : {{ tabl.date_d }}</p>
-                <p>{{ t('labels.date_end') }} : {{ tabl.date_f }}</p>
+                <p>{{ $t('labels.description') }} : {{ tabl.description }}</p>
+                <p>{{ $t('labels.location') }} : {{ tabl.lieu }}</p>
+                <p>{{ $t('labels.capacity') }} : {{ tabl.cap_act }}</p>
+                <p>{{ $t('labels.price') }} : {{ tabl.prix }}€</p>
+                <p>{{ $t('labels.date_start') }} : {{ tabl.date_d }}</p>
+                <p>{{ $t('labels.date_end') }} : {{ tabl.date_f }}</p>
 
                 <a href="utilisateur.html?activites">
-                    <button class="btn-reservation">{{ t('buttons.reserve') }}</button>
+                    <button class="btn-reservation">{{ $t('buttons.reserve') }}</button>
                 </a>
             </div>   
         </div>
