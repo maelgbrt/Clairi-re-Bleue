@@ -4,9 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Camping la Clairie Bleu</title>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script defer src="html/js/app_home.js"></script>
     <link rel="stylesheet" href="css/style_home.css">
 </head>
-<body>
+<body id="app">
     <div id="home">
         <nav>
             <div id="link">
@@ -22,35 +25,14 @@
         </div>
     </div>
     <div id="second-page">
-        <div class="formules" id="formule-1">
-            <h1>Formule DODO</h1>
-            <p class="prix">69,99 €</p>
-            <div class="text-formules">
-                <p>Hébergement</p>
+
+        <div class="formules" v-for="formule in formules" :id="'formule-' + formule.id">
+            <h1>Formule {{formule.nom}}</h1>
+            <p class="prix">{{formule.prix}} €</p>
+             <div class="text-formules">
+                <p>{{formule.options}}</p>
+                <a href="html/utilisateur.html"><button class="btn-reservation">Je Réserve</button></a>
             </div>
-            <a href="https://www.google.com" class="btn-reservation">Cliquez ici</a>        
-        </div>
-        <div class="formules" id="formule-2">
-            <h1>Formule famille</h1>
-            <p class="prix">129.99 €</p>
-            <div class="text-formules">
-                <p>Hebergement</p>
-                <p>+</p>
-                <p>Repas</p>
-                <p>+</p>
-                <p>Activités</p>
-            </div>
-            <a href="https://www.google.com" class="btn-reservation">Cliquez ici</a>        
-        </div>
-        <div class="formules" id="formule-3">
-            <h1>Formule repos</h1>
-            <p class="prix"></p>
-            <div class="text-formules">
-                <p>Hébergement</p>
-                <p>+</p>
-                <p>Repas</p>
-            </div>
-            <a href="https://www.google.com" class="btn-reservation">Cliquez ici</a> 
         </div>
     </div>
     <div id="third-page">

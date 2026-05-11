@@ -8,6 +8,7 @@ include("user.php");
 include("activites.php");
 include("emplacements.php");
 include("equipe.php");
+include("formule.php");
 
 
 // Autorise n'importe quelle origine (ton Swagger)
@@ -234,6 +235,10 @@ switch ($entity) {
             $response=getMessage($conn);
         }
     break;
+
+    case 'formules' : 
+            $response = getFormules($conn);
+        break;
     default:
         http_response_code(400);
         $response = ["status" => "error", "msg" => "Entity non reconnue"];
