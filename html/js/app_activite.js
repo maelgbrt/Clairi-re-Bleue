@@ -42,11 +42,11 @@ createApp({
     const { t, locale } = useI18n();
     const tab_res = ref([]);
     
-    // On initialise currentLang avec la locale actuelle
+  
     const currentLang = ref(locale.value);
 
     const get_activites = () => {
-      // Vérifie bien ce chemin selon ton dossier
+      
       axios.get("../../php/admin/activites.php") 
         .then(response => {
           tab_res.value = response.data;
@@ -56,7 +56,7 @@ createApp({
         });
     };
 
-    // Fonction de changement de langue
+
     const changeLanguage = () => {
       locale.value = currentLang.value;
     };
