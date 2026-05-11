@@ -47,9 +47,10 @@ createApp({
 
     const get_activites = () => {
       
-      axios.get("../../php/admin/activites.php") 
+      axios.get("../../php/admin/activites") 
         .then(response => {
           tab_res.value = response.data;
+          console.log(response.data);
         })
         .catch(error => {
           console.error("Erreur lors du chargement des activités:", error);
