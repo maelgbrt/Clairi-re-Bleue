@@ -259,9 +259,9 @@ createApp({
 };
 
     const deleteReservationActivite = (activite) => {
-      id_res_activite = activite.id_reservation_activite
-
-      axios.get(`../../php/admin.php?entity=activites&option=reservations&secondOption=delete&id=${id_res_activite}`).then(() => {
+      data.value = {"nb_membre" : activite.nb_reservations,"id_res_activite" : activite.id_reservation_activite,"id_activite" : activite.id_activite };
+      
+      axios.post(`../../php/utilisateur.php?entity=activites&option=delete`,data.value).then(() => {
         loadData();
       });
     };

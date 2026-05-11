@@ -78,39 +78,35 @@ function putReservationActiviteWithUpdate($conn, $data) {
     }
 }
 function deleteReservationActiviteWithUpdate($conn, $data) {
-    $cap_act = $data['cap_act']; 
-    $id_famille = $data['id_famille'];
-    
-    if (deleteReservation($conn, $id_famille)) {
-        
-        UpdateCapActivite($conn, $data, "+");
 
-        $fifos = getActivitesFifo($conn);
-
-        foreach ($fifos as $fifo) {
-            $nb_membres_fifo = $fifo['nb_membre'];
-
-            if ($cap_act >= $nb_membres_fifo) {
-                
-                if (AcceptFifo($conn, $fifo)) {
-                    $cap_act -= $nb_membres_fifo;
-                    
-                    // Décrémenter la capacité en BDD (Optionnel selon votre logique UpdateCapActivite)
-                    UpdateCapActivite($conn, $fifo, "-");
-                }
-            } 
-        }
-        return true;
+    if (!deleteReservation($conn, $data['id_res_activite'])) {
+        return false; // On arrête si la suppression échoue
     }
-    return false;
-}
+
+    $fifos = getActivitesFifo($conn);
+
+    foreach ($fifos as $fifo) {
+        $nb_membres_fifo = $fifo['nb_membre'];
+        $cap_act = GetCapaciteActivite($conn, $fifo['id_activite']);
+
+        if ($cap_act >= $nb_membres_fifo) {
+            if (AcceptFifo($conn, $fifo)) {
+                $cap_act -= $nb_membres_fifo;
+            }
+        }
+    }
+
+    return true;
+    }
 
 function GetCapaciteActivite($conn,$id_activite){
     $sql = "SELECT cap_act FROM activites WHERE id = ?";
     $requete = mysqli_prepare($conn,$sql);
     mysqli_stmt_bind_param($requete,'i',$id_activite);
     mysqli_stmt_execute($requete);
-    return mysqli_stmt_get_result($requete);
+     $res = mysqli_stmt_get_result($requete);
+    $row = mysqli_fetch_assoc($res);
+    return $row ? (int)$row['cap_act'] : 0;
 }
 
 function UpdateCapActivite($conn, $data, $signe) {
@@ -174,11 +170,10 @@ function deleteReservation($conn, $id_res_activite) {
     $sql = "DELETE FROM reservation_activites WHERE id_famille = ?";
     $requete = mysqli_prepare($conn, $sql);
     mysqli_stmt_bind_param($requete, 'i', $id_famille);
-    mysqli_stmt_execute($requete);
     if (mysqli_stmt_execute($requete)) {
         return UpdateCapActivite($conn, $reservation,"+");
     }
-    return false;
+    return $reservation;
 }
 
 
@@ -221,21 +216,11 @@ function deleteFromFifo($conn, $id) {
     return mysqli_stmt_affected_rows($stmt) > 0;
 }
 
-
 function AcceptFifo($conn, $data) {
-    $id_attente = $data['id_attente'];
-    
-    if (deleteFromFifo($conn, $id_attente)) {
-        if (putReservationActivite($conn, $data)) {
-            $msg = "success";
-        } else {
-            $msg = "Erreur lors de la création de la réservation ou de la mise à jour des places";
-        }
-    } else {
-        $msg = "Impossible de supprimer l'élément de la file d'attente";
+    if (deleteFromFifo($conn, $data['id_attente'])) {
+        return putReservationActivite($conn, $data);
     }
-    
-    return $msg;
+    return false;
 }
 
 
@@ -391,7 +376,7 @@ function  UpdateReservationActivite($conn, $data,$action){
 
 
 function getActivitesFifoFamille($conn, $id_famille,$id_activite) {
-    $sql = "SELECT * from flie_attente_activite where id_famille = ? and id_activite = ?";
+    $sql = "SELECT * from file_attente_activite where id_famille = ? and id_activite = ?";
     $requete = mysqli_prepare($conn, $sql);
     mysqli_stmt_bind_param($requete, "ii", $id_famille,$id_activite);
     mysqli_stmt_execute($requete);

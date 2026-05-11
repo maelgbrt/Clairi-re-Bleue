@@ -80,8 +80,8 @@ switch ($entity) {
                 "status" => ($resultat === "success") ? "success" : $resultat,
                 "msg" => $resultat
             ];
-        }elseif($option === 'delete' && $id){
-                $resultat = deleteReservation($conn, $id);
+        }elseif($option === 'delete'){
+                $resultat = deleteReservationActiviteWithUpdate($conn, $data);
                 $response = [
                     "status" => $resultat ? "success" : "error",
                     "msg" => $resultat
