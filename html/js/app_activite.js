@@ -30,33 +30,34 @@ const messages = {
   }
 };
 
-// 1. On crée l'instance i18n d'abord
 const i18n = createI18n({
   legacy: false,
   locale: 'fr',
+  fallbackLocale: 'en',
   messages: messages,
 });
 
-// 2. On crée l'application
-const app = createApp({
+createApp({
   setup() {
-    const { t, locale } = useI18n(); // On récupère les outils i18n ici
+    const { t, locale } = useI18n();
     const tab_res = ref([]);
     
-    // IMPORTANT: currentLang doit être lié à locale.value
+  
     const currentLang = ref(locale.value);
 
     const get_activites = () => {
-      // Chemin vers ton PHP
-      axios.get("../../php/admin/activites.php")
+      
+      axios.get("../../php/admin/activites.php") 
         .then(response => {
           tab_res.value = response.data;
         })
-        .catch(err => console.error("Erreur de chargement:", err));
+        .catch(error => {
+          console.error("Erreur lors du chargement des activités:", error);
+        });
     };
 
+
     const changeLanguage = () => {
-      // Met à jour la langue de i18n quand le select change
       locale.value = currentLang.value;
     };
 
@@ -66,13 +67,7 @@ const app = createApp({
       tab_res, 
       changeLanguage,
       currentLang,
-      t // On expose 't' au cas où, même si on utilise $t dans le HTML
+      t 
     };
   }
-});
-
-// 3. ON DIT À L'APP D'UTILISER I18N (Crucial pour enlever l'erreur $t)
-app.use(i18n);
-
-// 4. On monte enfin l'app
-app.mount('#app');
+}).use(i18n).mount('#app');
