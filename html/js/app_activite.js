@@ -1,8 +1,6 @@
 const { createApp, ref, onMounted } = Vue;
 const { createI18n, useI18n } = VueI18n;
 
-const currentLang = ref('fr');
-
 const messages = {
   en: {
     nav: { home: "HOME", activities: "ACTIVITIES", contact: "CONTACT", about: "ABOUT" },
@@ -35,28 +33,41 @@ const messages = {
 const i18n = createI18n({
   legacy: false,
   locale: 'fr',
-  messages,
+  fallbackLocale: 'en',
+  messages: messages,
 });
 
 createApp({
   setup() {
-    const tab_res = ref([]);
     const { t, locale } = useI18n();
+    const tab_res = ref([]);
+    
+    // On initialise currentLang avec la locale actuelle
+    const currentLang = ref(locale.value);
 
     const get_activites = () => {
-      axios.get("../../php/admin/activites").then(response => {
-        tab_res.value = response.data;
-      });
+      // Vérifie bien ce chemin selon ton dossier
+      axios.get("../../php/admin/activites.php") 
+        .then(response => {
+          tab_res.value = response.data;
+        })
+        .catch(error => {
+          console.error("Erreur lors du chargement des activités:", error);
+        });
     };
 
-    const changeLanguage = (lang) => {
-      locale.value = lang;
+    // Fonction de changement de langue
+    const changeLanguage = () => {
+      locale.value = currentLang.value;
     };
 
     onMounted(get_activites);
 
-    return { tab_res,t, changeLanguage,
-      currentLang 
-     };
+    return { 
+      tab_res, 
+      changeLanguage,
+      currentLang,
+      t 
+    };
   }
 }).use(i18n).mount('#app');
