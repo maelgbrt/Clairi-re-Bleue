@@ -124,7 +124,6 @@ createApp({
             console.log(calendrier.value);
             creneauxDispo();
           } else if (response.data.status === 'success') {
-            alert("Réservation réussie !");
             loadData();
           }
         });
@@ -144,6 +143,8 @@ createApp({
           payeur.value = response.data;
           console.log("le payeur");
           console.log(payeur.value);
+          id_payeur.value = payeur.value.id;
+          console.log(id_payeur.value)
         })
         .catch(err => console.error("Erreur API :", err));
     };
@@ -152,6 +153,8 @@ createApp({
       console.log("Récupération de la réservation d'emplacement pour la famille ID :", id_famille.value);
       axios.get(`../../php/utilisateur.php?entity=emplacements&option=reservation&id=${id_famille.value}`)
         .then((response) => {
+          console.log("le voila");
+          console.log(response.data);
           ResaEmplacement.value = response.data;
         })
         .catch(err => console.error("Erreur API :", err));
@@ -266,8 +269,8 @@ createApp({
     const deleteReservation = (id_res_empl) => {
       axios.post(`../../php/utilisateur.php?entity=emplacements&option=delete&id=${id_res_empl}`)
         .then(() => {
-          alert("Réservation supprimée !");
           get_reservation_famille();
+          loadData();
         })
         .catch(err => console.error("Erreur API :", err));
     };
@@ -440,9 +443,10 @@ createApp({
       membre,
       createMembre,
       deleteMembre,
-      reserverCreneau,       // ✅
-      rechercheCreneaux,     // ✅
-      error
+      reserverCreneau,       
+      rechercheCreneaux,     
+      error,
+      id_payeur 
     };
   }
 }).mount('#app');

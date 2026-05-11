@@ -74,6 +74,19 @@ nav a{
     width: 10%;
 }
 
+#chooseLanguage{
+    padding: 10px;
+    border: 4px solid white;
+    margin-right: 20px;
+    background: transparent;
+    color: white;
+    font-weight: 600;
+}
+
+option{
+    color: black;
+}
+
 .btn-reservation{
     padding: 10px;
     background-color: red;

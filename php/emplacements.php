@@ -211,6 +211,7 @@ function get_reservation_famille($conn, $id_famille){
     re.date_debut,
     re.date_fin,
     re.id_res_empl,
+    re.nb_membre,
     e.nom
     FROM reservation_emplacement re
     JOIN emplacements e ON e.num_emplacement = re.num_emplacement

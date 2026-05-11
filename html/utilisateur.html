@@ -117,13 +117,13 @@
                         Tu as réservé l'emplacement <b>{{ resa.nom }}</b>
                         du {{ new Date(resa.date_debut).toLocaleDateString() }}
                         au {{ new Date(resa.date_fin).toLocaleDateString() }}
-                        pour {{resa.nb_membre}} membres
+                        pour {{resa.nb_membre}} membre(s)
                     </p>
                     <button @click="deleteReservation(resa.id_res_empl)">Supprimer la réservation</button>
                 </div>
             </div>
             <div id="title">
-                <img src="../images/0.png" id="logo-tent" alt="">
+                <img src="../images/LOGO.png" id="logo-tent" alt="">
                 <h1>Emplacements </h1>
             </div>
             <div id="list-emplacements">
@@ -165,11 +165,14 @@
             <h1>Membre de la famille : </h1>
             <div id="list-membres-famille">
                 <div class="membre-famille" v-for="membre in membresFamilles">
+                    <div v-if="id_payeur == membre.id" id="admin_account">Compte Admin</div>
+
                     <img src="../images/connexion.png" alt="" class="img-membre-famille">
+                    
                     <p>{{membre.nom}}</p>
                     <p>{{membre.prenom}}</p>
                     <p>{{membre.date_naissance}}</p>
-                    <button @click="deleteMembre(membre.id)">Supprimer</button> 
+                    <button v-if="id_payeur != membre.id" @click="deleteMembre(membre.id)">Supprimer</button> 
                 </div>
             </div>
             <form @submit.prevent="createMembre()" id="creation-membre" v-if="ajoutMembre">

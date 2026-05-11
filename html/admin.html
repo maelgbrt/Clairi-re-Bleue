@@ -18,7 +18,7 @@
         <div id="menu-links" :class="{ open: menuOpen }">
             <a href="../index.html">Home</a>
             <a href="activites.html">Activités</a>
-            <a href="contact.html">Mes Messages</a>
+            <a href="mesMessages.html">Mes Messages</a>
             <a @click="disconnect()">Deconnexion</a>
         </div>
     </div>
@@ -282,8 +282,8 @@
                 <div class="flex-label"><label>Mail</label><input type="text" v-model ="nvAnimateur.mail" placeholder="Mail"></div>
                 <div class="flex-label"><label>Mot de Passe</label><input v-model ="nvAnimateur.password" type="password"></div>
                 <label>Access :</label>
-                <div class="flex-label"><input class="radio" type="radio" name="access" value="1" v-model="nvAnimateur.access"><label>1</label></div>
-                <div class="flex-label"><input class="radio" type="radio" name="access" value="2" v-model="nvAnimateur.access"><label>2</label></div>
+                <div class="flex-label"><input class="radio" type="radio" name="access" value="1" v-model="nvAnimateur.access"><label>1 (admin)</label></div>
+                <div class="flex-label"><input class="radio" type="radio" name="access" value="2" v-model="nvAnimateur.access"><label>2 (animateur)</label></div>
                 <button @click="createAnimateur()">Ajouter</button>
                 <p v-if="nvAnimateur.status">{{nvAnimateur.status}}</p>
             </div>
