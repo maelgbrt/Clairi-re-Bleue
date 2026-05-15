@@ -1,5 +1,4 @@
 RewriteEngine On
-RewriteBase /php/
 
 # --- ADMIN
 # --- 1. ROUTES COMPLEXES (3 segments ou plus après l'entité) ---
