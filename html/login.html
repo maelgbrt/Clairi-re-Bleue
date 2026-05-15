@@ -99,9 +99,15 @@
             Déjà un compte ? Connectez-vous.
         </p>
     </div>
+    <div v-else-if="action === 'chargement'"  class="gap-2 box-border flex items-center relative flex-col backdrop-blur-3xl text-white p-5 rounded-xl shadow-2xl box-border">
+        <h1 class="text-xl">Connecté :)</h1>
+        <p>Vous allez être redirigé...</p>
+    </div>
+
 <a href="../index.html">
     <img id="back1" src="../images/back1.png" alt="Retour" 
          style="position: absolute; top: 0; left: 0; z-index: 1000; width: 100px; height: auto; cursor: pointer;">
 </a>
 </body>
 </html>
+

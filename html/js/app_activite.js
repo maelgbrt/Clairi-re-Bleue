@@ -47,7 +47,7 @@ createApp({
 
     const get_activites = () => {
       
-      axios.get("../../php/admin/activites") 
+      axios.get("../php/admin/activites") 
         .then(response => {
           tab_res.value = response.data;
           console.log(response.data);

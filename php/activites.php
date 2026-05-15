@@ -362,11 +362,27 @@ function  UpdateReservationActivite($conn, $data,$action){
             return "Le nombre de membres à retirer dépasse le nombre de membres réservés";
         }else{
         if (UpdateCapReservationActivite($conn, $data,-$nb_membre)) {
-            return "success";
+            
+          $fifos = getActivitesFifo($conn); 
+           
+    foreach ($fifos as $fifo) {
+        $nb_membres_fifo = $fifo['nb_membre'];
+        $cap_act = GetCapaciteActivite($conn, $fifo['id_activite']);
+
+        if ($cap_act >= $nb_membres_fifo) {
+            if (AcceptFifo($conn, $fifo)) {
+                $cap_act -= $nb_membres_fifo;
+            }
+        }
+    }
+    return "success";
+
         } else {
             return "Erreur lors de la suppression de la réservation ou de la mise à jour des places";
         }
         }
+
+        
     } else {
         return "Action non reconnue";
     }

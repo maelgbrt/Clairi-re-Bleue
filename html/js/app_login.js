@@ -11,6 +11,7 @@ createApp({
     });
 
     const isLoading = ref(false);
+    const connected = ref(false);
 
     const mail_reinitialisation = ref();
 
@@ -32,7 +33,7 @@ createApp({
 
     const handleLogin = () => {
       console.log(connexion.value);
-      axios.post('../../php/login/connected',connexion.value).then(response => {
+      axios.post('../php/login/connected',connexion.value).then(response => {
         let res = response.data;
         console.log(res);
         if (res.status == "success"){
@@ -78,18 +79,36 @@ const mdp_reset = () => {
         let data = {
         "Adress": mail_reinitialisation.value
     };
-        axios.post("../../php/gestion_mail.php?entity=reinitialiser",data).then(response => {
+        axios.post("../php/gestion_mail.php?entity=reinitialiser",data).then(response => {
           console.log(response.data);
           log.value = response.data.msg;
           isLoading.value =false;
         })
     }
 
+const isConnected = () => {
+  axios.get('../php/login/isConnected').then(response => {
+    console.log(response.data);
+    
+    if (response.data.status == "connected") {
+      action.value = 'chargement';
 
-
+      setTimeout(() => {
+        if (response.data.role == "famille") {
+          window.location.href = "utilisateur.html";    
+        } else if (response.data.role == 'admin') {
+          window.location.href = "admin.html";    
+        } else {
+          window.location.href = 'equipe.html';
+        }
+      }, 3000); // 3000ms = 3 secondes
+    }
+  });
+}
 
 
     onMounted(() => {
+      isConnected();
     });
 
     return { 
@@ -102,7 +121,8 @@ const mdp_reset = () => {
         mdp_reset,
         mail_reinitialisation,
         log,
-        isLoading
+        isLoading,
+        connected
 
     };
   }

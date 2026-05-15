@@ -55,7 +55,7 @@ const today = computed(() =>
 
 const todayEU = computed(() => {
     const [year, month, day] = today.value.split('-');
-    return `${day}/${month}/${year}`; // "01/04/2026"
+    return `${day}/${month}/${year}`; // "../2026"
 });
 
 const datePrev = () => {
@@ -98,11 +98,11 @@ const dateNext = () => {
     };
 
     const afficheFamille = () => {
-      apiGet('../../php/admin/familles/withPayeur').then(data => {
+      apiGet('../php/admin/familles/withPayeur').then(data => {
         if (data) {
           familles.value = data;
           familles.value.forEach((famille, index) => {
-            apiGet(`../../php/admin/familles/NbMembre/${famille.id_famille}`).then(nb => {
+            apiGet(`../php/admin/familles/NbMembre/${famille.id_famille}`).then(nb => {
               familles.value[index].nb_membres = nb;
             });
           });
@@ -160,7 +160,7 @@ const dateNext = () => {
 
     async function isConnected() {
         try {
-            const response = await axios.get('../../php/login/isConnected.php');
+            const response = await axios.get('../php/login/isConnected.php');
             if (response.data.role == 'admin'){
               return response.data.id; 
             }else{
@@ -187,11 +187,11 @@ const dateNext = () => {
       afficheFamille();
       console.log("afficher la famille");
       console.log(familles);
-      apiGet('../../php/admin/activites').then(data => activites.value = data);
-      apiGet('../../php/admin/activites/fifo').then(data => fifo_activites.value = data);
-      apiGet('../../php/admin/emplacements').then(data => emplacements.value = data);
-      // apiGet('../../php/admin/emplacements/reservations').then(data => reservations_emplacements.value = data);
-      apiGet(`../../php/admin/emplacements/reservations/BetweenDate/${today.value}`).then(data => reservations_emplacements.value = data ?? []);
+      apiGet('../php/admin/activites').then(data => activites.value = data);
+      apiGet('../php/admin/activites/fifo').then(data => fifo_activites.value = data);
+      apiGet('../php/admin/emplacements').then(data => emplacements.value = data);
+      // apiGet('../php/admin/emplacements/reservations').then(data => reservations_emplacements.value = data);
+      apiGet(`../php/admin/emplacements/reservations/BetweenDate/${today.value}`).then(data => reservations_emplacements.value = data ?? []);
       ChercherEmplacements();
       get_animateur();
       get_membres();
@@ -202,7 +202,7 @@ const dateNext = () => {
 
     const handleDelete = (id) => {
       if (confirm("Supprimer ?")) {
-        apiGet('../../php/admin/activites/delete/' + id).then(result => {
+        apiGet('../php/admin/activites/delete/' + id).then(result => {
           if (result.status === "success") {
             activites.value = activites.value.filter(a => a.id !== id);
           }
@@ -223,7 +223,7 @@ const dateNext = () => {
 }
 
     const handleAccept = (donnes) => {
-      axios.post("../../php/admin/activites/fifo/accept",donnes).then(response =>{
+      axios.post("../php/admin/activites/fifo/accept",donnes).then(response =>{
         const result = response.data;
         if (result.msg === "success"){
           loadData();
@@ -234,7 +234,7 @@ const dateNext = () => {
     }
 
     const findParticipantsActivite = (id) => {
-      axios.get("../../php/admin/activites/participants/" + id).then(response => {
+      axios.get("../php/admin/activites/participants/" + id).then(response => {
           participants.value = response.data;
           visible.value = true;
       })
@@ -257,7 +257,7 @@ const dateNext = () => {
         nb_membre: NBMembres.value 
     };
 
-    axios.post("../../php/admin/activites/fifo/add", data)
+    axios.post("../php/admin/activites/fifo/add", data)
         .then(response => {
             if (response.data.status === "success") {
                 alert("Inscription réussie !");
@@ -286,7 +286,7 @@ const dateNext = () => {
         nb_membre: NBMembres.value 
     };
 
-    axios.post("../../php/admin/activites/reservations/add", data)
+    axios.post("../php/admin/activites/reservations/add", data)
         .then(response => {
             if (response.data.status === "success") {
                 
@@ -306,7 +306,7 @@ const dateNext = () => {
 
     const handleRefuse = (id) => {
       if (confirm("Refuser ?")) {
-        apiGet('../../php/admin/activites/fifo/delete/' + id).then(result => {
+        apiGet('../php/admin/activites/fifo/delete/' + id).then(result => {
           if (result.status === "success") {
             fifo_activites.value = fifo_activites.value.filter(f => f.id_attente !== id);
           }
@@ -354,7 +354,7 @@ const InscrireF_E = (num_emplacement) => {
 
   console.log("Données envoyées à l'API :", data);
 
-  axios.post('../../php/admin/emplacements/reservations/add', data).then(response =>{
+  axios.post('../php/admin/emplacements/reservations/add', data).then(response =>{
     if (response.data.status === 'compromis'){
 
     
@@ -416,7 +416,7 @@ const creneauxDispo = () => {
 
 const reservationEmpDelete = (id_res_empl) => {
   if (confirm("Supprimer cette réservation ?")) {
-    axios.get("../../php/admin/emplacements/reservations/delete/" + id_res_empl).then(result => {
+    axios.get("../php/admin/emplacements/reservations/delete/" + id_res_empl).then(result => {
       if (result.data.status === 'success') {
         loadData();
       } else {
@@ -534,7 +534,7 @@ const reserverCreneau = (creneau) => {
 
 
 const UpdateAnimateur = (animateur) =>{
-  axios.post('../../php/admin/equipeTechnique/animateurs/update',animateur).then(response =>{
+  axios.post('../php/admin/equipeTechnique/animateurs/update',animateur).then(response =>{
     console.log(response.data);
     animateur.status = response.data.msg;
     setTimeout(() => animateur.status = '', 3000)
@@ -544,7 +544,7 @@ const UpdateAnimateur = (animateur) =>{
 
 const createAnimateur = () => {
   console.log(nvAnimateur.value);
-  axios.post('../../php/admin/equipeTechnique/animateurs/add',nvAnimateur.value).then(response => {
+  axios.post('../php/admin/equipeTechnique/animateurs/add',nvAnimateur.value).then(response => {
     loadData();
   })
 }
@@ -572,7 +572,7 @@ const getDuree = (date_debut, date_fin) => {
 
 
     const createFamily = () => {
-      axios.post("../../php/admin/familles/create", nvlFamille.value)
+      axios.post("../php/admin/familles/create", nvlFamille.value)
         .then(response => {
           const result = response.data;
           if (result.status === "success") {
@@ -591,7 +591,7 @@ const getDuree = (date_debut, date_fin) => {
     const SuprimerFamille = (id) => {
     if (!confirm("Supprimer cette famille ?")) return;
     
-    apiGet("../../php/admin/familles/delete/" + id).then(result => {
+    apiGet("../php/admin/familles/delete/" + id).then(result => {
         if (result && result.status === 'success') {
             familles.value = familles.value.filter(f => f.id_famille !== id);
         } else {
@@ -602,13 +602,13 @@ const getDuree = (date_debut, date_fin) => {
 
 
 const DeleteAnimateur = (id_equipe_tech) =>{
-  axios.get(`../../php/admin/equipeTechnique/delete/${id_equipe_tech}`).then(response => {
+  axios.get(`../php/admin/equipeTechnique/delete/${id_equipe_tech}`).then(response => {
     loadData();
   })
 }
 
 const disconnect = () => {
-  axios.get('../../php/login/disconnected').then(response => {
+  axios.get('../php/login/disconnected').then(response => {
     window.location.href = 'login.html';
   }).catch(err => {
     console.error("Erreur lors de la déconnexion :", err);
@@ -617,19 +617,19 @@ const disconnect = () => {
 
 const ChercherEmplacements = () => {
 
-  axios.get('../../php/admin/emplacements/mois/' + month.value).then(response => {
+  axios.get('../php/admin/emplacements/mois/' + month.value).then(response => {
     emplacements.value = response.data
     console.log(response.data);
    });
 }
 
 const get_animateur = () => {
-  axios.get('../../php/admin/equipeTechnique/animateurs').then(response => {
+  axios.get('../php/admin/equipeTechnique/animateurs').then(response => {
     animateurs.value = response.data;
   })
 }
 const get_membres = () => {
-  axios.get('../../php/admin/equipeTechnique').then(response => {
+  axios.get('../php/admin/equipeTechnique').then(response => {
     console.log("les membres");
     console.log(response.data);
     membres.value = response.data;
@@ -641,7 +641,7 @@ const get_membres = () => {
     const ajoutAct = () => {
       
       nouvelleActivite.value.id_animateur = animateursSelectionnes.value
-      axios.post('../../php/admin.php?entity=activites&option=add', nouvelleActivite.value)
+      axios.post('../php/admin.php?entity=activites&option=add', nouvelleActivite.value)
         .then(response => {
           const result = response.data;
           if (result.status === "success") {

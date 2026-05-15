@@ -68,7 +68,7 @@ function reinitialisation_token($conn, $data){
         $token = update_token($conn, $Adress);
         
         if($token){
-            $lien = "http://localhost:8085/php/reset.php?token=" . $token;
+            $lien = "http://51.68.91.213/info7/Clairie-Bleue/php/reset.php?token=" . $token;
             
             $envoiMail = mail_reinitiaisation($Adress, $lien);
             

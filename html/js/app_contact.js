@@ -18,7 +18,7 @@ const notif = ref();
 
 const sendMessage = () => {
   console.log(message.value);
-  axios.post("../../php/admin/message",message.value).then(response =>{
+  axios.post("../php/admin/message",message.value).then(response =>{
     console.log(response.data);
     if (response.data.status == "Success"){
       notif.value = "Message envoyé avec Succes";
@@ -30,7 +30,7 @@ const sendMessage = () => {
 }
 
 const get_messages= () => {
-  axios.get('../../php/admin/message').then(response =>{
+  axios.get('../php/admin/message').then(response =>{
     messages.value = response.data;
   })
 }
@@ -40,7 +40,7 @@ const get_messages= () => {
 const deleteMessage = (id_message) => {
   const choix = confirm("Voulez vous vraiment supprimer ce message ?");
   if (choix){
-  axios.delete(`../../php/messages/delete/${id_message}`).then(response =>{
+  axios.delete(`../php/messages/delete/${id_message}`).then(response =>{
     if(response.data.status == 'Success'){
       get_messages();
     }else

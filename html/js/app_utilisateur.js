@@ -118,7 +118,7 @@ createApp({
         console.log("Numéro d'emplacement sélectionné :", NumEmplacement.value);
         console.log("Données envoyées à l'API :", postData);
 
-        axios.post('../../php/admin/emplacements/reservations/add', postData).then(response => {
+        axios.post('../php/admin/emplacements/reservations/add', postData).then(response => {
           if (response.data.status === 'compromis') {
             calendrier.value = response.data.calendrier;
             console.log(calendrier.value);
@@ -138,7 +138,7 @@ createApp({
     };
 
     const get_payeur = () => {
-      axios.get(`../../php/utilisateur.php?entity=payeur&id=${id_famille.value}`)
+      axios.get(`../php/utilisateur.php?entity=payeur&id=${id_famille.value}`)
         .then((response) => {
           payeur.value = response.data;
           console.log("le payeur");
@@ -151,7 +151,7 @@ createApp({
 
     const get_reservation_famille = () => {
       console.log("Récupération de la réservation d'emplacement pour la famille ID :", id_famille.value);
-      axios.get(`../../php/utilisateur.php?entity=emplacements&option=reservation&id=${id_famille.value}`)
+      axios.get(`../php/utilisateur.php?entity=emplacements&option=reservation&id=${id_famille.value}`)
         .then((response) => {
           console.log("le voila");
           console.log(response.data);
@@ -170,7 +170,7 @@ createApp({
       data.value.nb_membre = nb_membre.value;
       data.value.id_famille = id_famille.value;
 
-      axios.post('../../php/utilisateur.php?entity=users&option=reservation&secondOption=add', data.value)
+      axios.post('../php/utilisateur.php?entity=users&option=reservation&secondOption=add', data.value)
         .then(() => {
           loadData();
           nb_membre.value = null;
@@ -180,7 +180,7 @@ createApp({
 
     const deleteFifo = (activite) => {
       id = activite.file_attente_activite.id_attente
-      axios.get(`../../php/admin/activites/fifo/delete/` + id).then(() => {
+      axios.get(`../php/admin/activites/fifo/delete/` + id).then(() => {
         loadData();
         nb_membre.value = null;
       });
@@ -190,7 +190,7 @@ createApp({
       id = activite.file_attente_activite.id_attente
       data.value = { "nb_membre_aj": nb_membre.value };
       console.log(data.value);
-      axios.post(`../../php/utilisateur.php?entity=activites&option=fifo&secondOption=addM&id=${id}`, data.value).then(() => {
+      axios.post(`../php/utilisateur.php?entity=activites&option=fifo&secondOption=addM&id=${id}`, data.value).then(() => {
         loadData();
         nb_membre.value = null;
       });
@@ -202,7 +202,7 @@ createApp({
  function updateResaActivite(activite,nb_membre){
    data.value = {"id_activite" : activite.id_activite,"id_famille" : id_famille.value,"nb_membre" : nb_membre}
    console.log(data.value);
-    axios.post(`../../php/admin.php?entity=activites&option=reservations&secondOption=updateCapResa&id=${nb_membre}`,data.value).then(response =>{
+    axios.post(`../php/admin.php?entity=activites&option=reservations&secondOption=updateCapResa&id=${nb_membre}`,data.value).then(response =>{
       console.log(response.data);
     })
     }
@@ -253,7 +253,7 @@ createApp({
   }else{
     console.log("il va la");
     const payload = { nb_membre_aj: nb_membre.value, signe: '-' };
-    axios.post(`../../php/utilisateur.php?entity=activites&option=fifo&secondOption=delM&id=${activite.file_attente_activite.id_attente}`, payload)
+    axios.post(`../php/utilisateur.php?entity=activites&option=fifo&secondOption=delM&id=${activite.file_attente_activite.id_attente}`, payload)
       .then(() => { loadData(); nb_membre.value = null; });
   }
 };
@@ -261,13 +261,13 @@ createApp({
     const deleteReservationActivite = (activite) => {
       data.value = {"nb_membre" : activite.nb_reservations,"id_res_activite" : activite.id_reservation_activite,"id_activite" : activite.id_activite };
       
-      axios.post(`../../php/utilisateur.php?entity=activites&option=delete`,data.value).then(() => {
+      axios.post(`../php/utilisateur.php?entity=activites&option=delete`,data.value).then(() => {
         loadData();
       });
     };
 
     const deleteReservation = (id_res_empl) => {
-      axios.post(`../../php/utilisateur.php?entity=emplacements&option=delete&id=${id_res_empl}`)
+      axios.post(`../php/utilisateur.php?entity=emplacements&option=delete&id=${id_res_empl}`)
         .then(() => {
           get_reservation_famille();
           loadData();
@@ -276,7 +276,7 @@ createApp({
     };
 
     const get_activites_with_reservations = (id_famille) => {
-      axios.get(`../../php/utilisateur.php?entity=activites&option=with_reservations&id=${id_famille}`)
+      axios.get(`../php/utilisateur.php?entity=activites&option=with_reservations&id=${id_famille}`)
         .then((response) => {
           console.log("les activites que je recup");
           console.log(response.data);
@@ -286,13 +286,13 @@ createApp({
     };
 
     const get_membres_famille = () => {
-      axios.get(`../../php/admin/familles/membres/${id_famille.value}`).then(response => {
+      axios.get(`../php/admin/familles/membres/${id_famille.value}`).then(response => {
         membresFamilles.value = response.data;
       });
     };
 
     const get_emplacements = () => {
-      axios.get('../../php/admin/emplacements/mois/' + month.value).then(response => {
+      axios.get('../php/admin/emplacements/mois/' + month.value).then(response => {
         emplacements.value = response.data;
         console.log("les emplacements");
         console.log(response.data);
@@ -311,14 +311,14 @@ createApp({
 
     const createMembre = () => {
       membre.value.id_famille = id_famille.value;
-      axios.post("../../php/admin/familles/membres/add", membre.value).then(() => {
+      axios.post("../php/admin/familles/membres/add", membre.value).then(() => {
         loadData();
         ajoutMembre.value = !ajoutMembre.value;
       });
     };
 
     const deleteMembre = (id_membre) => {
-      axios.delete(`../../php/admin/familles/membres/delete/${id_membre}`).then(() => {
+      axios.delete(`../php/admin/familles/membres/delete/${id_membre}`).then(() => {
         loadData();
       });
     };
@@ -326,7 +326,7 @@ createApp({
     const InfoActivite = (id_activite) => {
       ChoiceOverlay.value = 'InfoActivite';
       Infos_activites.value.id_activite = id_activite;
-      axios.get(`../../php/utilisateur.php?entity=activites&id=${id_activite}`).then(reponse => {
+      axios.get(`../php/utilisateur.php?entity=activites&id=${id_activite}`).then(reponse => {
         Infos_activites.value = reponse.data;
       });
     };
@@ -338,7 +338,7 @@ createApp({
       data.value.nb_membre = nb_membre.value;
 
       // if(nb_membre.value <= activite.cap_act){
-      axios.post(`../../php/utilisateur.php?entity=activites&option=ajouter_membre`, data.value)
+      axios.post(`../php/utilisateur.php?entity=activites&option=ajouter_membre`, data.value)
         .then(() => { loadData() })
         .catch(err => console.error("Erreur API :", err));
       // }else{
@@ -356,7 +356,7 @@ createApp({
         console.log("condition 1")
         deleteReservationActivite(activite);
       }else if(nb_membre.value <= nb_places_deja_resa){
-        axios.post(`../../php/utilisateur.php?entity=activites&option=retirer_membre`, data.value)
+        axios.post(`../php/utilisateur.php?entity=activites&option=retirer_membre`, data.value)
           .then(() => { loadData() })
           .catch(err => console.error("Erreur API :", err));
       }else{
@@ -365,7 +365,7 @@ createApp({
     };
 
     const MajInfos = () => {
-      axios.post(`../../php/utilisateur.php?entity=users&option=update`, payeur.value).then(() => {
+      axios.post(`../php/utilisateur.php?entity=users&option=update`, payeur.value).then(() => {
         loadData();
         confirmation.value = true;
         setTimeout(() => { confirmation.value = false; }, 3000);
@@ -374,7 +374,7 @@ createApp({
 
     async function isConnected() {
       try {
-        const response = await axios.get('../../php/login/isConnected.php');
+        const response = await axios.get('../php/login/isConnected.php');
         if (response.data.role == 'famille') {
           return response.data.id;
         } else {
